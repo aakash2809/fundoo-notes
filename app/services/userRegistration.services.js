@@ -1,13 +1,12 @@
 /**
  * @module         services
- * @file           greeting.services.js
- * @description    This file contain all the service method for greetings
- * @requires       greetingModel  is refrence to invoke methods of greetingModel.js     
+ * @file           userRegistration.services.js
+ * @description    This file contain all the service  
  * @author         Aakash Rajak <aakashrajak2809@gmail.com>
- * @since          24/12/2020          
+       
 ------------------------------------------------------------------------------------------*/
 
-const registrationModel = require('../models/userRegistrationModel');
+const registrationModel = require('../models/userModel');
 const logger        = require("../../config/logger");
 
 class registrationServices {

@@ -1,7 +1,7 @@
 const mongoose = require(`mongoose`);
-const logger           = require("../../config/logger");
-
-const userRegistrationSchema = new mongoose.Schema({
+const logger   = require("../../config/logger");
+const bycrypt = require('bcryptjs');
+const userSchema = new mongoose.Schema({
     name: {
         type: String,
         required: true
@@ -18,11 +18,17 @@ const userRegistrationSchema = new mongoose.Schema({
 { timestamps: true}  
 );
 
-userRegistrationSchema.set('versionKey', false);
+userSchema.set('versionKey', false);
+
+userSchema.pre("save", async function(next){
+    this.password = await bycrypt.hash(this.password, 10);
+    console.log(`${this.password}`);
+    next();
+})
 
 logger.info('inside model');
 
-const userRegistrationModelInstance = mongoose.model(`userRegistration`, userRegistrationSchema);
+const userRegistrationModelInstance = mongoose.model(`userRegistration`, userSchema);
 
 class userRegistrationModel {
 
