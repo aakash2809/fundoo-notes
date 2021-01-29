@@ -1,0 +1,199 @@
+{
+    "swagger": "2.0",
+    "info": {
+      "version": "1.0",
+      "title": "User Registratio API",
+      "description": "My User Project Application API"
+    },
+    "host": "localhost:3000",
+    "basePath": "/",
+    "tags": [
+      {
+        "name": "Greetings",
+        "description": "API for users in the system"
+      }
+    ],
+    "schemes": [
+      "http"
+    ],
+    "paths": {
+      "/addGreeting": {
+        "post": {
+          "tags": [
+            "Greetings"
+          ],
+          "summary": "Add a new greeting to the greeting schema",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "body",
+              "name": "Greeting",
+              "description": "greeting object that needs to be added to the greeting",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/Greeting"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": " Data inserted successfully"
+            },
+            "400": {
+              "description": "Bad Request ,Invalid input"
+            }
+          }
+        }
+      },
+      "/allGreetings": {
+        "get": {
+          "tags": [
+            "Greetings"
+          ],
+          "summary": "get all greetings",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "responses": {
+            "200": {
+              "description": "retirved successfully"
+            },
+            "500": {
+              "description": "internal server error"
+            }
+          }
+        }
+      },
+      "/uniqueGreeting/{greetingId}": {
+        "get": {
+          "tags": [
+            "Greetings"
+          ],
+          "summary": "get specific greetings by greetingId",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "greetingId",
+              "type": "string",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "greeting retrieved successfully"
+            },
+            "404": {
+              "description": "Greeting  not found with input id"
+            }
+          }
+        }
+      },
+      "/updateGreeting/{greetingId}": {
+        "put": {
+          "tags": [
+            "Greetings"
+          ],
+          "summary": "update exiting greeting ",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "greetingId",
+              "type": "string",
+              "description": "id that need to be updated successfully",
+              "required": true
+            },
+            {
+              "in": "body",
+              "name": "Greeting",
+              "description": "greeting object that needs to be updated",
+              "required": true,
+              "schema": {
+                "$ref": "#/definitions/Greeting"
+              }
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Greeting updated with input id"
+            },
+            "404": {
+              "description": "Greeting  not found with input id"
+            }
+          }
+        }
+      },
+      "/greeting/{greetingId}": {
+        "delete": {
+          "tags": [
+            "Greetings"
+          ],
+          "summary": "delete greeting ",
+          "consumes": [
+            "application/json"
+          ],
+          "produces": [
+            "application/json"
+          ],
+          "parameters": [
+            {
+              "in": "path",
+              "name": "greetingId",
+              "description": "id for greeting that need to be deleted",
+              "type": "string",
+              "required": true
+            }
+          ],
+          "responses": {
+            "200": {
+              "description": "Greeting deleted successfully with input id"
+            },
+            "404": {
+              "description": "Greeting  not found with input id"
+            },
+            "500": {
+              "description": "Internal Server Error"
+            }
+          }
+        }
+      }
+    },
+    "definitions": {
+      "Greeting": {
+        "type": "object",
+        "required": [
+          "name",
+          "message"
+        ],
+        "properties": {
+          "name": {
+            "type": "string",
+            "example": "Aakash"
+          },
+          "message": {
+            "type": "string",
+            "example": "Hello"
+          }
+        }
+      }
+    }
+  }
