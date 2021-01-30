@@ -7,10 +7,10 @@
  * @since      
 -----------------------------------------------------------------------------------------------*/
 
-const logger           = require("../../config/logger");
-const registrationServices = require(`../services/userRegistration.services`);
+const logger  = require("../../../config/logger");
+ const userServices = require("../../services/userServices/user.services");
 
-class userRegistrationController {
+class userControllers {
     
     /**
      * @description add greeting to database
@@ -28,7 +28,7 @@ class userRegistrationController {
 
         logger.info(`INVOKING: saveData method of services`);
 
-        registrationServices.saveRegistrationData(registrationDetails, (error, registrationResult) => {
+        userServices.saveRegistrationData(registrationDetails, (error, registrationResult) => {
             console.log(error);
             if (error) {
                 response.send({
@@ -50,7 +50,44 @@ class userRegistrationController {
         
     }
 
+      /**
+     * @description add greeting to database
+     * @param {*} request takes greeting in json formate
+     * @param {*} response sends response from server
+    */
+   login = (request, response) => {
+    logger.info(`TRACKED_PATH: Inside controller`);
+
+    const loginDetails = {
+        email: request.body.email,
+        password: request.body.password
+    };
+
+    logger.info(`INVOKING: getLoginCredentialAndCallForValidation method of login services`);
+
+    userServices.getLoginCredentialAndCallForValidation(loginDetails, (error, loginResult) => {
+        console.log(error);
+        if (error) {
+            response.send({
+                success: false,
+                status_code: 400,
+                message: error.message,
+            });
+            logger.error(`ERR001: login credentials did not match `);
+        } else {
+            response.send({
+                success: true,
+                status_code: 200,
+                message: 'login successfull',
+                data: loginResult
+            })
+            logger.info('SUCCESS001: login successfull');
+        }
+    })
+    
+}
+
 
 }
 
-module.exports = new userRegistrationController
+module.exports = new userControllers
