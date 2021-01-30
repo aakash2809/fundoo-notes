@@ -31,7 +31,7 @@ logger.info('inside model');
 
 const userModelInstance = mongoose.model(`userRegistration`, userSchema);
 
-class userModel {
+class UserModel {
 
     /**
       * @description save request greeting data to database 
@@ -53,10 +53,10 @@ class userModel {
 
 validateLoginCredentialAndReturnResult = (loginCredential, callback) => {
         logger.info(`TRACKED_PATH: Inside model`);
-        try{
+        /* try{
         const email = loginCredential.email;
         const password = loginCredential.password;
-        const a=userModelInstance.findOne({email:email});
+        const a = userModelInstance.findOne({email:email});
         const isMatch = bycrypt.compare(password, a.password);
         console.log(a.password)
        if(isMatch){
@@ -67,17 +67,17 @@ validateLoginCredentialAndReturnResult = (loginCredential, callback) => {
        }
     }catch(error){
         console.log("invalid");
-    }
-        //console.log(ismatch);
-    /*     userModelInstance.findOne({email:email}, (error, loginResult) => {
+    } */
+        console.log(loginCredential);
+        userModelInstance.findOne({email:loginCredential.email}, (error, loginResult) => {
             if (error) {
                 callback(error, null);
             } else {
                 callback(null, loginResult);
             }
-        }); */
+        });
    
     }
 }
 
-module.exports = new userModel;
+module.exports = new UserModel;

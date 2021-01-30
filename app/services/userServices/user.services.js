@@ -35,7 +35,7 @@ class userServices {
     */
    getLoginCredentialAndCallForValidation = (loginCredentials, callback) => {
     // logger.info(`TRACKED_PATH: Inside services`);
-     console.log(loginCredentials);
+   //  console.log(loginCredentials);
      userModel.validateLoginCredentialAndReturnResult(loginCredentials, (error, loginResult) => {
          if (error) {
              callback(error, null)

@@ -66,7 +66,10 @@ class userControllers {
     logger.info(`INVOKING: getLoginCredentialAndCallForValidation method of login services`);
 
     userServices.getLoginCredentialAndCallForValidation(loginDetails, (error, loginResult) => {
-        console.log(error);
+      // console.log(error);
+      // console.log(loginResult.data);
+      const a = loginResult;
+      
         if (error) {
             response.send({
                 success: false,
@@ -74,14 +77,24 @@ class userControllers {
                 message: error.message,
             });
             logger.error(`ERR001: login credentials did not match `);
-        } else {
+        }
+       else if( loginResult == null ){
+        response.send({
+            success: false,
+            status_code: 404,
+            message: "email id does not exist"
+        }); 
+        }  
+        
+        else {
+            logger.info(`SUCCESS001: login successfull `);
             response.send({
                 success: true,
                 status_code: 200,
                 message: 'login successfull',
                 data: loginResult
             })
-            logger.info('SUCCESS001: login successfull');
+            
         }
     })
     
