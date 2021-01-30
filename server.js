@@ -4,7 +4,7 @@ const dbconnection = require('./config/database.config');
 const express      = require('express')
 const app          = express();
 const PORT         = process.env.PORT || 3000;
-const route        = require(`./app/routes/userRegistration.route`);
+const route        = require(`./app/routes/fundoo.route`);
 const swaggerUi    = require('swagger-ui-express');
 const swaggerDocument = require('./app/lib/swagger.json');
 

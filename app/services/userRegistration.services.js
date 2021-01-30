@@ -6,10 +6,10 @@
        
 ------------------------------------------------------------------------------------------*/
 
-const registrationModel = require('../models/userModel');
+const userModel = require('../models/userModel');
 const logger        = require("../../config/logger");
 
-class registrationServices {
+class RegistrationServices {
 
     /**
      * @description save request data to database using model methods
@@ -19,7 +19,7 @@ class registrationServices {
     saveRegistrationData = (registrationData, callback) => {
         logger.info(`TRACKED_PATH: Inside services`);
 
-        registrationModel.saveRegistraion(registrationData, (error, registrationResult) => {
+        userModel.saveNewRegistration(registrationData, (error, registrationResult) => {
             if (error) {
                 callback(error, null)
             } else {
@@ -29,4 +29,4 @@ class registrationServices {
     }    
 }
 
-module.exports = new registrationServices
+module.exports = new RegistrationServices

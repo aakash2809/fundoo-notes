@@ -28,7 +28,7 @@ class userRegistrationController {
 
         logger.info(`INVOKING: saveData method of services`);
 
-        registrationServices.saveRegistrationData(registrationDetails, (error, resitrationResult) => {
+        registrationServices.saveRegistrationData(registrationDetails, (error, registrationResult) => {
             console.log(error);
             if (error) {
                 response.send({
@@ -42,7 +42,7 @@ class userRegistrationController {
                     success: true,
                     status_code: 200,
                     message: 'data inserted successfully',
-                    data: resitrationResult
+                    data: registrationResult
                 })
                 logger.info('SUCCESS001: data inserted successfully');
             }

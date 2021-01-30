@@ -1,6 +1,7 @@
 const mongoose = require(`mongoose`);
 const logger   = require("../../config/logger");
 const bycrypt = require('bcryptjs');
+
 const userSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -28,19 +29,19 @@ userSchema.pre("save", async function(next){
 
 logger.info('inside model');
 
-const userRegistrationModelInstance = mongoose.model(`userRegistration`, userSchema);
+const userModelInstance = mongoose.model(`userRegistration`, userSchema);
 
-class userRegistrationModel {
+class userModel {
 
     /**
       * @description save request greeting data to database 
       * @param {*} registrationData holds data to be saved in json formate
       * @param {*} callback holds a function 
      */
-    saveRegistraion = (registrationData, callback) => {
+    saveNewRegistration = (registrationData, callback) => {
         logger.info(`TRACKED_PATH: Inside model`);
 
-        const userRegistration = new userRegistrationModelInstance(registrationData);
+        const userRegistration = new userModelInstance(registrationData);
         userRegistration.save((error, registrationResult) => {
             if (error) {
                 callback(error, null);
@@ -49,6 +50,34 @@ class userRegistrationModel {
             }
         });
     }
+
+validateLoginCredentialAndReturnResult = (loginCredential, callback) => {
+        logger.info(`TRACKED_PATH: Inside model`);
+        try{
+        const email = loginCredential.email;
+        const password = loginCredential.password;
+        const a=userModelInstance.findOne({email:email});
+        const isMatch = bycrypt.compare(password, a.password);
+        console.log(a.password)
+       if(isMatch){
+        console.log("ok") ;
+       }
+       else{
+        console.log("invalid"); 
+       }
+    }catch(error){
+        console.log("invalid");
+    }
+        //console.log(ismatch);
+    /*     userModelInstance.findOne({email:email}, (error, loginResult) => {
+            if (error) {
+                callback(error, null);
+            } else {
+                callback(null, loginResult);
+            }
+        }); */
+   
+    }
 }
 
-module.exports = new userRegistrationModel;
+module.exports = new userModel;
