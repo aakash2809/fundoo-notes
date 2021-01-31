@@ -9,7 +9,8 @@
 
 const logger  = require("../../../config/logger");
  const userServices = require("../../services/userServices/user.services");
-
+ const bycrypt = require('bcryptjs');
+ const jwt = require("jsonwebtoken");
 class userControllers {
     
     /**
@@ -86,15 +87,45 @@ class userControllers {
         }); 
         }  
         
-        else {
-            logger.info(`SUCCESS001: login successfull `);
-            response.send({
+        else {          
+         bycrypt.compare(loginDetails.password,loginResult.password,function(err,result){
+            console.log(err);
+             if(err){
+                console.log(err);
+                response.send({
+                    success: true,
+                    status_code: 400,
+                    message: 'Invalid password'
+                })
+             }
+             if(result){
+              var token =  jwt.sign({
+                  username:loginResult.name,
+                  userId:loginResult._id,
+                }, 
+                "secret", {
+                    expiresIn:"1h"
+                }
+                );
+                console.log(result);
+                response.send({
                 success: true,
                 status_code: 200,
                 message: 'login successfull',
-                data: loginResult
+                data: token
             })
-            
+             }
+             else{ 
+                console.log(result);
+                response.send({
+                success: false,
+                status_code: 200,
+                message: 'auth failed',
+                
+            })
+            }
+         });
+
         }
     })
     
