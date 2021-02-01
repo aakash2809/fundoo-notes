@@ -16,10 +16,10 @@ class userServices {
      * @param {*} registrationData holds data to be saved in json formate
      * @param {*} callback holds a function 
     */
-    saveRegistrationData = (registrationData, callback) => {
+    registerUser = (registrationData, callback) => {
         logger.info(`TRACKED_PATH: Inside services`);
 
-        userModel.saveNewRegistration(registrationData, (error, registrationResult) => {
+        userModel.register(registrationData, (error, registrationResult) => {
             if (error) {
                 callback(error, null)
             } else {
@@ -35,7 +35,7 @@ class userServices {
     */
    getLoginCredentialAndCallForValidation = (loginCredentials, callback) => {
     logger.info(`TRACKED_PATH: Inside services`);
-   
+   console.log(loginCredentials);
      userModel.validateLoginCredentialAndReturnResult(loginCredentials, (error, loginResult) => {
          if (error) {
              callback(error, null)

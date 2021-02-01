@@ -1,5 +1,5 @@
 const mongoose = require(`mongoose`);
-const logger   = require("../../config/logger");
+const logger = require("../../config/logger");
 const bycrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
@@ -14,17 +14,17 @@ const userSchema = new mongoose.Schema({
     password: {
         type: String,
         required: true
-    },   
+    },
     confirmPassword: {
         type: String,
     },
 },
-{ timestamps: true}  
+    { timestamps: true }
 );
 
 userSchema.set('versionKey', false);
 
-userSchema.pre("save", async function(next){
+userSchema.pre("save", async function (next) {
     this.password = await bycrypt.hash(this.password, 10);
     this.confirmPassword = undefined;
     next();
@@ -32,7 +32,7 @@ userSchema.pre("save", async function(next){
 
 logger.info('inside model');
 
-const userModelInstance = mongoose.model(`userRegistration`, userSchema);
+const User = mongoose.model(`userRegistration`, userSchema);
 
 class UserModel {
 
@@ -41,10 +41,9 @@ class UserModel {
       * @param {*} registrationData holds data to be saved in json formate
       * @param {*} callback holds a function 
      */
-    saveNewRegistration = (registrationData, callback) => {
+    register = (registrationData, callback) => {
         logger.info(`TRACKED_PATH: Inside model`);
-
-        const userRegistration = new userModelInstance(registrationData);
+        const userRegistration = new User(registrationData);
         userRegistration.save((error, registrationResult) => {
             if (error) {
                 callback(error, null);
@@ -54,17 +53,15 @@ class UserModel {
         });
     }
 
-validateLoginCredentialAndReturnResult = (loginCredential, callback) => {
-        logger.info(`TRACKED_PATH: Inside model`);
-    
-        userModelInstance.find(loginCredential, (error, loginResult) => {
+    validateLoginCredentialAndReturnResult = (loginCredential, callback) => {
+        const email = loginCredential.email
+        User.find({ email: `${email}` }, (error, loginResult) => {
             if (error) {
                 callback(error, null);
             } else {
                 callback(null, loginResult);
             }
         });
-   
     }
 }
 

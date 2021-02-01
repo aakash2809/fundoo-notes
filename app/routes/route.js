@@ -1,10 +1,9 @@
 const userControllers = require(`../controllers/userControllers/user.controllers`);
-//const userLogin = require('../controllers/userLogin.controller');
 class Routes {
     routeToController = (app) => {
   
       //save new user registration
-    app.post('/register', userControllers.addNewRegistration);
+    app.post('/register', userControllers.register);
     app.post('/login', userControllers.login);
   
     }

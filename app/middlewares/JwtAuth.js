@@ -1,5 +1,5 @@
 
-const jwt = require("jsonwebtoken");
+/* const jwt = require("jsonwebtoken");
 module.exports=(request,response,next)=>{
 try{
     var token = request.headers.split(" ")[1];
@@ -14,4 +14,4 @@ try{
     });
 }
   
-}
+} */
