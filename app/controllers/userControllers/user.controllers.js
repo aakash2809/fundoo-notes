@@ -7,129 +7,135 @@
  * @since      
 -----------------------------------------------------------------------------------------------*/
 
-const logger  = require("../../../config/logger");
- const userServices = require("../../services/userServices/user.services");
- const bycrypt = require('bcryptjs');
- const jwt = require("jsonwebtoken");
+const logger = require("../../../config/logger");
+const userServices = require("../../services/userServices/user.services");
+const bycrypt = require('bcryptjs');
+const jwt = require("jsonwebtoken");
+const userSchema = require('../../middlewares/user.schema.joi.validator');
+const resposnsCode = require("../../../util/statusCodes.json")
 class userControllers {
-    
+
     /**
-     * @description add greeting to database
+     * @description add user to database
      * @param {*} request takes greeting in json formate
      * @param {*} response sends response from server
     */
     addNewRegistration = (request, response) => {
         logger.info(`TRACKED_PATH: Inside controller`);
+        let requestValidationResult = userSchema.validate(request.body)
+        if (requestValidationResult.error) {
+            logger.error(`SCHEMAERROR: Request did not match with schema `);
+            response.send({
+                success: false,
+                status_code: resposnsCode.bad_request,
+                message: requestValidationResult.error.details[0].message,
+            })
+            return;
+        }
 
         const registrationDetails = {
             name: request.body.name,
             email: request.body.email,
-            password: request.body.password
+            password: request.body.password,
+            confirmPassword:request.body.confirmPassword,
         };
-
+        if(request.body.password != request.body.confirmPassword){
+            response.send({
+                success: false,
+                status_code:  resposnsCode.bad_request,
+                message: "password does not match with confirm password",
+            });
+        }
         logger.info(`INVOKING: saveData method of services`);
 
         userServices.saveRegistrationData(registrationDetails, (error, registrationResult) => {
-            console.log(error);
+           
             if (error) {
                 response.send({
                     success: false,
-                    status_code: 400,
+                    status_code: bad_request,
                     message: error.message,
                 });
                 logger.error(`ERR001: registraion data did not match `);
             } else {
                 response.send({
                     success: true,
-                    status_code: 200,
+                    status_code: resposnsCode.success,
                     message: 'data inserted successfully',
                     data: registrationResult
                 })
                 logger.info('SUCCESS001: data inserted successfully');
             }
         })
-        
+
     }
 
-      /**
-     * @description add greeting to database
-     * @param {*} request takes greeting in json formate
-     * @param {*} response sends response from server
-    */
-   login = (request, response) => {
-    logger.info(`TRACKED_PATH: Inside controller`);
+    /**
+   * @description add greeting to database
+   * @param {*} request takes greeting in json formate
+   * @param {*} response sends response from server
+  */
+    login = (request, response) => {
+        logger.info(`TRACKED_PATH: Inside controller`);
 
-    const loginDetails = {
-        email: request.body.email,
-        password: request.body.password
-    };
+        const loginDetails = {
+            email: request.body.email,
+            password: request.body.password
+        };
 
-    logger.info(`INVOKING: getLoginCredentialAndCallForValidation method of login services`);
+        logger.info(`INVOKING: getLoginCredentialAndCallForValidation method of login services`);
 
-    userServices.getLoginCredentialAndCallForValidation(loginDetails, (error, loginResult) => {
-      // console.log(error);
-      // console.log(loginResult.data);
-      const a = loginResult;
-      
-        if (error) {
-            response.send({
-                success: false,
-                status_code: 400,
-                message: error.message,
-            });
-            logger.error(`ERR001: login credentials did not match `);
-        }
-       else if( loginResult == null ){
-        response.send({
-            success: false,
-            status_code: 404,
-            message: "email id does not exist"
-        }); 
-        }  
-        
-        else {          
-         bycrypt.compare(loginDetails.password,loginResult.password,function(err,result){
-            console.log(err);
-             if(err){
-                console.log(err);
+        userServices.getLoginCredentialAndCallForValidation(loginDetails, (error, loginResult) => {
+
+            if (error) {
                 response.send({
-                    success: true,
-                    status_code: 400,
-                    message: 'Invalid password'
-                })
-             }
-             if(result){
-              var token =  jwt.sign({
-                  username:loginResult.name,
-                  userId:loginResult._id,
-                }, 
-                "secret", {
-                    expiresIn:"1h"
-                }
-                );
-                console.log(result);
-                response.send({
-                success: true,
-                status_code: 200,
-                message: 'login successfull',
-                data: token
-            })
-             }
-             else{ 
-                console.log(result);
-                response.send({
-                success: false,
-                status_code: 200,
-                message: 'auth failed',
-                
-            })
+                    success: false,
+                    status_code: resposnsCode, bad_request,
+                    message: error.message,
+                });
+                logger.error(`ERR001: login credentials did not match `);
             }
-         });
+            else if (loginResult == null) {
+                response.send({
+                    success: false,
+                    status_code: resposnsCode.not_found,
+                    message: "email id does not exist"
+                });
+            }
 
-        }
-    })
-    
-}
+            else {
+                bycrypt.compare(loginDetails.password, loginResult.password, function (err, result) {
+                    if (err) {
+                        
+                        response.send({
+                            success: true,
+                            status_code: resposnsCode.bad_request,
+                            message: 'Invalid password'
+                        })
+                    } else {
+                        var token = jwt.sign({
+                            username: loginResult.name,
+                            userId: loginResult._id,
+                        },
+                            "secret", {
+                            expiresIn: "1h"
+                        }
+                        );
+
+                        response.send({
+                            success: true,
+                            status_code: resposnsCode.success,
+                            message: 'login successfull',
+                            data: token
+                        })
+                    }
+
+                });
+
+            }
+        })
+
+    }
 
 
 }

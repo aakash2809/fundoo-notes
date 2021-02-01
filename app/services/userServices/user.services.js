@@ -34,8 +34,8 @@ class userServices {
      * @param {*} callback holds a function 
     */
    getLoginCredentialAndCallForValidation = (loginCredentials, callback) => {
-    // logger.info(`TRACKED_PATH: Inside services`);
-   //  console.log(loginCredentials);
+    logger.info(`TRACKED_PATH: Inside services`);
+   
      userModel.validateLoginCredentialAndReturnResult(loginCredentials, (error, loginResult) => {
          if (error) {
              callback(error, null)

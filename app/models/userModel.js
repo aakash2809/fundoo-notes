@@ -15,6 +15,9 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },   
+    confirmPassword: {
+        type: String,
+    },
 },
 { timestamps: true}  
 );
@@ -23,7 +26,7 @@ userSchema.set('versionKey', false);
 
 userSchema.pre("save", async function(next){
     this.password = await bycrypt.hash(this.password, 10);
-    console.log(`${this.password}`);
+    this.confirmPassword = undefined;
     next();
 })
 
@@ -53,23 +56,8 @@ class UserModel {
 
 validateLoginCredentialAndReturnResult = (loginCredential, callback) => {
         logger.info(`TRACKED_PATH: Inside model`);
-        /* try{
-        const email = loginCredential.email;
-        const password = loginCredential.password;
-        const a = userModelInstance.findOne({email:email});
-        const isMatch = bycrypt.compare(password, a.password);
-        console.log(a.password)
-       if(isMatch){
-        console.log("ok") ;
-       }
-       else{
-        console.log("invalid"); 
-       }
-    }catch(error){
-        console.log("invalid");
-    } */
-        console.log(loginCredential);
-        userModelInstance.findOne({email:loginCredential.email}, (error, loginResult) => {
+    
+        userModelInstance.find(loginCredential, (error, loginResult) => {
             if (error) {
                 callback(error, null);
             } else {
