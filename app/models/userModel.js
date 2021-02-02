@@ -9,7 +9,8 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     password: {
         type: String,
@@ -17,6 +18,7 @@ const userSchema = new mongoose.Schema({
     },
     confirmPassword: {
         type: String,
+        
     },
 },
     { timestamps: true }
@@ -35,7 +37,7 @@ const User = mongoose.model(`userRegistration`, userSchema);
 
 class UserModel {
     /**
-      * @description save request greeting data to database 
+      * @description save request data to database 
       * @param {*} registrationData holds data to be saved in json formate
       * @param {*} callback holds a function 
      */
@@ -43,23 +45,18 @@ class UserModel {
         logger.info(`TRACKED_PATH: Inside model`);
         const userRegistration = new User(registrationData);
         userRegistration.save((error, registrationResult) => {
-            /*   if (error) {
-                  callback(error, null);
-              } else {
-                  callback(null, registrationResult);
-              } */
             (error) ? callback(error, null) : callback(null, registrationResult);
-        });
+        })
     }
 
+    /**
+      * @description find email id in database and validate
+      * @param {*} loginCredential holds login credentials
+      * @param {*} callback holds a function 
+     */
     validateLoginCredentialAndReturnResult = (loginCredential, callback) => {
-        const email = loginCredential.email
+        const email = loginCredential.email;
         User.find({ email: `${email}` }, (error, loginResult) => {
-            /* if (error) {
-                callback(error, null);
-            } else {
-                callback(null, loginResult);
-            } */
             (error) ? callback(error, null) : callback(null, loginResult);
         });
     }

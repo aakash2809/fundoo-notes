@@ -4,16 +4,16 @@ const jwt = require("jsonwebtoken");
 class Helper {
     genrateToken = (loginResult) => {
         return jwt.sign({
-            username: loginResult[0]._doc.name,
-            userId: loginResult[0]._doc._id,
+            username: loginResult.username,
+            userId: loginResult.userId,
         },
             process.env.SECRET_KEY, {
             expiresIn: "24h"
         });
     }
 
-    /* const jwt = require("jsonwebtoken");
-    module.exports=(request,response,next)=>{
+    /* 
+    verify=(request,response,next)=>{
     try{
         var token = request.headers.split(" ")[1];
         var decode = jwt.verify(token,'secure');

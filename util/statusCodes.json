@@ -1,6 +1,7 @@
 {
     "success":"200",
     "not_found":"404",
-    "bad_request":"400"
+    "bad_request":"400",
+    "unauthorized":"401"
 
 }

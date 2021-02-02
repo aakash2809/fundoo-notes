@@ -13,6 +13,17 @@ const bycrypt = require('bcryptjs');
 const resposnsCode = require("../../../util/statusCodes.json")
 
 class userServices {
+
+    convertArrayToJsonObject = (loginResult) => {
+        var returnObj = null;
+        (loginResult < 1) ? returnObj : returnObj = {
+            username: loginResult[0].username,
+            userId: loginResult[0]._id,
+            password: loginResult[0].password
+        }
+        return returnObj;
+    }
+
     /**
      * @description save request data to database using model methods
      * @param {*} registrationData holds data to be saved in json formate
@@ -33,10 +44,11 @@ class userServices {
     getLoginCredentialAndCallForValidation = (loginCredentials, callback) => {
         logger.info(`TRACKED_PATH: Inside services`);
         userModel.validateLoginCredentialAndReturnResult(loginCredentials, (error, loginResult) => {
+            loginResult = this.convertArrayToJsonObject(loginResult);
             if (error) {
                 callback(error, null)
             }
-            else if (loginResult[0] == null) {
+            else if (loginResult == null) {
                 loginResult = {
                     success: false,
                     status_code: resposnsCode.not_found,
@@ -44,7 +56,7 @@ class userServices {
                 }
                 callback(null, loginResult);
             } else {
-                bycrypt.compare(loginCredentials.password, loginResult[0]._doc.password, function (err, result) {
+                bycrypt.compare(loginCredentials.password, loginResult.password, function (err, result) {
                     if (err) {
                         loginResult = {
                             success: true,
@@ -66,7 +78,7 @@ class userServices {
                     } else {
                         loginResult = {
                             success: false,
-                            status_code: 200,
+                            status_code: resposnsCode.unauthorized,
                             message: 'Invalid password',
                         }
                         callback(null, loginResult);

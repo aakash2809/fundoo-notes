@@ -9,7 +9,7 @@
 
 const logger = require("../../../config/logger");
 const userServices = require("../../services/userServices/user.services");
-const userSchema = require('../../middlewares/user.schema.joi.validator');
+const userSchema = require('../../middlewares/validator');
 const resposnsCode = require("../../../util/statusCodes.json");
 
 class userControllers {
@@ -24,7 +24,7 @@ class userControllers {
         let requestValidationResult = userSchema.validate(request.body);
 
         if (requestValidationResult.error) {
-            logger.error(`SCHEMAERROR: Request did not match with schema `);
+            logger.error(`SCHEMAERROR: Request did not match with schema`);
             response.send({
                 success: false,
                 status_code: resposnsCode.bad_request,
@@ -50,26 +50,10 @@ class userControllers {
 
         logger.info(`INVOKING: registerUser method of services`);
         userServices.registerUser(registrationDetails, (error, registrationResult) => {
-            /*  if (error) {
-                 response.send({
-                     success: false,
-                     status_code: bad_request,
-                     message: error.message,
-                 });
-                 logger.error(`ERR001: registraion data did not match `);
-             } else {
-                 response.send({
-                     success: true,
-                     status_code: resposnsCode.success,
-                     message: 'data inserted successfully',
-                     data: registrationResult
-                 })
-                 logger.info('SUCCESS001: data inserted successfully');
-             } */
             (error) ? response.send({
                 success: false,
-                status_code: bad_request,
-                message: error.message,
+                status_code: resposnsCode.bad_request,
+                message: error,
             }) : response.send({
                 success: true,
                 status_code: resposnsCode.success,
@@ -94,21 +78,6 @@ class userControllers {
 
         logger.info(`INVOKING: getLoginCredentialAndCallForValidation method of login services`);
         userServices.getLoginCredentialAndCallForValidation(loginDetails, (error, loginResult) => {
-            /*     if (error) {
-                    response.send({
-                        success: false,
-                        status_code: resposnsCode.bad_request,
-                        message: error.message,
-                    });
-                    logger.error(`ERR001: login credentials did not match `);
-                } else {
-                    response.send({
-                        success: loginResult.success,
-                        status_code: loginResult.status_code,
-                        message: loginResult.message,
-                    });
-                } */
-
             (error) ? response.send({
                 success: false,
                 status_code: resposnsCode.bad_request,
