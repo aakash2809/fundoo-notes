@@ -31,11 +31,9 @@ userSchema.pre("save", async function (next) {
 })
 
 logger.info('inside model');
-
 const User = mongoose.model(`userRegistration`, userSchema);
 
 class UserModel {
-
     /**
       * @description save request greeting data to database 
       * @param {*} registrationData holds data to be saved in json formate
@@ -45,22 +43,24 @@ class UserModel {
         logger.info(`TRACKED_PATH: Inside model`);
         const userRegistration = new User(registrationData);
         userRegistration.save((error, registrationResult) => {
-            if (error) {
-                callback(error, null);
-            } else {
-                callback(null, registrationResult);
-            }
+            /*   if (error) {
+                  callback(error, null);
+              } else {
+                  callback(null, registrationResult);
+              } */
+            (error) ? callback(error, null) : callback(null, registrationResult);
         });
     }
 
     validateLoginCredentialAndReturnResult = (loginCredential, callback) => {
         const email = loginCredential.email
         User.find({ email: `${email}` }, (error, loginResult) => {
-            if (error) {
+            /* if (error) {
                 callback(error, null);
             } else {
                 callback(null, loginResult);
-            }
+            } */
+            (error) ? callback(error, null) : callback(null, loginResult);
         });
     }
 }

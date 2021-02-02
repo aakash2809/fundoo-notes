@@ -50,22 +50,33 @@ class userControllers {
 
         logger.info(`INVOKING: registerUser method of services`);
         userServices.registerUser(registrationDetails, (error, registrationResult) => {
-            if (error) {
-                response.send({
-                    success: false,
-                    status_code: bad_request,
-                    message: error.message,
-                });
-                logger.error(`ERR001: registraion data did not match `);
-            } else {
-                response.send({
-                    success: true,
-                    status_code: resposnsCode.success,
-                    message: 'data inserted successfully',
-                    data: registrationResult
-                })
-                logger.info('SUCCESS001: data inserted successfully');
-            }
+            /*  if (error) {
+                 response.send({
+                     success: false,
+                     status_code: bad_request,
+                     message: error.message,
+                 });
+                 logger.error(`ERR001: registraion data did not match `);
+             } else {
+                 response.send({
+                     success: true,
+                     status_code: resposnsCode.success,
+                     message: 'data inserted successfully',
+                     data: registrationResult
+                 })
+                 logger.info('SUCCESS001: data inserted successfully');
+             } */
+            (error) ? response.send({
+                success: false,
+                status_code: bad_request,
+                message: error.message,
+            }) : response.send({
+                success: true,
+                status_code: resposnsCode.success,
+                message: 'data inserted successfully',
+                data: registrationResult
+            })
+            logger.info('SUCCESS001: data inserted successfully');
         })
     }
 
@@ -83,20 +94,30 @@ class userControllers {
 
         logger.info(`INVOKING: getLoginCredentialAndCallForValidation method of login services`);
         userServices.getLoginCredentialAndCallForValidation(loginDetails, (error, loginResult) => {
-            if (error) {
-                response.send({
-                    success: false,
-                    status_code: resposnsCode.bad_request,
-                    message: error.message,
-                });
-                logger.error(`ERR001: login credentials did not match `);
-            } else {
-                response.send({
-                    success: loginResult.success,
-                    status_code: loginResult.status_code,
-                    message: loginResult.message,
-                });
-            }
+            /*     if (error) {
+                    response.send({
+                        success: false,
+                        status_code: resposnsCode.bad_request,
+                        message: error.message,
+                    });
+                    logger.error(`ERR001: login credentials did not match `);
+                } else {
+                    response.send({
+                        success: loginResult.success,
+                        status_code: loginResult.status_code,
+                        message: loginResult.message,
+                    });
+                } */
+
+            (error) ? response.send({
+                success: false,
+                status_code: resposnsCode.bad_request,
+                message: error.message,
+            }) : response.send({
+                success: loginResult.success,
+                status_code: loginResult.status_code,
+                message: loginResult.message,
+            });
         })
     }
 }

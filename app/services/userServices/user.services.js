@@ -21,11 +21,7 @@ class userServices {
     registerUser = (registrationData, callback) => {
         logger.info(`TRACKED_PATH: Inside services`);
         userModel.register(registrationData, (error, registrationResult) => {
-            if (error) {
-                callback(error, null)
-            } else {
-                callback(null, registrationResult);
-            }
+            (error) ? callback(error, null) : callback(null, registrationResult);
         })
     }
 
@@ -65,6 +61,7 @@ class userServices {
                             message: 'login successfull',
                             data: token
                         }
+                        logger.info(` token genrated: ${token}`);
                         callback(null, loginResult);
                     } else {
                         loginResult = {
