@@ -1,6 +1,7 @@
 require(`dotenv`).config();
 const jwt = require("jsonwebtoken");
 
+
 class Helper {
     genrateToken = (loginResult) => {
         return jwt.sign({
@@ -12,6 +13,7 @@ class Helper {
         });
     }
 
+    
     /* 
     verify=(request,response,next)=>{
     try{

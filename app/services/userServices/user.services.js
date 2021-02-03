@@ -8,9 +8,10 @@
 
 const userModel = require('../../models/userModel');
 const logger = require("../../../config/logger");
-const jwtAuth = require("../../middlewares/JwtAuth")
+const jwtAuth = require("../../middlewares/JwtAuth");
 const bycrypt = require('bcryptjs');
-const resposnsCode = require("../../../util/statusCodes.json")
+const resposnsCode = require("../../../util/statusCodes.json");
+require(`dotenv`).config();
 
 class userServices {
 
@@ -85,6 +86,14 @@ class userServices {
                     }
                 });
             }
+        })
+    }
+    getEmail = (email, callback) => {
+        logger.info(`TRACKED_PATH: Inside services getEmail`);
+        console.log(email);
+       
+        userModel.forgetPassword(email, (error, result) => {
+            (error) ? callback(error, null) : callback(null, result);
         })
     }
 

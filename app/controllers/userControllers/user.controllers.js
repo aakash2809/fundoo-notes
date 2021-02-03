@@ -91,4 +91,20 @@ class userControllers {
     }
 }
 
+forgotPassword = (request, response) => {
+   const {email} = request.body;
+   logger.info(`INVOKING: getEmail method of login services`)
+   console.log({email});
+   userServices.getEmail({email}, (error, loginResult) => {
+    (error) ? response.send({
+        success: false,
+        status_code: resposnsCode.bad_request,
+        message: error.message,
+    }) : response.send({
+        success: loginResult.success,
+        status_code: loginResult.status_code,
+        message: loginResult,
+    });
+})
+}
 module.exports = new userControllers

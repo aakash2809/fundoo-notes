@@ -5,7 +5,7 @@ class Routes {
       //save new user registration
     app.post('/register', userControllers.register);
     app.post('/login', userControllers.login);
-  
+    app.put('/forgotPassword', userControllers.forgotPassword);
     }
   }
   
