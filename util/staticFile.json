@@ -3,5 +3,4 @@
     "not_found":"404",
     "bad_request":"400",
     "unauthorized":"401"
-
 }

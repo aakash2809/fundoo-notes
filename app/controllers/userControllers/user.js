@@ -8,20 +8,22 @@
 -----------------------------------------------------------------------------------------------*/
 
 const logger = require("../../../config/logger");
-const userServices = require("../../services/userServices/user.services");
+const userServices = require("../../services/userServices/user");
 const userSchema = require('../../middlewares/validator');
-const resposnsCode = require("../../../util/statusCodes.json");
+const resposnsCode = require("../../../util/staticFile.json");
 
 class userControllers {
 
     /**
      * @description add user to database
-     * @param {*} request takes greeting in json formate
+     * @param {*} request in json formate
      * @param {*} response sends response from server
     */
     register = (request, response) => {
+        console.log(request.body);
         logger.info(`TRACKED_PATH: Inside controller`);
         let requestValidationResult = userSchema.validate(request.body);
+        console.log(request.body);
 
         if (requestValidationResult.error) {
             logger.error(`SCHEMAERROR: Request did not match with schema`);
@@ -65,9 +67,9 @@ class userControllers {
     }
 
     /**
-     * @description add greeting to database
-     * @param {*} request takes greeting in json formate
-     * @param {*} response sends response from server
+     * @description login to database
+     * @param {*} request 
+     * @param {*} response 
      */
     login = (request, response) => {
         logger.info(`TRACKED_PATH: Inside controller`);
@@ -89,22 +91,28 @@ class userControllers {
             });
         })
     }
+
+    forgotPassword = (request, response) => {
+        const {email} = request.body;
+        logger.info(`INVOKING: getEmail method of login services`);
+        userServices.getEmail({email}, (error, result) => {
+           // console.log(result.message);
+         (error) ? response.send({
+             success: false,
+             status_code: resposnsCode.bad_request,
+             message: error.message,
+         }) : response.send({
+             success: true,
+             status_code: resposnsCode.status_code,
+             data:result.link,
+             message: result.message,
+         });
+     })
+     }
+
+     restPassword = (request, response) => {
+
+     }
 }
 
-forgotPassword = (request, response) => {
-   const {email} = request.body;
-   logger.info(`INVOKING: getEmail method of login services`)
-   console.log({email});
-   userServices.getEmail({email}, (error, loginResult) => {
-    (error) ? response.send({
-        success: false,
-        status_code: resposnsCode.bad_request,
-        message: error.message,
-    }) : response.send({
-        success: loginResult.success,
-        status_code: loginResult.status_code,
-        message: loginResult,
-    });
-})
-}
 module.exports = new userControllers

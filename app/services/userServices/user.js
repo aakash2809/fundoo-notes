@@ -10,11 +10,11 @@ const userModel = require('../../models/userModel');
 const logger = require("../../../config/logger");
 const jwtAuth = require("../../middlewares/JwtAuth");
 const bycrypt = require('bcryptjs');
-const resposnsCode = require("../../../util/statusCodes.json");
+const resposnsCode = require("../../../util/staticFile.json");
+
 require(`dotenv`).config();
 
 class userServices {
-
     convertArrayToJsonObject = (loginResult) => {
         var returnObj = null;
         (loginResult < 1) ? returnObj : returnObj = {
@@ -88,15 +88,37 @@ class userServices {
             }
         })
     }
+
+    /**
+     * @description validate credentials and return result accordingly to database using model methods
+     * @param {*} email 
+     * @param {*}  callback callback funcntion
+     */
     getEmail = (email, callback) => {
         logger.info(`TRACKED_PATH: Inside services getEmail`);
-        console.log(email);
-       
         userModel.forgetPassword(email, (error, result) => {
-            (error) ? callback(error, null) : callback(null, result);
+            if (error) {
+                callback(error, null);
+            } else {
+                var token = jwtAuth.genrateToken(result);
+                userModel.saveForgotPasswordLinkTODb(result, token, (error, resultData) => {
+                    if (error) {
+                        callback(error, null);
+
+                    } else {
+                        jwtAuth.sendMail(result, token, (error, resetPasswordLink) => {
+                            if (error) {
+                                callback(error, null);
+                            } else {
+                                resultData = { link: resetPasswordLink, message: resultData }
+                                callback(null, resultData);
+                            }
+                        })
+                    }
+                })
+            }
         })
     }
-
 }
 
 module.exports = new userServices

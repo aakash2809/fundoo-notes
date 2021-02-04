@@ -1,12 +1,18 @@
+/**
+ * @module       models
+ * @file         userModel.js
+ * @description  This module is used for creating the schema and comunicate with mongodb
+ *               through mongoose
+ * @requires     {@link http://mongoosejs.com/|mongoose} 
+ * @requires     bcryptjs module for encryption of password
+ * @requires     logger is a reference to save logs in log files
+ * @author       Aakash Rajak <aakashrajak2809@gmail.com>
+------------------------------------------------------------------------------------------*/
+
 const mongoose = require(`mongoose`);
 const logger = require("../../config/logger");
 const bycrypt = require('bcryptjs');
-const DOMAIN = '7e2b330164874c529580aad93c2b9845.mailgun.org'
-const mailgun = require(`mailgun-js`)({apikey:`3dc3ebf961a288caeec9c97a583f14f6-77751bfc-70a4b08a`, domain:DOMAIN});
 require(`dotenv`).config();
-
-
-//const mg = mailgun
 
 const userSchema = new mongoose.Schema({
     name: {
@@ -24,11 +30,11 @@ const userSchema = new mongoose.Schema({
     },
     confirmPassword: {
         type: String,
-       },
-       resetLink:{
-           data: String,
-           default:''
-       }
+    },
+    resetLink: {
+        type: String,
+        default: 'resetlink'
+    }
 },
     { timestamps: true }
 );
@@ -42,7 +48,7 @@ userSchema.pre("save", async function (next) {
 })
 
 logger.info('inside model');
-const User = mongoose.model(`userRegistration`, userSchema);
+const User = mongoose.model(`User`, userSchema);
 
 class UserModel {
     /**
@@ -69,41 +75,41 @@ class UserModel {
             (error) ? callback(error, null) : callback(null, loginResult);
         });
     }
-    forgetPassword  = (email, callback) => {
-       console.log("inside model",email)
-        User.findOne(email, (error,user) => {
-            if(error || !user) {
-                let error = "User with this email id does not exist"
-                callback(error, null)
-            }else { 
-                var token = jwtAuth.genrateToken(user);
-                const data ={
-                    from: 'aakashrajak2809@gmail.com',
-                    to: email,
-                    subject :'Account Activation Link',
-                    html:` 
-                    <h2>please click on click on given link to reset your password<h2>
-                    <p> ${process.env.CLIENT_URL}/resetpassword/${token}</p>
-                    `    
-                 }
-                User.updateOne({resetLink: token},(error,sucess)=>{
-                    if(error){
-                        let error = "reset password link error"
-                        callback(error, null)
-                    }else{
-                        mg.message.send(data,(error,sucess)=>{
-                            if(error){
-                                callback(error, null)
-                            }else{
-                                sucess = "Email has been sent,kindly follow the instructions"
-                                callback(null, sucess);
-                            }
-                        })
-                   }
-                })
-                
+
+     /**
+      * @description find email id in database and 
+      * callback with user data or error
+      * @param {*} email holds email id
+      * @param {*} callback holds a function 
+     */
+    forgetPassword = (email, callback) => {
+        User.findOne(email, (error, user) => {
+            if (error || !user) {
+                 error = "User with this email id does not exist"
+                callback(error, null);
+            } else {
+                callback(null, user);
             }
         });
+    }
+
+     /**
+      * @description find email id in database and callback with user data or error
+      * @param {*} email holds email id
+      * @param {*} callback holds a function 
+     */
+    saveForgotPasswordLinkTODb = (user, token, callback) => {
+       var email = user.email;
+        User.findOneAndUpdate({email: email},  
+            {resetLink:token}, null, (error, success) => {
+            if (error) {
+                error = "reset password link error"
+                callback(error, null)
+            } else {
+                success = "reset link updated";
+                callback(null, success);
+            }
+        })
     }
 }
 

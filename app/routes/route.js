@@ -1,11 +1,12 @@
-const userControllers = require(`../controllers/userControllers/user.controllers`);
+const userControllers = require(`../controllers/userControllers/user`);
 class Routes {
     routeToController = (app) => {
   
       //save new user registration
     app.post('/register', userControllers.register);
     app.post('/login', userControllers.login);
-    app.put('/forgotPassword', userControllers.forgotPassword);
+    app.post('/forgotPassword',userControllers.forgotPassword);
+    app.post('/resetPassword',userControllers.restPassword);
     }
   }
   
