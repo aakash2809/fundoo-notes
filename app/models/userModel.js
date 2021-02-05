@@ -84,7 +84,9 @@ class UserModel {
      */
     forgetPassword = (email, callback) => {
         User.findOne(email, (error, user) => {
+            console.log("model",user);
             if (error || !user) {
+                console.log("model",error);
                  error = "User with this email id does not exist"
                 callback(error, null);
             } else {
@@ -110,6 +112,23 @@ class UserModel {
                 callback(null, success);
             }
         })
+    }
+
+    resetPassword = (resetData, callback) => {
+    var email = resetData.email;
+    var newPassword = resetData.newPassword;
+    console.log(email);
+    console.log(newPassword);
+      User.findOneAndUpdate({email: email},  
+            {password:newPassword}, (error, result) => {
+            if (error || !result) {
+                 error = "User with this email id does not exist"
+                callback(error, null);
+            } else {
+                result= "password updated successfully"
+                callback(null, result);
+            }
+        });
     }
 }
 

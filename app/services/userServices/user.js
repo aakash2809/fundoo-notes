@@ -99,6 +99,7 @@ class userServices {
         userModel.forgetPassword(email, (error, result) => {
             if (error) {
                 callback(error, null);
+                console.log(error);
             } else {
                 var token = jwtAuth.genrateToken(result);
                 userModel.saveForgotPasswordLinkTODb(result, token, (error, resultData) => {
@@ -111,6 +112,7 @@ class userServices {
                                 callback(error, null);
                             } else {
                                 resultData = { link: resetPasswordLink, message: resultData }
+                                console.log(resultData);
                                 callback(null, resultData);
                             }
                         })
@@ -119,6 +121,16 @@ class userServices {
             }
         })
     }
+
+    resetPass = (restData ,callback)=>{
+        userModel.resetPassword(restData, (error, Data) => {
+            (error)?callback(error,null):callback(null,Data)          
+        })
+    }
+   
 }
+
+
+
 
 module.exports = new userServices

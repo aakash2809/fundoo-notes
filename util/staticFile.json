@@ -1,6 +1,7 @@
+
 {
-    "success":"200",
-    "not_found":"404",
-    "bad_request":"400",
-    "unauthorized":"401"
+    "SUCCESS":"200 ",
+    "NOT_FOUND":"404 ",
+    "BAD_REQUEST":"400",
+    "UNAUTHORIZED":"401"
 }

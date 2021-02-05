@@ -12,21 +12,19 @@ require(`dotenv`).config();
 const jwt = require("jsonwebtoken");
 var nodemailer = require('nodemailer');
 const logger = require("../../config/logger");
-
 var nodemailer = require("nodemailer");
 var ejs = require("ejs");
 
 class Helper {
-  genrateToken = (loginResult) => {
+  genrateToken = (loginData) => {
     return jwt.sign({
-      username: loginResult.username,
-      userId: loginResult.userId,
+      username: loginData.username,
+      userId: loginData.userId,
     },
       process.env.SECRET_KEY, {
       expiresIn: "24h"
     });
   }
-
 
   sendMail = async (user, token, callback) => {
     var transporter = nodemailer.createTransport({
@@ -68,11 +66,11 @@ class Helper {
       });
   }
 
-  /* 
-  verify=(request,response,next)=>{
-  try{
-      var token = request.headers.split(" ")[1];
-      var decode = jwt.verify(token,'secure');
+  verifyToken = (request, response, next) => {
+    try{
+      var token = request.headers.authorization.split('Bearer ')[1]
+      console.log(token)
+      var decode = jwt.verify(token, process.env.SECRET_KEY);
       request.userData = decode;
       next();
   }catch(error){
@@ -82,7 +80,35 @@ class Helper {
           message: "auth fail",
       });
   }
-  } */
+  
+    }
+  
+
+ /*  verifyToken = (request, response, next) => {
+    if(!request.headers['authorized'])
+    return next()
+      console.log("verify");
+      var token = request.headers.split(" ")[1];
+      jwt.verify(token, process.env.SECRET_KEY ,(err,payload) =>{
+
+      });
+      next();
+    }
+ */
+  /*  verifyToken =(request,response,next)=>{
+   try{
+       var token = request.headers.split(" ")[1];
+       var decode = jwt.verify(token,'secure');
+       request.userData = decode;
+       next();
+   }catch(error){
+           response.send({
+           success: false,
+           status_code: 400,
+           message: "auth fail",
+       });
+   }
+   } */
 }
 
 module.exports = new Helper();

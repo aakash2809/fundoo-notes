@@ -54,11 +54,11 @@ class userControllers {
         userServices.registerUser(registrationDetails, (error, registrationResult) => {
             (error) ? response.send({
                 success: false,
-                status_code: resposnsCode.bad_request,
+                status_code: resposnsCode.BAD_REQUEST,
                 message: error,
             }) : response.send({
                 success: true,
-                status_code: resposnsCode.success,
+                status_code: resposnsCode.SUCCESS,
                 message: 'data inserted successfully',
                 data: registrationResult
             })
@@ -82,50 +82,58 @@ class userControllers {
         userServices.getLoginCredentialAndCallForValidation(loginDetails, (error, loginResult) => {
             (error) ? response.send({
                 success: false,
-                status_code: resposnsCode.bad_request,
+                status_code: resposnsCode.BAD_REQUEST,
                 message: error.message,
             }) : response.send({
                 success: loginResult.success,
-                status_code: loginResult.status_code,
+                status_code: loginResult.SUCCESS,
                 message: loginResult.message,
             });
         })
     }
 
+    /**
+     * @description forgot password 
+     * @param {*} request 
+     * @param {*} response 
+     */
     forgotPassword = (request, response) => {
-        const {email} = request.body;
+        const { email } = request.body;
         logger.info(`INVOKING: getEmail method of login services`);
-        userServices.getEmail({email}, (error, result) => {
-         (error) ? response.send({
-             success: false,
-             status_code: resposnsCode.bad_request,
-             message: error.message,
-         }) : response.send({
-             success: true,
-             status_code: resposnsCode.status_code,
-             data:result.link,
-             message: result.message,
-         });
-     })
-     }
+        userServices.getEmail({ email }, (error, result) => {
+            (error) ? response.send({
+                success: false,
+                status_code: resposnsCode.BAD_REQUEST,
+                message: error.message,
+            }) : response.send({
+                success: true,
+                status_code: resposnsCode.SUCCESS,
+                data: result.link,
+                message: result.message,
+            });
+        })
+    }
 
-     restPassword = (request, response) => {
-        const {email} = request.body;
-        logger.info(`INVOKING: getEmail method of login services`);
-        userServices.getEmail({email}, (error, result) => {
-         (error) ? response.send({
-             success: false,
-             status_code: resposnsCode.bad_request,
-             message: error.message,
-         }) : response.send({
-             success: true,
-             status_code: resposnsCode.status_code,
-             data:result.link,
-             message: result.message,
-         });
-     })
-
-     }
+    /**
+     * @description reset password 
+     * @param {*} request 
+     * @param {*} response 
+     */
+    restPassword = (request, response) => {
+        var newPassword = request.body;
+        console.log(newPassword);
+        userServices.resetPass(newPassword, (error, result) => {
+            (error) ? response.send({
+                success: false,
+                status_code: resposnsCode.BAD_REQUEST,
+                message: error.message,
+            }) : response.send({
+                success: true,
+                status_code: resposnsCode.SUCCESS,
+                message: result,
+            });
+        })
+    }
 }
 
 module.exports = new userControllers
