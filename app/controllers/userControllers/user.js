@@ -96,7 +96,6 @@ class userControllers {
         const {email} = request.body;
         logger.info(`INVOKING: getEmail method of login services`);
         userServices.getEmail({email}, (error, result) => {
-           // console.log(result.message);
          (error) ? response.send({
              success: false,
              status_code: resposnsCode.bad_request,
@@ -111,6 +110,20 @@ class userControllers {
      }
 
      restPassword = (request, response) => {
+        const {email} = request.body;
+        logger.info(`INVOKING: getEmail method of login services`);
+        userServices.getEmail({email}, (error, result) => {
+         (error) ? response.send({
+             success: false,
+             status_code: resposnsCode.bad_request,
+             message: error.message,
+         }) : response.send({
+             success: true,
+             status_code: resposnsCode.status_code,
+             data:result.link,
+             message: result.message,
+         });
+     })
 
      }
 }

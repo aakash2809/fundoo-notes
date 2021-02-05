@@ -42,7 +42,7 @@ class Helper {
     await ejs.renderFile(
       "app/views/forgotPassword.ejs",
       { name: user.name, resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}` },
-       (err, data) => {
+      (err, data) => {
         if (err) {
           console.log(err);
         } else {

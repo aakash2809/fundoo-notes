@@ -1,199 +1,228 @@
 {
-    "swagger": "2.0",
-    "info": {
-      "version": "1.0",
-      "title": "User Registratio API",
-      "description": "My User Project Application API"
-    },
-    "host": "localhost:3000",
-    "basePath": "/",
-    "tags": [
-      {
-        "name": "Greetings",
-        "description": "API for users in the system"
-      }
-    ],
-    "schemes": [
-      "http"
-    ],
-    "paths": {
-      "/addGreeting": {
-        "post": {
-          "tags": [
-            "Greetings"
-          ],
-          "summary": "Add a new greeting to the greeting schema",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "body",
-              "name": "Greeting",
-              "description": "greeting object that needs to be added to the greeting",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/Greeting"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": " Data inserted successfully"
-            },
-            "400": {
-              "description": "Bad Request ,Invalid input"
-            }
-          }
-        }
-      },
-      "/allGreetings": {
-        "get": {
-          "tags": [
-            "Greetings"
-          ],
-          "summary": "get all greetings",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "responses": {
-            "200": {
-              "description": "retirved successfully"
-            },
-            "500": {
-              "description": "internal server error"
-            }
-          }
-        }
-      },
-      "/uniqueGreeting/{greetingId}": {
-        "get": {
-          "tags": [
-            "Greetings"
-          ],
-          "summary": "get specific greetings by greetingId",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "greetingId",
-              "type": "string",
-              "required": true
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "greeting retrieved successfully"
-            },
-            "404": {
-              "description": "Greeting  not found with input id"
-            }
-          }
-        }
-      },
-      "/updateGreeting/{greetingId}": {
-        "put": {
-          "tags": [
-            "Greetings"
-          ],
-          "summary": "update exiting greeting ",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "greetingId",
-              "type": "string",
-              "description": "id that need to be updated successfully",
-              "required": true
-            },
-            {
-              "in": "body",
-              "name": "Greeting",
-              "description": "greeting object that needs to be updated",
-              "required": true,
-              "schema": {
-                "$ref": "#/definitions/Greeting"
-              }
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Greeting updated with input id"
-            },
-            "404": {
-              "description": "Greeting  not found with input id"
-            }
-          }
-        }
-      },
-      "/greeting/{greetingId}": {
-        "delete": {
-          "tags": [
-            "Greetings"
-          ],
-          "summary": "delete greeting ",
-          "consumes": [
-            "application/json"
-          ],
-          "produces": [
-            "application/json"
-          ],
-          "parameters": [
-            {
-              "in": "path",
-              "name": "greetingId",
-              "description": "id for greeting that need to be deleted",
-              "type": "string",
-              "required": true
-            }
-          ],
-          "responses": {
-            "200": {
-              "description": "Greeting deleted successfully with input id"
-            },
-            "404": {
-              "description": "Greeting  not found with input id"
-            },
-            "500": {
-              "description": "Internal Server Error"
-            }
-          }
-        }
-      }
-    },
-    "definitions": {
-      "Greeting": {
-        "type": "object",
-        "required": [
-          "name",
-          "message"
+  "swagger": "2.0",
+  "info": {
+    "version": "1.0",
+    "title": "FundooNotes",
+    "description": "My User Project Application API"
+  },
+  "host": "localhost:3000",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "User APIs",
+      "description": "API for users in the system"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "paths": {
+    "/register": {
+      "post": {
+        "tags": [
+          "User APIs"
         ],
-        "properties": {
-          "name": {
-            "type": "string",
-            "example": "Aakash"
+        "summary": "register a new User",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "User",
+            "description": "user object that needs to be register",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserRegistration"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user registered successfully"
           },
-          "message": {
-            "type": "string",
-            "example": "Hello"
+          "400": {
+            "description": "Bad Request ,Invalid input"
+          }
+        }
+      }
+    },
+    "/login": {
+      "post": {
+        "tags": [
+          "User APIs"
+        ],
+        "summary": "Login registered User",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "User",
+            "description": "user object that needs to be login",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserLogin"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user registered successfully"
+          },
+          "400": {
+            "description": "Bad Request ,Invalid input"
+          }
+        }
+      }
+    },
+    "/forgotPassword": {
+      "post": {
+        "tags": [
+          "User APIs"
+        ],
+        "summary": "generate and send reset Password Link to User's email id",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "User",
+            "description": "send mail to user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ForgotPassword"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user registered successfully"
+          },
+          "400": {
+            "description": "Bad Request ,Invalid input"
+          }
+        }
+      }
+    },
+    "/resetPassword": {
+      "put": {
+        "tags": [
+          "User APIs"
+        ],
+        "summary": "update password",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "ResetPassword",
+            "description": "new password that needs to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ResetPassword"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "password updated with input id"
+          },
+          "404": {
+            "description": "user not found with input id"
           }
         }
       }
     }
+  },
+  "definitions": {
+    "UserRegistration": {
+      "type": "object",
+      "required": [
+        "name",
+        "email",
+        "password",
+        "confirmPassword"
+      ],
+      "properties": {
+        "name": {
+          "type": "string",
+          "example": "Aakash"
+        },
+        "email": {
+          "type": "string",
+          "example": "aakashrajak2809@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "Pattern@35"
+        },
+        "confirmPassword": {
+          "type": "string",
+          "example": "Pattern@35"
+        }
+      }
+    },
+    "UserLogin": {
+      "type": "object",
+      "required": [
+        "email",
+        "password"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "aakashrajak2809@gmail.com"
+        },
+        "password": {
+          "type": "string",
+          "example": "Pattern@35"
+        }
+      }
+    },
+    "ForgotPassword": {
+      "type": "object",
+      "required": [
+        "email"
+      ],
+      "properties": {
+        "email": {
+          "type": "string",
+          "example": "aakashrajak2809@gmail.com"
+        }
+      }
+    },
+    "ResetPassword": {
+      "type": "object",
+      "required": [
+        "resetLink",
+        "newPassword"
+      ],
+      "properties": {
+        "resetLink": {
+          "type": "string",
+          "example": "http://localhost:3000/resetpassword/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTI0NjgxOTMsImV4cCI6MTYxMjU1NDU5M30.ZdbTQu-qS_k7Aycne3u8sLQhpTB0tZo2XTL0pa-g4AI"
+        },
+        "newPassword": {
+          "type": "string",
+          "example": "Pattern@35"
+        }
+      }
+    }
   }
+}

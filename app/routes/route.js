@@ -6,7 +6,7 @@ class Routes {
     app.post('/register', userControllers.register);
     app.post('/login', userControllers.login);
     app.post('/forgotPassword',userControllers.forgotPassword);
-    app.post('/resetPassword',userControllers.restPassword);
+    app.put('/resetPassword',userControllers.restPassword);
     }
   }
   
