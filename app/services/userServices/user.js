@@ -52,37 +52,37 @@ class userServices {
             else if (loginResult == null) {
                 loginResult = {
                     success: false,
-                    status_code: resposnsCode.not_found,
+                    status_code: resposnsCode.NOT_FOUND,
                     message: "email id does not exist"
                 }
                 callback(null, loginResult);
             } else {
-                bycrypt.compare(loginCredentials.password, loginResult.password, function (err, result) {
-                    if (err) {
-                        loginResult = {
+                bycrypt.compare(loginCredentials.password, loginResult.password, function (error, result) {
+                    if (error) {
+                        error = {
                             success: true,
-                            status_code: resposnsCode.bad_request,
+                            status_code: resposnsCode.BAD_REQUEST,
                             message: 'Invalid password'
                         }
-                        callback(null, loginResult);
+                        callback(error, null);
                     }
                     if (result) {
                         var token = jwtAuth.genrateToken(loginResult);
                         loginResult = {
                             success: true,
-                            status_code: resposnsCode.success,
+                            status_code: resposnsCode.SUCCESS,
                             message: 'login successfull',
                             data: token
                         }
                         logger.info(` token genrated: ${token}`);
                         callback(null, loginResult);
                     } else {
-                        loginResult = {
+                        error = {
                             success: false,
-                            status_code: resposnsCode.unauthorized,
+                            status_code: resposnsCode.UNAUTHORIZED,
                             message: 'Invalid password',
                         }
-                        callback(null, loginResult);
+                        callback(error, null);
                     }
                 });
             }
@@ -99,7 +99,6 @@ class userServices {
         userModel.forgetPassword(email, (error, result) => {
             if (error) {
                 callback(error, null);
-                console.log(error);
             } else {
                 var token = jwtAuth.genrateToken(result);
                 userModel.saveForgotPasswordLinkTODb(result, token, (error, resultData) => {
@@ -112,7 +111,6 @@ class userServices {
                                 callback(error, null);
                             } else {
                                 resultData = { link: resetPasswordLink, message: resultData }
-                                console.log(resultData);
                                 callback(null, resultData);
                             }
                         })
@@ -122,15 +120,17 @@ class userServices {
         })
     }
 
-    resetPass = (restData ,callback)=>{
-        userModel.resetPassword(restData, (error, Data) => {
-            (error)?callback(error,null):callback(null,Data)          
+    /**
+     * @description call the  of resetpassword fuction of model
+     * @param {*} restData having the user mail id and password to be reset
+     * @param {*}  callback callback funcntion
+     */
+    resetPass = (restData, callback) => {
+        userModel.resetPassword(restData, (error, Result) => {
+            (error) ? callback(error, null) : callback(null, Result)
         })
     }
-   
+
 }
-
-
-
 
 module.exports = new userServices

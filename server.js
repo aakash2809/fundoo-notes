@@ -25,3 +25,4 @@ app.listen(PORT, () => {
 
 //Initialize the route
 route.routeToController(app);
+module.exports = app

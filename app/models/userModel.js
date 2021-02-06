@@ -33,10 +33,12 @@ const userSchema = new mongoose.Schema({
     },
     resetLink: {
         type: String,
-        default: 'resetlink'
+        default: ' '
     }
 },
-    { timestamps: true }
+    { timestamps: true ,
+     autoIndex: false
+    }
 );
 
 userSchema.set('versionKey', false);
@@ -117,8 +119,6 @@ class UserModel {
     resetPassword = (resetData, callback) => {
     var email = resetData.email;
     var newPassword = resetData.newPassword;
-    console.log(email);
-    console.log(newPassword);
       User.findOneAndUpdate({email: email},  
             {password:newPassword}, (error, result) => {
             if (error || !result) {

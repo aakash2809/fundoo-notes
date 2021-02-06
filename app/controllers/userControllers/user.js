@@ -4,7 +4,7 @@
  *               Controller resolve the error using the service layer by invoking its services
  * @requires    
  * @author       Aakash Rajak <aakashrajak2809@gmail.com>
- * @since      
+ * @since       
 -----------------------------------------------------------------------------------------------*/
 
 const logger = require("../../../config/logger");
@@ -12,7 +12,7 @@ const userServices = require("../../services/userServices/user");
 const userSchema = require('../../middlewares/validator');
 const resposnsCode = require("../../../util/staticFile.json");
 
-class userControllers {
+class UserControllers {
 
     /**
      * @description add user to database
@@ -20,16 +20,14 @@ class userControllers {
      * @param {*} response sends response from server
     */
     register = (request, response) => {
-        console.log(request.body);
         logger.info(`TRACKED_PATH: Inside controller`);
         let requestValidationResult = userSchema.validate(request.body);
-        console.log(request.body);
 
         if (requestValidationResult.error) {
             logger.error(`SCHEMAERROR: Request did not match with schema`);
             response.send({
                 success: false,
-                status_code: resposnsCode.bad_request,
+                status_code:400 ,
                 message: requestValidationResult.error.details[0].message,
             })
             return;
@@ -54,11 +52,11 @@ class userControllers {
         userServices.registerUser(registrationDetails, (error, registrationResult) => {
             (error) ? response.send({
                 success: false,
-                status_code: resposnsCode.BAD_REQUEST,
+                status_code: 400,
                 message: error,
             }) : response.send({
                 success: true,
-                status_code: resposnsCode.SUCCESS,
+                status_code: 200,
                 message: 'data inserted successfully',
                 data: registrationResult
             })
@@ -86,7 +84,7 @@ class userControllers {
                 message: error.message,
             }) : response.send({
                 success: loginResult.success,
-                status_code: loginResult.SUCCESS,
+                status_code: resposnsCode.SUCCESS,
                 message: loginResult.message,
             });
         })
@@ -121,7 +119,6 @@ class userControllers {
      */
     restPassword = (request, response) => {
         var newPassword = request.body;
-        console.log(newPassword);
         userServices.resetPass(newPassword, (error, result) => {
             (error) ? response.send({
                 success: false,
@@ -136,4 +133,4 @@ class userControllers {
     }
 }
 
-module.exports = new userControllers
+module.exports = new UserControllers
