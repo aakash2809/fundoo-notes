@@ -27,7 +27,7 @@ class UserControllers {
             logger.error(`SCHEMAERROR: Request did not match with schema`);
             response.send({
                 success: false,
-                status_code:400 ,
+                status_code: 400,
                 message: requestValidationResult.error.details[0].message,
             })
             return;
@@ -79,8 +79,8 @@ class UserControllers {
         logger.info(`INVOKING: getLoginCredentialAndCallForValidation method of login services`);
         userServices.getLoginCredentialAndCallForValidation(loginDetails, (error, loginResult) => {
             (error) ? response.send({
-                success: false,
-                status_code: resposnsCode.BAD_REQUEST,
+                success: error.success,
+                status_code: error.status_code,
                 message: error.message,
             }) : response.send({
                 success: loginResult.success,
@@ -106,8 +106,7 @@ class UserControllers {
             }) : response.send({
                 success: true,
                 status_code: resposnsCode.SUCCESS,
-                data: result.link,
-                message: result.message,
+                data: result,
             });
         })
     }
@@ -123,7 +122,7 @@ class UserControllers {
             (error) ? response.send({
                 success: false,
                 status_code: resposnsCode.BAD_REQUEST,
-                message: error.message,
+                message: error
             }) : response.send({
                 success: true,
                 status_code: resposnsCode.SUCCESS,

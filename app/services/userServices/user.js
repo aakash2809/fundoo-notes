@@ -94,7 +94,7 @@ class userServices {
      * @param {*} email 
      * @param {*}  callback callback funcntion
      */
-    getEmail = (email, callback) => {
+   /*  getEmail = (email, callback) => {
         logger.info(`TRACKED_PATH: Inside services getEmail`);
         userModel.forgetPassword(email, (error, result) => {
             if (error) {
@@ -118,19 +118,36 @@ class userServices {
                 })
             }
         })
-    }
+    } */
 
-    /**
-     * @description call the  of resetpassword fuction of model
-     * @param {*} restData having the user mail id and password to be reset
-     * @param {*}  callback callback funcntion
-     */
-    resetPass = (restData, callback) => {
-        userModel.resetPassword(restData, (error, Result) => {
-            (error) ? callback(error, null) : callback(null, Result)
+    getEmail = (email, callback) => {
+        logger.info(`TRACKED_PATH: Inside services getEmail`);
+        userModel.forgetPassword(email, (error, result) => {
+            if (error) {
+                callback(error, null);
+            } else {
+                var token = jwtAuth.genrateToken(result);
+                jwtAuth.sendMail(result, token, (error, resetPasswordLink) => {
+                    if (error) {
+                        callback(error, null);
+                    } else {
+                        result =  resetPasswordLink;
+                        callback(null, result);
+                    }
+                })              
+            }
         })
     }
-
+    /**
+     * @description call the  of resetpassword fuction of model
+     * @param {*} resetData having the user mail id and password to be reset
+     * @param {*}  callback callback funcntion
+     */
+    resetPass = (resetData, callback) => {
+        userModel.resetPassword(resetData, (error, result) => {
+            (error) ? callback(error, null) : callback(null, result)
+        })
+    }
 }
 
 module.exports = new userServices

@@ -31,13 +31,10 @@ const userSchema = new mongoose.Schema({
     confirmPassword: {
         type: String,
     },
-    resetLink: {
-        type: String,
-        default: ' '
-    }
 },
-    { timestamps: true ,
-     autoIndex: false
+    {
+        timestamps: true,
+        autoIndex: false
     }
 );
 
@@ -78,18 +75,16 @@ class UserModel {
         });
     }
 
-     /**
-      * @description find email id in database and 
-      * callback with user data or error
-      * @param {*} email holds email id
-      * @param {*} callback holds a function 
-     */
+    /**
+     * @description find email id in database and 
+     * callback with user data or error
+     * @param {*} email holds email id
+     * @param {*} callback holds a function 
+    */
     forgetPassword = (email, callback) => {
-        User.findOne(email, (error, user) => {
-            console.log("model",user);
+        User.find(email, (error, user) => {
             if (error || !user) {
-                console.log("model",error);
-                 error = "User with this email id does not exist"
+                error = "User with this email id does not exist"
                 callback(error, null);
             } else {
                 callback(null, user);
@@ -97,36 +92,31 @@ class UserModel {
         });
     }
 
-     /**
-      * @description find email id in database and callback with user data or error
-      * @param {*} email holds email id
-      * @param {*} callback holds a function 
-     */
-    saveForgotPasswordLinkTODb = (user, token, callback) => {
-       var email = user.email;
-        User.findOneAndUpdate({email: email},  
-            {resetLink:token}, null, (error, success) => {
-            if (error) {
-                error = "reset password link error"
-                callback(error, null)
-            } else {
-                success = "reset link updated";
-                callback(null, success);
-            }
-        })
-    }
-
+    /**
+     * @description find email id in database and callback with user data or error
+     * @param {*} resetDataholds email id
+     * @param {*} callback holds a function 
+    */
     resetPassword = (resetData, callback) => {
-    var email = resetData.email;
-    var newPassword = resetData.newPassword;
-      User.findOneAndUpdate({email: email},  
-            {password:newPassword}, (error, result) => {
-            if (error || !result) {
-                 error = "User with this email id does not exist"
+        var email = resetData.email;
+        var newPassword = resetData.newPassword;
+        bycrypt.hash(newPassword, 10, function (error, hash) {
+            if (error) {
+                error = "New password unable to hash";
                 callback(error, null);
             } else {
-                result= "password updated successfully"
-                callback(null, result);
+                User.findOneAndUpdate(
+                    { email: email },
+                    { password: hash }, (error, result) => {
+                        if (error || !result) {
+                            error = "User with this email id does not exist"
+                            callback(error, null);
+                        } else {
+                            result = "password updated successfully"
+                            callback(null, result);
+                        }
+                    }
+                );
             }
         });
     }

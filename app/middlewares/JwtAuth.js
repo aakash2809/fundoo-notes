@@ -18,8 +18,8 @@ var ejs = require("ejs");
 class Helper {
   genrateToken = (loginData) => {
     return jwt.sign({
-      username: loginData.username,
-      userId: loginData.userId,
+      username: loginData.name,
+      userId: loginData._id,
     },
       process.env.SECRET_KEY, {
       expiresIn: "24h"
@@ -37,12 +37,13 @@ class Helper {
       }
     });
 
+
     await ejs.renderFile(
       "app/views/forgotPassword.ejs",
       { name: user.name, resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}` },
       (err, data) => {
         if (err) {
-          console.log(err);
+          //console.log(err);
         } else {
           var mainOptions = {
             from: process.env.EMAIL_USER,
@@ -50,13 +51,12 @@ class Helper {
             subject: 'Activate account',
             html: data
           };
-          console.log("html data ======================>", mainOptions.html);
           transporter.sendMail(mainOptions, (error, mailInfo) => {
             if (error) {
-              console.log("Error:can not send mail");
+              //console.log("Error:can not send mail");
               callback(error, null);
             } else {
-              console.log(`Email sent: ${mailInfo.response}`);
+              //console.log(`Email sent: ${mailInfo.response}`);
               mailInfo = `${process.env.CLIENT_URL}/resetpassword/${token}`
               callback(null, mailInfo);
             }
@@ -67,48 +67,20 @@ class Helper {
   }
 
   verifyToken = (request, response, next) => {
-    try{
+    try {
       var token = request.headers.authorization.split('Bearer ')[1]
-      console.log(token)
+      //console.log(token)
       var decode = jwt.verify(token, process.env.SECRET_KEY);
       request.userData = decode;
       next();
-  }catch(error){
-          response.send({
-          success: false,
-          status_code: 400,
-          message: "auth fail",
+    } catch (error) {
+      response.send({
+        success: false,
+        status_code: 400,
+        message: "auth fail",
       });
+    }
   }
-  
-    }
-  
-
- /*  verifyToken = (request, response, next) => {
-    if(!request.headers['authorized'])
-    return next()
-      console.log("verify");
-      var token = request.headers.split(" ")[1];
-      jwt.verify(token, process.env.SECRET_KEY ,(err,payload) =>{
-
-      });
-      next();
-    }
- */
-  /*  verifyToken =(request,response,next)=>{
-   try{
-       var token = request.headers.split(" ")[1];
-       var decode = jwt.verify(token,'secure');
-       request.userData = decode;
-       next();
-   }catch(error){
-           response.send({
-           success: false,
-           status_code: 400,
-           message: "auth fail",
-       });
-   }
-   } */
 }
 
 module.exports = new Helper();
