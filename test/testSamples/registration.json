@@ -29,6 +29,30 @@
             "email": "vikashrajak@gmail.com",
             "password": "Abceftt2@",
             "confirmPassword": "Abceftt2@"
+        },
+        "sample6":{
+            "name": "Vikash Rajak",
+            "email": "vikashrajak1312@gmail.com",
+            "password": "Ashish23@",
+            "confirmPassword": "Ashish23@"
+        },
+        "sample7":{
+            "name": "Aakash Rajak",
+            "email": "aakashrajak2809@gmail.com",
+            "password": "Aakash23@",
+            "confirmPassword": "Aakash23@"
+        },
+        "sample8":{
+            "name": "Manoj",
+            "email": "rmanojkumar@gmail.com",
+            "password": "Manojkumar23@",
+            "confirmPassword": "Manojkumar23@"
+        },
+        "sample9":{
+            "name": "Neha",
+            "email": "nehapatel@gmail.com",
+            "password": "Nehapatel23@",
+            "confirmPassword": "Nehapatel23@"
         }
 }
     

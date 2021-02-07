@@ -21,7 +21,7 @@ app.listen(PORT, () => {
     console.log(`CONNECT_SERVER: Connected, server started listening on port : ${PORT}`);
   });
 
-  new dbconnection(process.env.MONGODB_URL,{useNewUrlParser: true},{ useUnifiedTopology: true }).connect();
+  new dbconnection(process.env.MONGODB_URL,{useNewUrlParser: true},{ useUnifiedTopology: true },{useFindAndModify:false}).connect();
 
 //Initialize the route
 route.routeToController(app);

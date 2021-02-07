@@ -16,10 +16,10 @@ var nodemailer = require("nodemailer");
 var ejs = require("ejs");
 
 class Helper {
-  genrateToken = (loginData) => {
+  genrateToken = (user) => {
     return jwt.sign({
-      username: loginData.name,
-      userId: loginData._id,
+      username: user.name,
+      userId: user._id,
     },
       process.env.SECRET_KEY, {
       expiresIn: "24h"
@@ -53,7 +53,7 @@ class Helper {
           };
           transporter.sendMail(mainOptions, (error, mailInfo) => {
             if (error) {
-              //console.log("Error:can not send mail");
+            //console.log("Error:can not send mail");
               callback(error, null);
             } else {
               //console.log(`Email sent: ${mailInfo.response}`);

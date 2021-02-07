@@ -20,6 +20,7 @@ class UserControllers {
      * @param {*} response sends response from server
     */
     register = (request, response) => {
+        console.log(request.body)
         logger.info(`TRACKED_PATH: Inside controller`);
         let requestValidationResult = userSchema.validate(request.body);
 
@@ -57,7 +58,7 @@ class UserControllers {
             }) : response.send({
                 success: true,
                 status_code: 200,
-                message: 'data inserted successfully',
+                message: 'Registered successfully',
                 data: registrationResult
             })
             logger.info('SUCCESS001: data inserted successfully');
@@ -80,11 +81,11 @@ class UserControllers {
         userServices.getLoginCredentialAndCallForValidation(loginDetails, (error, loginResult) => {
             (error) ? response.send({
                 success: error.success,
-                status_code: error.status_code,
+                statusCode: error.status_code,
                 message: error.message,
             }) : response.send({
                 success: loginResult.success,
-                status_code: resposnsCode.SUCCESS,
+                statusCode: resposnsCode.SUCCESS,
                 message: loginResult.message,
             });
         })

@@ -15,12 +15,12 @@ const resposnsCode = require("../../../util/staticFile.json");
 require(`dotenv`).config();
 
 class userServices {
-    convertArrayToJsonObject = (loginResult) => {
+    extractObjectFromArray = (objectInArray) => {
         var returnObj = null;
-        (loginResult < 1) ? returnObj : returnObj = {
-            username: loginResult[0].username,
-            userId: loginResult[0]._id,
-            password: loginResult[0].password
+        (objectInArray < 1) ? returnObj : returnObj = {
+            username: objectInArray[0].username,
+            userId: objectInArray[0]._id,
+            password: objectInArray[0].password
         }
         return returnObj;
     }
@@ -45,14 +45,14 @@ class userServices {
     getLoginCredentialAndCallForValidation = (loginCredentials, callback) => {
         logger.info(`TRACKED_PATH: Inside services`);
         userModel.validateLoginCredentialAndReturnResult(loginCredentials, (error, loginResult) => {
-            loginResult = this.convertArrayToJsonObject(loginResult);
+            loginResult = this.extractObjectFromArray(loginResult);
             if (error) {
                 callback(error, null)
             }
             else if (loginResult == null) {
                 loginResult = {
                     success: false,
-                    status_code: resposnsCode.NOT_FOUND,
+                    statusCode: resposnsCode.NOT_FOUND,
                     message: "email id does not exist"
                 }
                 callback(null, loginResult);
@@ -61,7 +61,7 @@ class userServices {
                     if (error) {
                         error = {
                             success: true,
-                            status_code: resposnsCode.BAD_REQUEST,
+                            statusCode: resposnsCode.BAD_REQUEST,
                             message: 'Invalid password'
                         }
                         callback(error, null);
@@ -70,7 +70,7 @@ class userServices {
                         var token = jwtAuth.genrateToken(loginResult);
                         loginResult = {
                             success: true,
-                            status_code: resposnsCode.SUCCESS,
+                            statusCode: resposnsCode.SUCCESS,
                             message: 'login successfull',
                             data: token
                         }
@@ -79,7 +79,7 @@ class userServices {
                     } else {
                         error = {
                             success: false,
-                            status_code: resposnsCode.UNAUTHORIZED,
+                            statusCode: resposnsCode.UNAUTHORIZED,
                             message: 'Invalid password',
                         }
                         callback(error, null);
@@ -94,38 +94,13 @@ class userServices {
      * @param {*} email 
      * @param {*}  callback callback funcntion
      */
-   /*  getEmail = (email, callback) => {
-        logger.info(`TRACKED_PATH: Inside services getEmail`);
-        userModel.forgetPassword(email, (error, result) => {
-            if (error) {
-                callback(error, null);
-            } else {
-                var token = jwtAuth.genrateToken(result);
-                userModel.saveForgotPasswordLinkTODb(result, token, (error, resultData) => {
-                    if (error) {
-                        callback(error, null);
-
-                    } else {
-                        jwtAuth.sendMail(result, token, (error, resetPasswordLink) => {
-                            if (error) {
-                                callback(error, null);
-                            } else {
-                                resultData = { link: resetPasswordLink, message: resultData }
-                                callback(null, resultData);
-                            }
-                        })
-                    }
-                })
-            }
-        })
-    } */
-
     getEmail = (email, callback) => {
         logger.info(`TRACKED_PATH: Inside services getEmail`);
         userModel.forgetPassword(email, (error, result) => {
             if (error) {
                 callback(error, null);
             } else {
+                result = result[0];
                 var token = jwtAuth.genrateToken(result);
                 jwtAuth.sendMail(result, token, (error, resetPasswordLink) => {
                     if (error) {
