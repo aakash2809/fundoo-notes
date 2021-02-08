@@ -19,7 +19,7 @@ const userServices = require('../app/services/userServices/user');
 const userModelFunctions = require('../app/models/userModel');
 const responseCode = require('../util/staticFile.json');
 const jwtAuth = require('../app/middlewares/JwtAuth');
-
+const resposnsCode = require("../util/staticFile.json");
 chai.should();
 chai.use(chaiHttp);
 
@@ -30,19 +30,18 @@ describe('Test API', () => {
       */
     describe('POST /register', () => {
 
-        it('WhenGivenProperEndPointsAndCorrectInputAndNotRegistered_shouldReturn_registeredUserDetail', (done) => {
+        it('WhenGivenProperEndPointsAndCorrectInputAndNotRegistered_shouldReturn_registeredUserDetail', () => {
             chai.request(server)
                 .post('/register')
                 .send(registrationSamples.sample7)
                 .end((request, response) => {
-                    response.should.have.status(200);
+                    response.should.have.status(resposnsCode.SUCCESS);
                     response.body.should.be.a('Object');
                     response.body.data.should.have.property("name");
                     response.body.data.should.have.property("email");
                     response.body.data.should.have.property("password");
                     response.body.data.name.should.have.equal(registrationSamples.sample7.name);
                     response.body.data.email.should.have.equal(registrationSamples.sample7.email);
-                    done();
                 })
         })
     })
@@ -51,16 +50,16 @@ describe('Test API', () => {
      * @deprecated user login test
      */
     describe('POST /login', () => {
-        it('WhenGivenProperEndPointsAndInputCredentialsCorrect_shouldReturn_SuccessMessageAndStatus', (done) => {
+        it.only('WhenGivenProperEndPointsAndInputCredentialsCorrect_shouldReturn_SuccessMessageAndStatus', () => {
             chai.request(server)
                 .post('/login')
                 .send(loginSamples.sample2)
                 .end((request, response) => {
-                    response.should.have.status(200);
+                    response.should.have.status(resposnsCode.SUCCESS);
                     response.body.should.be.a('Object');
                     response.body.should.have.property("message");
                     response.body.message.should.have.equal("login successfull");
-                    done();
+                   
                 })
         })
     })
@@ -74,7 +73,7 @@ describe('Test API', () => {
                 .post('/forgotPassword')
                 .send(forgotPassword.sample1)
                 .end((request, response) => {
-                    response.should.have.status(200);
+                    response.should.have.status(resposnsCode.SUCCESS);
                     response.body.should.be.a('Object');
 
                 })
@@ -102,25 +101,25 @@ describe('Test userServices', () => {
     });
 
     describe("userServices registerUser()", () => {
-        it("WhenNewUserOjectPass_shouldReturn_RegisteredUser", (done) => {
+        it("WhenNewUserOjectPass_shouldReturn_RegisteredUser", () => {
             userServices.registerUser(registrationSamples.sample8, (error, registrationResult) => {
                 registrationResult.should.have.property("name");
                 registrationResult.should.have.property("email");
                 registrationResult.should.have.property("password");
                 registrationResult.name.should.have.equal(registrationSamples.sample8.name);
                 registrationResult.email.should.have.equal(registrationSamples.sample8.email);
-                done();
+                
             })
         })
     });
 
     describe("userServices getLoginCredentialAndCallForValidation()", () => {
-        it("WhenCorrectCredentialsPass_shouldReturn_SussessDetatil", (done) => {
+        it("WhenCorrectCredentialsPass_shouldReturn_SussessDetatil", () => {
             userServices.getLoginCredentialAndCallForValidation(loginSamples.sample2, (error, loginResult) => {
                 loginResult.message.should.have.equal("login successfull");
                 loginResult.data.should.be.a('string');
                 loginResult.should.have.status(responseCode.SUCCESS);
-                done();
+                
             })
         })
     });
@@ -225,7 +224,7 @@ describe('Test JwtAuth ', () => {
     });
 
     describe("JwtAuth sendMai()", () => {
-        it.only("WhenUserObjectAndTokenPass_shouldReturn_RestPaswordLinkAsAsAStringAftersendingMail", () => {
+        it("WhenUserObjectAndTokenPass_shouldReturn_RestPaswordLinkAsAsAStringAftersendingMail", () => {
             user = registrationSamples.sample7;
             token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTI3MjYwMzUsImV4cCI6MTYxMjgxMjQzNX0.QdZDz1vVp5kLlKyWcziV_Vhcww7o6qZrlaeXeJuxTVE"
             jwtAuth.sendMail(user, token, (error, resetPasswordLink) => {

@@ -5,7 +5,6 @@
  * @requires     noteServices is a refernce for invoking the services of service layer
  * @requires     logger           is a reference to save logs in log files
  * @author       Aakash Rajak <aakashrajak2809@gmail.com>
- * @since        24/12/2020
 -----------------------------------------------------------------------------------------------*/
 
 const logger = require("../../../config/logger");
