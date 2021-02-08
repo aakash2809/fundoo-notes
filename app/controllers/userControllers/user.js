@@ -61,7 +61,7 @@ class UserControllers {
                 message: 'Registered successfully',
                 data: registrationResult
             })
-            logger.info('SUCCESS001: data inserted successfully');
+            logger.info('SUCCESS001: User registered successfully');
         })
     }
 

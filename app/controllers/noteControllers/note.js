@@ -22,24 +22,12 @@ class NoteController {
     */
     addNote = (request, response) => {
         logger.info(`TRACKED_PATH: Inside controller`);
-        let requestValidationResult = noteSchemaValidator.validate(request.body)
-        if (requestValidationResult.error) {
-            logger.error(`SCHEMAERROR: Request did not match with schema `);
-            response.send({
-                success: false,
-                status_code: resposnsCode.BAD_REQUEST,
-                message: requestValidationResult.error.details[0].message,
-            })
-            return;
-        }
-
         const noteDetails = {
             title: request.body.title,
             note: request.body.note
         };
 
         logger.info(`INVOKING: saveData method of services`);
-
         noteServices.saveNoteData(noteDetails, (error, noteResult) => {
             if (error) {
                 response.send({
@@ -60,7 +48,6 @@ class NoteController {
         })
     };
 
-
     /**
      * @description Retrieve and return all greetings from the database.
      * @param {*} request does not take any parameter
@@ -68,12 +55,11 @@ class NoteController {
     */
     findAllNotes = (request, response) => {
         logger.info(`TRACKED_PATH: Inside controller`);
-
         noteServices.retrieveAllNotes((error, noteResult) => {
             if (error) {
                 response.send({
                     success: false,
-                    status_code: 500,
+                    status_code: resposnsCode.INTERNAL_SERVER_ERROR,
                     message: error.message || `Some error occurred while retrieving note.`
                 });
                 logger.error(`ERR002: Some error occurred while retrieving notes.`);
@@ -84,7 +70,6 @@ class NoteController {
                     message: ' data has been retrieved',
                     data: noteResult
                 })
-
                 logger.info('SUCCESS002:All data has been retrieved');
             }
         })
@@ -157,7 +142,7 @@ class NoteController {
                         message: 'Data has been updated',
                         updated_data: noteResult
                     });
-                    logger.info('SUCCESS004: Data has been updated');
+                    logger.info('SUCCESS004: Note has been updated');
                 }
             });
     };

@@ -15,19 +15,10 @@ const logger = require("../../config/logger");
 const noteSchema = new mongoose.Schema({
     title: {
         type: String,
-        validate: {
-            validator: function (title) {
-                return /^[A-Z]{1}[a-zA-Z ]{2,}$/.test(title);
-            },
-            message: () => `should have minimum length 3!`
-        },
-        required: true
     },
     note: {
         type: String,
-        required: true
     },
-
 },
     { timestamps: true }
 );
@@ -46,7 +37,7 @@ class NoteModel {
     saveNote = (noteData, callback) => {
         logger.info(`TRACKED_PATH: Inside model`);
         const note = new Note(noteData);
-        note.save((error, noteResult) => {        
+        note.save((error, noteResult) => {
             (error) ? callback(error, null) : callback(null, noteResult);
         });
     }

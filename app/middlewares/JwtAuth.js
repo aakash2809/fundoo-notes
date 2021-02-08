@@ -14,6 +14,7 @@ var nodemailer = require('nodemailer');
 const logger = require("../../config/logger");
 var nodemailer = require("nodemailer");
 var ejs = require("ejs");
+const resposnsCode = require("../../util/staticFile.json");
 
 class Helper {
   genrateToken = (user) => {
@@ -36,9 +37,7 @@ class Helper {
         pass: process.env.EMAIL_PASS
       }
     });
-
-
-    await ejs.renderFile(
+   await ejs.renderFile(
       "app/views/forgotPassword.ejs",
       { name: user.name, resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}` },
       (err, data) => {
@@ -53,30 +52,26 @@ class Helper {
           };
           transporter.sendMail(mainOptions, (error, mailInfo) => {
             if (error) {
-            //console.log("Error:can not send mail");
               callback(error, null);
             } else {
-              //console.log(`Email sent: ${mailInfo.response}`);
               mailInfo = `${process.env.CLIENT_URL}/resetpassword/${token}`
               callback(null, mailInfo);
             }
           });
         }
-
       });
   }
 
   verifyToken = (request, response, next) => {
     try {
-      var token = request.headers.authorization.split('Bearer ')[1]
-      //console.log(token)
+      var token = request.headers.authorization.split('Bearer ')[1];
       var decode = jwt.verify(token, process.env.SECRET_KEY);
       request.userData = decode;
       next();
     } catch (error) {
       response.send({
         success: false,
-        status_code: 400,
+        status_code: resposnsCode.BAD_REQUEST,
         message: "auth fail",
       });
     }
