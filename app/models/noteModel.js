@@ -1,12 +1,11 @@
 /**
  * @module       models
- * @file         greetingModel.js
+ * @file         noteModel.js
  * @description  This module is used for creating the schema and comunicate with mongodb
  *               through mongoose
  * @requires     {@link http://mongoosejs.com/|mongoose} 
  * @requires     logger is a reference to save logs in log files
  * @author       Aakash Rajak <aakashrajak2809@gmail.com>
- * @since        24/12/2020
 ------------------------------------------------------------------------------------------*/
 
 const mongoose = require(`mongoose`);
