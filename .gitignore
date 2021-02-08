@@ -1,5 +1,5 @@
+logs/
 node_modules/
 .env
-logs/
-.nyc_output/processinfo/
-.vscode/launch.json
+.nyc_output/
+.vscode/
