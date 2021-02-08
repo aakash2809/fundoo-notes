@@ -9,8 +9,12 @@
   "basePath": "/",
   "tags": [
     {
-      "name": "User APIs",
+      "name": "User",
       "description": "API for users in the system"
+    },
+    {
+      "name": "Note",
+      "description": "API for Notes in the system"
     }
   ],
   "schemes": [
@@ -20,7 +24,7 @@
     "/register": {
       "post": {
         "tags": [
-          "User APIs"
+          "User"
         ],
         "summary": "register a new User",
         "consumes": [
@@ -53,7 +57,7 @@
     "/login": {
       "post": {
         "tags": [
-          "User APIs"
+          "User"
         ],
         "summary": "Login registered User",
         "consumes": [
@@ -86,7 +90,7 @@
     "/forgotPassword": {
       "post": {
         "tags": [
-          "User APIs"
+          "User"
         ],
         "summary": "generate and send reset Password Link to User's email id",
         "consumes": [
@@ -119,7 +123,7 @@
     "/resetPassword": {
       "put": {
         "tags": [
-          "User APIs"
+          "User"
         ],
         "summary": "update password",
         "consumes": [
@@ -145,6 +149,165 @@
           },
           "404": {
             "description": "user not found with input id"
+          }
+        }
+      }
+    },
+    "/addNote": {
+      "post": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "Add a new note",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Note",
+            "description": "Note object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": " Note inserted successfully"
+          },
+          "400": {
+            "description": "Bad Request ,Invalid input"
+          }
+        }
+      }
+    },
+    "/allNotes": {
+      "get": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "get all Notes",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "retirved successfully"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/uniqueNote/{noteId}": {
+      "get": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "get specific note by noteId",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "noteId",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note retrieved successfully"
+          },
+          "404": {
+            "description": "note not found with input id"
+          }
+        }
+      }
+    },
+    "/updateNote/{noteId}": {
+      "put": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "update exiting greeting ",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "noteId",
+            "type": "string",
+            "description": "id that need to be updated successfully",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "Note",
+            "description": "note object that needs to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note  not found with input id"
+          }
+        }
+      }
+    },
+    "/note/{noteId}": {
+      "delete": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "delete note ",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "noteId",
+            "description": "id for greeting that need to be deleted",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note deleted successfully with input id"
+          },
+          "404": {
+            "description": "note  not found with input id"
+          },
+          "500": {
+            "description": "Internal Server Error"
           }
         }
       }
@@ -210,17 +373,34 @@
     "ResetPassword": {
       "type": "object",
       "required": [
-        "resetLink",
+        "email",
         "newPassword"
       ],
       "properties": {
-        "resetLink": {
+        "email": {
           "type": "string",
-          "example": "http://localhost:3000/resetpassword/eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTI0NjgxOTMsImV4cCI6MTYxMjU1NDU5M30.ZdbTQu-qS_k7Aycne3u8sLQhpTB0tZo2XTL0pa-g4AI"
+          "example": "aakashrajak2809@gmail.com"
         },
         "newPassword": {
           "type": "string",
           "example": "Pattern@35"
+        }
+      }
+    },
+    "Note": {
+      "type": "object",
+      "required": [
+        "title",
+        "note"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Expenses"
+        },
+        "note": {
+          "type": "string",
+          "example": "Rent- 8000"
         }
       }
     }
