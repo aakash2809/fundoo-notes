@@ -28,7 +28,7 @@ class UserControllers {
             logger.error(`SCHEMAERROR: Request did not match with schema`);
             response.send({
                 success: false,
-                status_code: 400,
+                status_code: resposnsCode.BAD_REQUEST,
                 message: requestValidationResult.error.details[0].message,
             })
             return;
@@ -53,11 +53,11 @@ class UserControllers {
         userServices.registerUser(registrationDetails, (error, registrationResult) => {
             (error) ? response.send({
                 success: false,
-                status_code: 400,
+                status_code: resposnsCode.BAD_REQUEST,
                 message: error,
             }) : response.send({
                 success: true,
-                status_code: 200,
+                status_code: resposnsCode.SUCCESS,
                 message: 'Registered successfully',
                 data: registrationResult
             })
@@ -76,7 +76,6 @@ class UserControllers {
             email: request.body.email,
             password: request.body.password
         };
-
         logger.info(`INVOKING: getLoginCredentialAndCallForValidation method of login services`);
         userServices.getLoginCredentialAndCallForValidation(loginDetails, (error, loginResult) => {
             (error) ? response.send({
