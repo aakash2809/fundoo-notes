@@ -1,0 +1,20 @@
+{
+    "validUser":{
+        "email": "aakashrajak2809@gmail.com",
+        "password": "Aakash23@"
+    },
+    
+
+    "InvlidEmail":{
+        "email": "aakashrajak@gmail.com",
+        "password": "Aakash23@"
+    },
+
+    "InvalidPassword": {
+        "email": "vikashrajak@gmail.com",
+        "password": "eftt2@"
+    },
+    "validUser2":{
+        "email":"ahmadaliquraishi@gmail.com",
+        "password":"Abceftt2@"}
+}

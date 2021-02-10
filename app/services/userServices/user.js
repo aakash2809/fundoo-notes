@@ -63,11 +63,11 @@ class userServices {
                         error = {
                             success: true,
                             statusCode: resposnsCode.BAD_REQUEST,
-                            message: 'Invalid password '
+                            message: 'Invalid password'
                         }
                         callback(error, null);
                     }
-                    if (result) {
+                   else if (result) {
                         var token = jwtAuth.genrateToken(loginResult);
                         loginResult = {
                             success: true,
@@ -80,8 +80,8 @@ class userServices {
                     } else {
                         error = {
                             success: false,
-                            statusCode: resposnsCode.UNAUTHORIZED,
-                            message: 'Invalid password ',
+                            statusCode: resposnsCode.BAD_REQUEST,
+                            message: 'Invalid password',
                         }
                         callback(error, null);
                     }
@@ -119,6 +119,7 @@ class userServices {
             }
         })
     }
+    
     /**
      * @description call the  of resetpassword fuction of model
      * @param {*} resetData having the user mail id and password to be reset

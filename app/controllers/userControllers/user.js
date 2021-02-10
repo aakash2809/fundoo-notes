@@ -40,11 +40,12 @@ class UserControllers {
         };
 
         if (request.body.password != request.body.confirmPassword) {
-            response.send({
+           response.send({
                 success: false,
-                status_code: resposnsCode.bad_request,
+                status_code: resposnsCode.BAD_REQUEST,
                 message: "password does not match with confirm password",
             });
+            return;
         }
 
         logger.info(`INVOKING: registerUser method of services`);
@@ -78,11 +79,11 @@ class UserControllers {
         userServices.getLoginCredentialAndCallForValidation(loginDetails, (error, loginResult) => {
             (error) ? response.send({
                 success: error.success,
-                statusCode: error.status_code,
+                statusCode: error.statusCode,
                 message: error.message,
             }) : response.send({
                 success: loginResult.success,
-                statusCode: resposnsCode.SUCCESS,
+                statusCode: loginResult.statusCode,
                 message: loginResult.message,
             });
         })
@@ -99,11 +100,11 @@ class UserControllers {
         userServices.getEmail({ email }, (error, result) => {
             (error) ? response.send({
                 success: false,
-                status_code: resposnsCode.INTERNAL_SERVER_ERROR,
+                statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
                 message: "internal server error",
             }) : response.send({
                 success: true,
-                status_code: result.status,
+                statusCode: result.status,
                 message:result.message,
                 data: result.data,
             });
@@ -120,7 +121,7 @@ class UserControllers {
         userServices.resetPass(newPassword, (error, result) => {
             (error) ? response.send({
                 success: false,
-                status_code: resposnsCode.BAD_REQUEST,
+                statusCode: resposnsCode.BAD_REQUEST,
                 message: error
             }) : response.send({
                 success: true,

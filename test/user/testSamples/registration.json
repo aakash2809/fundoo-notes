@@ -1,0 +1,45 @@
+{
+    "emptyName":{
+        "name": "",
+        "email": "aakashrajak2809@gmail.com",
+        "password": "Aakash23@",
+        "confirmPassword": "Aakash23@"
+    },
+        "emptyEmail":{
+            "name": "Aakash Rajak",
+            "email": "",
+            "password": "Aakash23@",
+            "confirmPassword": "Aakash23@"
+        },
+      
+        "nameLengthLessThanThree":{
+            "name": "Aa",
+            "email": "aakashrajak2809@gmail.com",
+            "password": "Aakash23@",
+            "confirmPassword": "Aakash23@"
+        },
+        "passwordAndConfirmPasswordNotSame":{
+            "name": "Aakash",
+            "email": "aakashrajak2809@gmail.com",
+            "password": "Aakash23@",
+            "confirmPassword": "Aaka23@"
+        },
+        "validUserObject":{
+            "name": "Aakash Rajak",
+            "email": "aakashrajak2809@gmail.com",
+            "password": "Aakash23@",
+            "confirmPassword": "Aakash23@"
+        },
+        "validUserObject2":{
+            "name":"Ahmad Ali",
+           "email":"ahmadaliquraishi@gmail.com",
+            "password":"Abceftt2@",
+            "confirmPassword":"Abceftt2@"
+           
+         }
+}
+    
+   
+
+
+

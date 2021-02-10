@@ -71,7 +71,7 @@ class Helper {
       response.send({
         success: false,
         status_code: resposnsCode.BAD_REQUEST,
-        message: "auth fail",
+        message: "Authentication failed",
       });
     }
   }
