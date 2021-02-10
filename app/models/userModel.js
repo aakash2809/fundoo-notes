@@ -57,9 +57,15 @@ class UserModel {
      */
     register = (registrationData, callback) => {
         logger.info(`TRACKED_PATH: Inside model`);
+        
         const userRegistration = new User(registrationData);
         userRegistration.save((error, registrationResult) => {
-            (error) ? callback(error, null) : callback(null, registrationResult);
+            if (error) {
+                error = "already registered"
+                callback(error, null)
+            } else {
+                callback(null, registrationResult)
+            }
         })
     }
 
@@ -83,12 +89,7 @@ class UserModel {
     */
     forgetPassword = (email, callback) => {
         User.find(email, (error, user) => {
-            if (error || !user) {
-                error = "User with this email id does not exist"
-                callback(error, null);
-            } else {
-                callback(null, user);
-            }
+            (error) ? callback(error, null) : callback(null, user);
         });
     }
 

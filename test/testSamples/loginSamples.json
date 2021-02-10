@@ -3,9 +3,16 @@
         "email": "vikashrajak@gmail.com",
         "password": "Abceftt2@"
     },
-
-    "sample2":{
+    "sample2": {
         "email": "vikashrajak1312@gmail.com",
-        "password": "Vikash@46"       
+        "password": "Vikash@46"
+    },
+    "sample3": {
+        "email": "preeti@gmail.com",
+        "password": "Preeti@46"
+    },
+    "sample4": {
+        "email": "aakashrajak2809@gmail.com",
+        "password": "Aakash23@"
     }
 }

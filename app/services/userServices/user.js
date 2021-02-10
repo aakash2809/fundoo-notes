@@ -16,10 +16,11 @@ require(`dotenv`).config();
 
 class userServices {
     extractObjectFromArray = (objectInArray) => {
+
         var returnObj = null;
         (objectInArray < 1) ? returnObj : returnObj = {
-            username: objectInArray[0].username,
-            userId: objectInArray[0]._id,
+            name: objectInArray[0].name,
+            _id: objectInArray[0]._id,
             password: objectInArray[0].password
         }
         return returnObj;
@@ -62,7 +63,7 @@ class userServices {
                         error = {
                             success: true,
                             statusCode: resposnsCode.BAD_REQUEST,
-                            message: 'Invalid password'
+                            message: 'Invalid password '
                         }
                         callback(error, null);
                     }
@@ -80,7 +81,7 @@ class userServices {
                         error = {
                             success: false,
                             statusCode: resposnsCode.UNAUTHORIZED,
-                            message: 'Invalid password',
+                            message: 'Invalid password ',
                         }
                         callback(error, null);
                     }
@@ -99,17 +100,22 @@ class userServices {
         userModel.forgetPassword(email, (error, result) => {
             if (error) {
                 callback(error, null);
-            } else {
+            }
+            else if (result.length < 1) {
+                result = { message: "User with this email id does not exist", status: resposnsCode.NOT_FOUND, data: null }
+                callback(null, result);
+            }
+            else {
                 result = result[0];
                 var token = jwtAuth.genrateToken(result);
                 jwtAuth.sendMail(result, token, (error, resetPasswordLink) => {
                     if (error) {
                         callback(error, null);
                     } else {
-                        result =  resetPasswordLink;
+                        result = { data: resetPasswordLink, message: "token genrated and mail successfully sent", status: resposnsCode.SUCCESS };
                         callback(null, result);
                     }
-                })              
+                })
             }
         })
     }

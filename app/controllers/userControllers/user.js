@@ -20,10 +20,8 @@ class UserControllers {
      * @param {*} response sends response from server
     */
     register = (request, response) => {
-        console.log(request.body)
         logger.info(`TRACKED_PATH: Inside controller`);
         let requestValidationResult = userSchema.validate(request.body);
-
         if (requestValidationResult.error) {
             logger.error(`SCHEMAERROR: Request did not match with schema`);
             response.send({
@@ -101,12 +99,13 @@ class UserControllers {
         userServices.getEmail({ email }, (error, result) => {
             (error) ? response.send({
                 success: false,
-                status_code: resposnsCode.BAD_REQUEST,
-                message: error.message,
+                status_code: resposnsCode.INTERNAL_SERVER_ERROR,
+                message: "internal server error",
             }) : response.send({
                 success: true,
-                status_code: resposnsCode.SUCCESS,
-                data: result,
+                status_code: result.status,
+                message:result.message,
+                data: result.data,
             });
         })
     }

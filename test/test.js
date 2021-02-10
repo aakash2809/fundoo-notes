@@ -20,9 +20,11 @@ const userModelFunctions = require('../app/models/userModel');
 const responseCode = require('../util/staticFile.json');
 const jwtAuth = require('../app/middlewares/JwtAuth');
 const resposnsCode = require("../util/staticFile.json");
+const { describe } = require('../app/middlewares/validator');
 chai.should();
+var assert = chai.assert;
 chai.use(chaiHttp);
-
+var expect = chai.expect;
 describe('Test API', () => {
 
     /**
@@ -30,19 +32,20 @@ describe('Test API', () => {
       */
     describe('POST /register', () => {
 
-        it('WhenGivenProperEndPointsAndCorrectInputAndNotRegistered_shouldReturn_registeredUserDetail', () => {
+        it.only('WhenGivenProperEndPointsAndCorrectInputAndNotRegistered_shouldReturn_registeredUserDetail', (done) => {
             chai.request(server)
                 .post('/register')
-                .send(registrationSamples.sample7)
+                .send(registrationSamples.sample9)
                 .end((request, response) => {
                     response.should.have.status(resposnsCode.SUCCESS);
                     response.body.should.be.a('Object');
                     response.body.data.should.have.property("name");
                     response.body.data.should.have.property("email");
                     response.body.data.should.have.property("password");
-                    response.body.data.name.should.have.equal(registrationSamples.sample7.name);
-                    response.body.data.email.should.have.equal(registrationSamples.sample7.email);
+                    response.body.data.name.should.have.equal(registrationSamples.sample9.name);
+                    response.body.data.email.should.have.equal(registrationSamples.sample9.email);
                 })
+            done();
         })
     })
 
@@ -50,17 +53,17 @@ describe('Test API', () => {
      * @deprecated user login test
      */
     describe('POST /login', () => {
-        it.only('WhenGivenProperEndPointsAndInputCredentialsCorrect_shouldReturn_SuccessMessageAndStatus', () => {
+        it('WhenGivenProperEndPointsAndInputCredentialsCorrect_shouldReturn_SuccessMessageAndStatus', (done) => {
             chai.request(server)
                 .post('/login')
-                .send(loginSamples.sample2)
+                .send(loginSamples.sample4)
                 .end((request, response) => {
                     response.should.have.status(resposnsCode.SUCCESS);
                     response.body.should.be.a('Object');
                     response.body.should.have.property("message");
                     response.body.message.should.have.equal("login successfull");
-                   
                 })
+            done();
         })
     })
 
@@ -68,18 +71,17 @@ describe('Test API', () => {
        * @description user forgotPassword test
        */
     describe('POST /forgotPassword', () => {
-        it('WhenGivenProperEndPointsAndInputCorrect_shouldReturn_SuccessStatusAndResetLink', () => {
+        it('WhenGivenProperEndPointsAndInputCorrect_shouldReturn_SuccessStatusAndResetLink', (done) => {
             chai.request(server)
                 .post('/forgotPassword')
                 .send(forgotPassword.sample1)
                 .end((request, response) => {
                     response.should.have.status(resposnsCode.SUCCESS);
                     response.body.should.be.a('Object');
-
                 })
+            done();
         })
     })
-
 });
 
 /**
@@ -98,37 +100,61 @@ describe('Test userServices', () => {
             );
             jsonObject.should.be.a('Object');
         })
+
+        it("WhenNoObjectInArrayPass_shouldReturn_Null", () => {
+            let jsonObject = userServices.extractObjectFromArray(
+                [ ]
+            );
+            expect(jsonObject).to.be.a('null')
+        })
     });
 
     describe("userServices registerUser()", () => {
         it("WhenNewUserOjectPass_shouldReturn_RegisteredUser", () => {
-            userServices.registerUser(registrationSamples.sample8, (error, registrationResult) => {
+            userServices.registerUser(registrationSamples.sample9, (error, registrationResult) => {
+                console.log(registrationResult);
                 registrationResult.should.have.property("name");
                 registrationResult.should.have.property("email");
                 registrationResult.should.have.property("password");
-                registrationResult.name.should.have.equal(registrationSamples.sample8.name);
-                registrationResult.email.should.have.equal(registrationSamples.sample8.email);
-                
+                registrationResult.name.should.have.equal(registrationSamples.sample9.name);
+                registrationResult.email.should.have.equal(registrationSamples.sample9.email);
+            })
+        })
+        it("WhenRegisteredOjectPass_shouldReturn_MessageofReason ", () => {
+            userServices.registerUser(registrationSamples.sample7, (error, registrationResult) => {
+                error.should.have.equal("already registered");
             })
         })
     });
-
+  
     describe("userServices getLoginCredentialAndCallForValidation()", () => {
         it("WhenCorrectCredentialsPass_shouldReturn_SussessDetatil", () => {
-            userServices.getLoginCredentialAndCallForValidation(loginSamples.sample2, (error, loginResult) => {
+            userServices.getLoginCredentialAndCallForValidation(loginSamples.sample4, (error, loginResult) => {
                 loginResult.message.should.have.equal("login successfull");
                 loginResult.data.should.be.a('string');
                 loginResult.should.have.status(responseCode.SUCCESS);
-                
+            })
+        })
+        it("WhenNotRegisteredEmailIdPass_shouldReturn_messageOfReason", () => {
+            userServices.getLoginCredentialAndCallForValidation(loginSamples.sample3, (error, loginResult) => {
+                loginResult.message.should.have.equal("email id does not exist");
             })
         })
     });
 
     describe("userServices getEmail()", () => {
         it("WhenEmailPass_shouldGive_tokenAsAStringandSuccessCode", () => {
-            userServices.getEmail(forgotPassword.sample2, (error, result) => {
-                result.should.be.a('string');
+            userServices.getEmail(forgotPassword.sample2,(error, result) => {
+                result.message.should.have.equal("token genrated an mail successfully sent");
+                result.should.be.a('object');
                 result.should.have.status(responseCode.SUCCESS);
+            })
+        })
+
+        it("WhenNotRegisredEmailIdPass_shouldGive_mesage", () => {
+            userServices.getEmail(forgotPassword.sample5, (error, result) => {
+                result.message.should.have.equal("User with this email id does not exist");
+                result.should.have.status(resposnsCode.NOT_FOUND);
             })
         })
     });
@@ -138,6 +164,13 @@ describe('Test userServices', () => {
             userServices.resetPass(resetPassword.sample2, (error, result) => {
                 result.should.be.a('string');
                 result.should.have.equal("password updated successfully");
+            })
+        })
+
+        it("WhenMailIdNotRegistedPass_ShouldReturn_Message", () => {
+            userServices.resetPass(resetPassword.sample4,  (error, result) => {
+                error.should.be.a('string');
+                error.should.have.equal("User with this email id does not exist");
             })
         })
     });
@@ -150,6 +183,8 @@ describe('Test userModelFunctions', () => {
     describe("userModelFunctions register()", () => {
         it("WhenNewUserOjectPass_shouldReturn_RegisteredUser", () => {
             userModelFunctions.register(registrationSamples.sample9, (error, registrationResult) => {
+               // console.log(registrationresult);
+                console.log(error);
                 registrationResult.should.have.property("name");
                 registrationResult.should.have.property("email");
                 registrationResult.should.have.property("password");
@@ -228,8 +263,8 @@ describe('Test JwtAuth ', () => {
             user = registrationSamples.sample7;
             token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE2MTI3MjYwMzUsImV4cCI6MTYxMjgxMjQzNX0.QdZDz1vVp5kLlKyWcziV_Vhcww7o6qZrlaeXeJuxTVE"
             jwtAuth.sendMail(user, token, (error, resetPasswordLink) => {
-                resetPasswordLink.should.be.a('string');  
-            }) 
+                resetPasswordLink.should.be.a('string');
+            })
         })
     });
 });

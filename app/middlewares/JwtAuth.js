@@ -42,7 +42,6 @@ class Helper {
       { name: user.name, resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}` },
       (err, data) => {
         if (err) {
-          //console.log(err);
         } else {
           var mainOptions = {
             from: process.env.EMAIL_USER,
