@@ -8,13 +8,13 @@
  * @author       Aakash Rajak <aakashrajak2809@gmail.com>
 ------------------------------------------------------------------------------------------*/
 
-require(`dotenv`).config();
 const jwt = require("jsonwebtoken");
 var nodemailer = require('nodemailer');
 const logger = require("../../config/logger");
 var nodemailer = require("nodemailer");
 var ejs = require("ejs");
 const resposnsCode = require("../../util/staticFile.json");
+const envConfig    =  require('../../config/index');
 
 class Helper {
   genrateToken = (user) => {
@@ -22,7 +22,7 @@ class Helper {
       username: user.name,
       userId: user._id,
     },
-      process.env.SECRET_KEY, {
+      envConfig.SECRET_KEY, {
       expiresIn: "24h"
     });
   }
@@ -30,11 +30,11 @@ class Helper {
   sendMail = async (user, token, callback) => {
     var transporter = nodemailer.createTransport({
       service: 'gmail',
-      port: process.env.PORT,
+      port: envConfig.PORT,
       secure: true, // use SSL
       auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS
+        user: envConfig.EMAIL_USER,
+        pass: envConfig.EMAIL_PASS
       }
     });
    await ejs.renderFile(
@@ -44,7 +44,7 @@ class Helper {
         if (err) {
         } else {
           var mainOptions = {
-            from: process.env.EMAIL_USER,
+            from: envConfig.EMAIL_USER,
             to: user.email,
             subject: 'Activate account',
             html: data
@@ -53,7 +53,7 @@ class Helper {
             if (error) {
               callback(error, null);
             } else {
-              mailInfo = `${process.env.CLIENT_URL}/resetpassword/${token}`
+              mailInfo = `${envConfig.CLIENT_URL}/resetpassword/${token}`
               callback(null, mailInfo);
             }
           });
@@ -64,7 +64,7 @@ class Helper {
   verifyToken = (request, response, next) => {
     try {
       var token = request.headers.authorization.split('Bearer ')[1];
-      var decode = jwt.verify(token, process.env.SECRET_KEY);
+      var decode = jwt.verify(token, envConfig.SECRET_KEY);
       request.userData = decode;
       next();
     } catch (error) {

@@ -50,6 +50,7 @@ logger.info('inside model');
 const User = mongoose.model(`User`, userSchema);
 
 class UserModel {
+    
     /**
       * @description save request data to database 
       * @param {*} registrationData holds data to be saved in json formate
@@ -57,7 +58,6 @@ class UserModel {
      */
     register = (registrationData, callback) => {
         logger.info(`TRACKED_PATH: Inside model`);
-        
         const userRegistration = new User(registrationData);
         userRegistration.save((error, registrationResult) => {
             if (error) {

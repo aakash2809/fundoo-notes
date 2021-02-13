@@ -20,9 +20,7 @@ var blueBird    = require('bluebird');
 var debug       = require('debug')('db');
 const mongoose  = require('mongoose');
 
-require(`dotenv`).config();
-
- var isState = function(state){
+var isState = function(state){
  return mongoose.connection.readyState === mongoose.Connection.STATES[state];
 };
  

@@ -3,8 +3,7 @@
  * @file          logger.js
  * @description   This file contains the defination of winston transports
  * @requires      {@link https://www.npmjs.com/package/winston | winston}
- * @author        Aakash Rajak <aakashrajak2809@gmail.com>
-*  @since        
+ * @author        Aakash Rajak <aakashrajak2809@gmail.com>        
 ------------------------------------------------------------------------------------------*/
 
 const winston = require('winston');

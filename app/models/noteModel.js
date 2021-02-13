@@ -18,9 +18,13 @@ const noteSchema = new mongoose.Schema({
     note: {
         type: String,
     },
-},
-    { timestamps: true }
-);
+    userId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User"
+      }
+}, {
+    timestamps: true
+});
 
 noteSchema.set('versionKey', false);
 
@@ -29,26 +33,26 @@ const Note = mongoose.model(`Note`, noteSchema);
 
 class NoteModel {
     /**
-      * @description save request note data to database 
-      * @param {*} noteData holds data to be saved in json formate
-      * @param {*} callback holds a function 
+     * @description save request note data to database 
+     * @param {*} noteData holds data to be saved in json formate
+     * @param {*} callback holds a function 
      */
     saveNote = (noteData, callback) => {
         logger.info(`TRACKED_PATH: Inside model`);
         const note = new Note(noteData);
         note.save((error, noteResult) => {
-            (error) ? callback(error, null) : callback(null, noteResult);
+            (error) ? callback(error, null): callback(null, noteResult);
         });
     }
 
     /**
-    * @description retrive all note data from database 
-    * @param {*} callback holds a function 
-   */
+     * @description retrive all note data from database 
+     * @param {*} callback holds a function 
+     */
     getAllNotes = (callback) => {
         logger.info(`TRACKED_PATH: Inside model`);
         Note.find((error, noteData) => {
-            (error) ? callback(error, null) : callback(null, noteData);
+            (error) ? callback(error, null): callback(null, noteData);
         });
     }
 
@@ -56,11 +60,11 @@ class NoteModel {
      * @description retrive one note data from database 
      * @param {*} greetingID holds _id that is note id
      * @param {*} callback holds a function 
-    */
+     */
     getNoteByNoteId = (noteId, callback) => {
         logger.info(`TRACKED_PATH: Inside model`);
         Note.findById(noteId, (error, noteResult) => {
-            (error) ? callback(error, null) : callback(null, noteResult);
+            (error) ? callback(error, null): callback(null, noteResult);
         });
     }
 
@@ -68,24 +72,26 @@ class NoteModel {
      * @description remove note data from database 
      * @param {*} greetingId holds _id that is note  id
      * @param {*} callback holds a function 
-    */
+     */
     deleteNoteByNoteId(noteData, callback) {
         logger.info(`TRACKED_PATH: Inside model`);
         Note.findByIdAndDelete(noteData, (error, noteResult) => {
-            (error) ? callback(error, null) : callback(null, noteResult);
+            (error) ? callback(error, null): callback(null, noteResult);
         });
     }
 
     /**
-    * @description update note  data existed in database
-    * @param {*} noteId holds _id that is note  id
-    * @param {*} dataToUpdate takes data to be upadated in json formate
-    * @param {*} callback holds a function 
-   */
+     * @description update note  data existed in database
+     * @param {*} noteId holds _id that is note  id
+     * @param {*} dataToUpdate takes data to be upadated in json formate
+     * @param {*} callback holds a function 
+     */
     updateNoteByNoteId(noteId, dataToUpdate, callback) {
         logger.info(`TRACKED_PATH: Inside model`);
-        Note.findByIdAndUpdate(noteId, dataToUpdate, { new: true }, (error, noteResult) => {
-            (error) ? callback(error, null) : callback(null, noteResult);
+        Note.findByIdAndUpdate(noteId, dataToUpdate, {
+            new: true
+        }, (error, noteResult) => {
+            (error) ? callback(error, null): callback(null, noteResult);
         });
     }
 }
