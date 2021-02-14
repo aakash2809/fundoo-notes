@@ -28,6 +28,6 @@ app.listen(PORT, () => {
 new dbconnection(envConfig.MONGODB_URL, { useNewUrlParser: true }, { useUnifiedTopology: true }, { useFindAndModify: false }).connect();
 
 //Initialize the route
-userRoute.routeToController(app);
-noteRoute.routeToController(app);
+userRoute.routeToUserController(app);
+noteRoute.routeToNoteController(app);
 module.exports = app;
