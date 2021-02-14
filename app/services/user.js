@@ -6,11 +6,11 @@
        
 ------------------------------------------------------------------------------------------*/
 
-const userModel = require('../../models/userModel');
-const logger = require("../../../config/logger");
-const jwtAuth = require("../../middlewares/JwtAuth");
+const userModel = require('../models/user');
+const logger = require("../../config/logger");
+const jwtAuth = require("../middlewares/JwtAuth");
 const bycrypt = require('bcryptjs');
-const resposnsCode = require("../../../util/staticFile.json");
+const resposnsCode = require("../../util/staticFile.json");
 
 require(`dotenv`).config();
 

@@ -5,8 +5,8 @@
  * @requires       noteModel  is refrence to invoke methods of noteModel.js     
  * @author         Aakash Rajak <aakashrajak2809@gmail.com>        
 ------------------------------------------------------------------------------------------*/
-const noteModel = require("../../models/noteModel");
-const logger = require("../../../config/logger");
+const noteModel = require("../models/note");
+const logger = require("../../config/logger");
 
 class NoteServices {
   /**

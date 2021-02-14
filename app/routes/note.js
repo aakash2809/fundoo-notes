@@ -1,5 +1,5 @@
 const jwtAuth = require("../middlewares/JwtAuth");
-const noteController = require(`../controllers/noteControllers/note`);
+const noteController = require(`../controllers/note`);
 
 class NoteRoutes {
     routeToNoteController = (app) => {
@@ -22,3 +22,4 @@ class NoteRoutes {
   }
   
   module.exports = new NoteRoutes
+  

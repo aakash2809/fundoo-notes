@@ -7,10 +7,10 @@
  * @since       
 -----------------------------------------------------------------------------------------------*/
 
-const logger = require("../../../config/logger");
-const userServices = require("../../services/userServices/user");
-const userValidator = require("../../middlewares/validator");
-const resposnsCode = require("../../../util/staticFile.json");
+const logger = require("../../config/logger");
+const userServices = require("../services/user");
+const userValidator = require("../middlewares/validator");
+const resposnsCode = require("../../util/staticFile.json");
 
 class UserControllers {
   /**

@@ -7,9 +7,9 @@
  * @author       Aakash Rajak <aakashrajak2809@gmail.com>
 -----------------------------------------------------------------------------------------------*/
 
-const logger = require("../../../config/logger");
-const noteServices = require(`../../services/noteServices/note`);
-const resposnsCode = require("../../../util/staticFile.json");
+const logger = require("../../config/logger");
+const noteServices = require(`../services/note`);
+const resposnsCode = require("../../util/staticFile.json");
 var atob = require("atob");
 
 class NoteController {
