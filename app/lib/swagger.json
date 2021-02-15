@@ -134,6 +134,13 @@
         ],
         "parameters": [
           {
+            "in": "path",
+            "name": "Token",
+            "type": "string",
+            "description": "token for authentication",
+            "required": true
+          },
+          {
             "in": "body",
             "name": "ResetPassword",
             "description": "new password that needs to be updated",
