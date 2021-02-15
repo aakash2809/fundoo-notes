@@ -1,0 +1,18 @@
+{
+    "validNote": {
+        "title": "Training",
+        "description": "c = 8:30AM , c++ = 11:30 AM"
+    },
+    "validNoteToUpdate": {
+        "title": "Training",
+        "description": "java = 8:00AM , nodejs = 11:30 AM"
+    },
+    "emptyDescription": {
+        "title": "Training",
+        "description": ""
+    },
+    "emptyTitle": {
+        "title": "",
+        "description": "c = 8:30AM , c++ = 11:30 AM"
+    }
+}

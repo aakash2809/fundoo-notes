@@ -20,6 +20,7 @@ class NoteController {
    */
   addNote = (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
+    console.log(request.body);
     var token = request.headers.authorization.split("Bearer ")[1];
     var encodedBody = JSON.parse(atob(token.split(".")[1]));
 
@@ -74,7 +75,7 @@ class NoteController {
         response.send({
           success: true,
           status_code: resposnsCode.SUCCESS,
-          message: " data has been retrieved",
+          message: "Notes of current account has been retrieved",
           data: noteResult,
         });
         logger.info("SUCCESS002:All data has been retrieved");
@@ -142,7 +143,7 @@ class NoteController {
           response.send({
             success: true,
             status_code: resposnsCode.SUCCESS,
-            message: "Data has been updated",
+            message: "Note has been updated",
             updated_data: noteResult,
           });
           logger.info("SUCCESS004: Note has been updated");

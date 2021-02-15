@@ -15,6 +15,7 @@ const noteSchema = new mongoose.Schema(
   {
     title: {
       type: String,
+      required: true,
     },
     description: {
       type: String,
@@ -56,13 +57,13 @@ class NoteModel {
   getAllNotes = (userId, callback) => {
     logger.info(`TRACKED_PATH: Inside model`);
     Note.find({ userId: userId }, (error, noteData) => {
-      console.log(userId);
       error ? callback(error, null) : callback(null, noteData);
     });
   };
 
   /**
    * @description retrive one note data from database
+   *
    * @param {*} greetingID holds _id that is note id
    * @param {*} callback holds a function
    */
