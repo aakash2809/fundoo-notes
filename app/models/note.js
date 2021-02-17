@@ -21,10 +21,10 @@ const noteSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    userId: {
+    userId: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "users",
-    },
+    }],
   },
   {
     timestamps: true,
