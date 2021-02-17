@@ -1,19 +1,20 @@
 /**
  * @module         services
- * @file           note.js
- * @description    This file contain all the service method for notes
- * @requires       noteModel  is refrence to invoke methods of noteModel.js     
+ * @file           label.js
+ * @description    This file contain all the service method for label
+ * @requires       labelModel is refrence to invoke methods of labelModel.js     
  * @author         Aakash Rajak <aakashrajak2809@gmail.com>        
 ------------------------------------------------------------------------------------------*/
+
 const labelModel = require("../models/label");
 const logger = require("../../config/logger");
+const resposnsCode = require("../../util/staticFile.json");
 
 class LabelServices {
 
   /**
    * @description save request data to database using model methods
    * @param {*}  holds data to be saved in json formate
-   * @param {*} callback holds a function
    */
   savelabelData = async (labelData) => {
     try {
@@ -24,18 +25,10 @@ class LabelServices {
     }
   }
 
-
   /**
-   * @description retrive all note  data from database using model's mothod
-   * @param {*} callback holds a function
+   * @description retrive all label data from database using model's mothod
+   * @param {*} userId holds a userId
    */
-  /*  retrieveAllLabel = (userId, callback) => {
-     logger.info(`TRACKED_PATH: Inside services`);
-     labelModel.getAllLabels(userId, (error, labelResult) => {
-       error ? callback(error, null) : callback(null, labelResult);
-     });
-   };
-  */
   retrieveAllLabel = async (userId) => {
     logger.info(`TRACKED_PATH: Inside services`);
     try {
@@ -47,49 +40,63 @@ class LabelServices {
   }
 
   /**
-   * @description remove note  data from database using model's mothod
-   * @param {*}  holds _id that is note id
-   * @param {*} callback holds a function
+   * @description remove label from database using model's mothod
+   * @param {*}  holds _id that is label id
    */
-  /*  removeNoteById = (labelId, callback) => {
-     logger.info(`TRACKED_PATH: Inside services`);
-     labelModel.deleteLabelByLabelId(labelId, (error, labelResult) => {
-       error ? callback(error, null) : callback(null, labelResult);
-     });
-   }; */
-
-  removeNoteById = async (labelId) => {
+  removeLabelByLabelId = async (labelId) => {
     logger.info(`TRACKED_PATH: Inside services`);
     try {
       const result = await labelModel.deleteLabelByLabelId(labelId);
-      console.log("service layer ", result)
-      return result;
+      let responseResult = "";
+      if (result == null) {
+        responseResult = {
+          success: false,
+          statusCode: resposnsCode.NOT_FOUND,
+          message: `Label not found with ${labelId}`
+        }
+        return responseResult;
+      } else {
+        responseResult = {
+          success: true,
+          statusCode: resposnsCode.SUCCESS,
+          message: 'Label deleted successfully!'
+        }
+        return responseResult;
+      }
     } catch (error) {
-      console.log("service layer error", error)
       return error;
     }
   }
+
   /**
-   * @description update note  data existed in database, using model's mothod
-   * @param {*} labelId holds _id that is note  id
+   * @description update label data existed in database, using model's mothod
+   * @param {*} labelId holds _id that is label id
    * @param {*} dataToReplace takes data to be upadated in json formate
-   * @param {*} callback holds a function
    */
-
-
-  updateNoteById = async (labelId, dataToReplace) => {
+  updateLabelByLabelId = async (labelId, dataToReplace) => {
     logger.info(`TRACKED_PATH: Inside services`);
     try {
       const result = await labelModel.updateLabelByLabelId(labelId, dataToReplace);
-      console.log("service layer ", result)
-      return result;
+      let responseResult = "";
+      if (result == null) {
+        responseResult = {
+          success: false,
+          statusCode: resposnsCode.NOT_FOUND,
+          message: `Label not found with ${labelId}`
+        }
+        return responseResult;
+      } else {
+        responseResult = {
+          success: true,
+          statusCode: resposnsCode.SUCCESS,
+          message: 'Label updated successfully!'
+        }
+        return responseResult;
+      }
     } catch (error) {
-      console.log("service layer error", error)
-
       return error;
     }
   }
-
 }
 
 module.exports = new LabelServices();

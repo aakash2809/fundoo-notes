@@ -67,7 +67,7 @@ class userServices {
                         }
                         callback(error, null);
                     }
-                   else if (result) {
+                    else if (result) {
                         var token = jwtAuth.genrateToken(loginResult);
                         loginResult = {
                             success: true,
@@ -119,7 +119,7 @@ class userServices {
             }
         })
     }
-    
+
     /**
      * @description call the  of resetpassword fuction of model
      * @param {*} resetData having the user mail id and password to be reset

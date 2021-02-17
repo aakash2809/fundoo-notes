@@ -21,7 +21,7 @@ const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZS.khuiyg
 describe('Test Label API', () => {
 
     /**
-     * @description note test for /addLabel
+     * @description test for /addLabel
      */
     describe('POST /addlabel', () => {
         it('WhenGivenProperEndPointsAndCorrectInput_shouldReturn_SuccessMessageForLabelInsertion', (done) => {
@@ -47,6 +47,7 @@ describe('Test Label API', () => {
                 })
             done();
         })
+
         it('WhenGivenProperEndPointsAndEmptyDescriptionPass_shouldReturn_ErrorMessage', (done) => {
             chai.request(server)
                 .post('/addLabel')
@@ -54,9 +55,8 @@ describe('Test Label API', () => {
                 .send(testSamples.emptyLabel)
                 .end((error, response) => {
                     response.body.status_code.should.have.equal(responseCode.BAD_REQUEST);
-                    console.log(response.body);
                     response.body.should.be.a('object');
-                    response.body.message.should.have.equal(" description: Path `description` is required.");
+                    response.body.message.should.have.equal('"label" is not allowed to be empty');
                 })
             done();
         })
@@ -66,7 +66,7 @@ describe('Test Label API', () => {
      * @description test for /labels
      */
     describe('GET /labels', () => {
-        it.only('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_AllLabelsAvailabeInCurrentAccountAndSuccessMessage', (done) => {
+        it('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_AllLabelsAvailabeInCurrentAccountAndSuccessMessage', (done) => {
             chai.request(server)
                 .get('/labels')
                 .set('Authorization', `Bearer ${token}`)
@@ -78,20 +78,29 @@ describe('Test Label API', () => {
             done();
         })
 
+        it('WhenGivenProperEndPointsAndInvalidTokenPass_shouldReturn_ErrorMessage', (done) => {
+            chai.request(server)
+                .get('/labels')
+                .set('Authorization', `Bearer ${invalidToken}`)
+                .end((error, response) => {
+                    response.body.message.should.have.equal("Authentication failed");
+                })
+            done();
+        })
     })
 
     /**
-     * @description  test for /updateNote/:labelId /
+     * @description  test for /updateLabel/:labelId /
      */
     describe('PUT /updateLabel/:labelId', () => {
         it('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessMessage', (done) => {
             chai.request(server)
-                .put('/updateLabel/602b4fdb10763111083660d0')
+                .put('/updateLabel/602cb4fd7ef5ca02bc635363')
                 .set('Authorization', `Bearer ${token}`)
                 .send(testSamples.updateLabel)
                 .end((error, response) => {
                     response.should.have.status(responseCode.SUCCESS);
-                    response.body.message.should.have.equal("Label has been updated");
+                    response.body.message.should.have.equal("Label updated successfully!");
                 })
             done();
         })
@@ -108,36 +117,36 @@ describe('Test Label API', () => {
             done();
         })
 
-        it('WhenGivenProperEndPointsAndInvalidLabelIdPass_shouldReturn_MessageOfNotFound', (done) => {
+        it('WhenGivenProperEndPointsAndInvalidLabelIdPass_shouldReturn_MessageOfLabelFound', (done) => {
             chai.request(server)
-                .put('/updateLabel/602b4fdb10763111083660d9')
+                .put('/updateLabel/602b4fdb10763111083660d8')
                 .set('Authorization', `Bearer ${token}`)
                 .end((error, response) => {
                     response.body.status_code.should.have.equal(responseCode.NOT_FOUND);
-                    response.body.message.should.have.equal(`Label not found with id 602b4fdb10763111083660d9`);
+                    response.body.message.should.have.equal(`Label not found with 602b4fdb10763111083660d8`);
                 })
             done();
         })
     })
 
     /**
-     * @description note test for /label/:labelId /
+     * @description  test for /label/:labelId /
      */
     describe('DELETE /label/:labelId', () => {
-        it.only('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessMessageAfterDeleteingNote', (done) => {
+        it('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessMessageAfterDeleteingLabel', (done) => {
             chai.request(server)
-                .delete('/label/602922b3142c72030009599a')
+                .delete('/label/602b4fdb10763111083660d0')
                 .set('Authorization', `Bearer ${token}`)
                 .end((error, response) => {
                     response.should.have.status(responseCode.SUCCESS);
-                    response.body.message.should.have.equal("Note deleted successfully!");
+                    response.body.message.should.have.equal("Label deleted successfully!");
                 })
             done();
         })
 
         it('WhenGivenProperEndPointsAndInvalidTokenPass_shouldReturn_ErrorMessage', (done) => {
             chai.request(server)
-                .delete('/label/602922b3142c72030009599a')
+                .delete('/label/602b431d60cc850dcc88302c')
                 .set('Authorization', `Bearer ${invalidToken}`)
                 .end((error, response) => {
                     response.body.message.should.have.equal("Authentication failed");
@@ -145,12 +154,13 @@ describe('Test Label API', () => {
             done();
         })
 
-        it('WhenGivenProperEndPointsAndInvalidLabelIdPass_shouldReturn_MessageOfNotFound', (done) => {
+        it('WhenGivenProperEndPointsAndInvalidLabelIdPass_shouldReturn_MessageOfLabelFound', (done) => {
             chai.request(server)
-                .delete('/label/602922b3142c72030009599a')
+                .delete('/label/602b431d60cc850dcc88302c')
                 .set('Authorization', `Bearer ${token}`)
                 .end((error, response) => {
-                    response.body.message.should.have.equal(`Note not found with id 6029cfb728d3021a0822f3e0`);
+                    response.body.status_code.should.have.equal(responseCode.NOT_FOUND);
+                    response.body.message.should.have.equal(`Label not found with 602b431d60cc850dcc88302c`);
                 })
             done();
         })

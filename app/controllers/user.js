@@ -9,7 +9,7 @@
 
 const logger = require("../../config/logger");
 const userServices = require("../services/user");
-const userValidator = require("../middlewares/validator");
+const userValidator = require("../middlewares/userValidator");
 const resposnsCode = require("../../util/staticFile.json");
 
 class UserControllers {
@@ -53,16 +53,16 @@ class UserControllers {
       (error, registrationResult) => {
         error
           ? response.send({
-              success: false,
-              status_code: resposnsCode.BAD_REQUEST,
-              message: error,
-            })
+            success: false,
+            status_code: resposnsCode.BAD_REQUEST,
+            message: error,
+          })
           : response.send({
-              success: true,
-              status_code: resposnsCode.SUCCESS,
-              message: "Registered successfully",
-              data: registrationResult,
-            });
+            success: true,
+            status_code: resposnsCode.SUCCESS,
+            message: "Registered successfully",
+            data: registrationResult,
+          });
         logger.info("SUCCESS001: User registered successfully");
       }
     );
@@ -87,16 +87,16 @@ class UserControllers {
       (error, loginResult) => {
         error
           ? response.send({
-              success: error.success,
-              statusCode: error.statusCode,
-              message: error.message,
-            })
+            success: error.success,
+            statusCode: error.statusCode,
+            message: error.message,
+          })
           : response.send({
-              success: loginResult.success,
-              statusCode: loginResult.statusCode,
-              message: loginResult.message,
-              token: loginResult.data,
-            });
+            success: loginResult.success,
+            statusCode: loginResult.statusCode,
+            message: loginResult.message,
+            token: loginResult.data,
+          });
       }
     );
   };
@@ -112,16 +112,16 @@ class UserControllers {
     userServices.getEmail({ email }, (error, result) => {
       error
         ? response.send({
-            success: false,
-            statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
-            message: "internal server error",
-          })
+          success: false,
+          statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+          message: "internal server error",
+        })
         : response.send({
-            success: true,
-            statusCode: result.status,
-            message: result.message,
-            data: result.data,
-          });
+          success: true,
+          statusCode: result.status,
+          message: result.message,
+          data: result.data,
+        });
     });
   };
 
@@ -135,15 +135,15 @@ class UserControllers {
     userServices.resetPass(newPassword, (error, result) => {
       error
         ? response.send({
-            success: false,
-            statusCode: resposnsCode.BAD_REQUEST,
-            message: error,
-          })
+          success: false,
+          statusCode: resposnsCode.BAD_REQUEST,
+          message: error,
+        })
         : response.send({
-            success: true,
-            status_code: resposnsCode.SUCCESS,
-            message: result,
-          });
+          success: true,
+          status_code: resposnsCode.SUCCESS,
+          message: result,
+        });
     });
   };
 }
