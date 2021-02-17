@@ -4,6 +4,7 @@ const dbconnection = require('./config/database.config');
 const envConfig = require('./config/index');
 const userRoute = require('./app/routes/user');
 const noteRoute = require('./app/routes/note');
+const labelRoute = require('./app/routes/label');
 const swaggerDocument = require('./app/lib/swagger.json');
 
 const app = express();
@@ -11,7 +12,7 @@ const app = express();
 const PORT = envConfig.PORT || 3000;
 
 console.log(`application running on ${envConfig.NODE_ENV} environment`);
- 
+
 // parse requests 
 app.use(express.urlencoded({ extended: true }));
 
@@ -30,4 +31,5 @@ new dbconnection(envConfig.MONGODB_URL, { useNewUrlParser: true }, { useUnifiedT
 //Initialize the route
 userRoute.routeToUserController(app);
 noteRoute.routeToNoteController(app);
+labelRoute.routeToNoteController(app);
 module.exports = app;
