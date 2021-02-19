@@ -1,51 +1,38 @@
-/**
- * @module        config
- * @file          logger.js
- * @description   This file contains the defination of winston transports
- * @requires      {@link https://www.npmjs.com/package/winston | winston}
- * @author        Aakash Rajak <aakashrajak2809@gmail.com>
-*  @since        
-------------------------------------------------------------------------------------------*/
+const winston = require("winston");
 
-const winston = require('winston');
-const envConfig = require('./config/index');
+/**
+ * @exports : Exports developement Config Environment based Configuration
+ *
+ */
 module.exports = () => {
   return {
-    envName: envConfig.envConfig.NODE_ENV,
-    port: envConfig.PORT,
-    logger:
-      winston.createLogger({
-        transports: [
-          new winston.transports.File({
-            level: 'info',
-            filename: './logs/info.log',
-            format: winston.format.combine(
-              winston.format.timestamp({
-                format: 'YYYY-MM-DD'
-              }),
-              winston.format.printf(
-                info => `${info.timestamp} ${info.level}: ${info.message}`
-              )
-            )
-          }),
+    port: process.env.PORT || 3000,
+    logger: winston.createLogger({
+      format: winston.format.json(),
+      transports: [
+        new winston.transports.File({
+          filename: "./log/error.log",
+          level: "error",
+        }),
+        new winston.transports.File({
+          filename: "./log/info.log",
+          level: "info",
+        }),
+      ],
+    }),
 
-          new winston.transports.File({
-            level: 'error',
-            filename: './logs/error.log',
-            format: winston.format.combine(
-              winston.format.timestamp({
-                format: 'YYYY-MM-DD'
-              }),
+    redisClientConfig: {
+      redisEndPoint: process.env.REDIS_HOST,
+      port: process.env.REDIS_PORT,
+      flushRedisOnServerRestart: true,
+    },
+    database: {
+      mongodb: {
+        // MONGODB_URL=mongodb://localhost:27017/fundooNotes
+        dbURI: `mongodb+srv://${process.env.HOST}/${process.env.fundooNotes}`,
 
-              winston.format.printf(
-                error => `${error.timestamp} ${error.level}: ${error.message}`
-              )
-            )
-          })]
-      })
-  }
-}
-
-
-
-//module.exports = logger;
+        // dbURL: process.env.MONGODB_URL,
+      },
+    },
+  };
+};

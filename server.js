@@ -6,12 +6,11 @@ const userRoute = require('./app/routes/user');
 const noteRoute = require('./app/routes/note');
 const labelRoute = require('./app/routes/label');
 const swaggerDocument = require('./app/lib/swagger.json');
-
 const app = express();
-
-const PORT = envConfig.PORT || 3000;
-
-console.log(`application running on ${envConfig.NODE_ENV} environment`);
+require("dotenv").config();
+require("./config/index").set(process.env.NODE_ENV, app);
+const config = require("./config/index").get();
+const PORT = config.port;
 
 // parse requests 
 app.use(express.urlencoded({ extended: true }));
@@ -26,10 +25,10 @@ app.listen(PORT, () => {
   console.log(`CONNECT_SERVER: Connected, server started listening on port : ${PORT}`);
 });
 
-new dbconnection(envConfig.MONGODB_URL, { useNewUrlParser: true }, { useUnifiedTopology: true }, { useFindAndModify: false }).connect();
+new dbconnection(process.env.MONGODB_URL, { useNewUrlParser: true }, { useUnifiedTopology: true }, { useFindAndModify: false }).connect();
 
 //Initialize the route
 userRoute.routeToUserController(app);
 noteRoute.routeToNoteController(app);
-labelRoute.routeToNoteController(app);
+labelRoute.routeToLabelController(app);
 module.exports = app;
