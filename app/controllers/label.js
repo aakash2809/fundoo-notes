@@ -12,6 +12,7 @@ const labelServices = require(`../services/label`);
 const resposnsCode = require("../../util/staticFile.json");
 const LabelValidator = require("../middlewares/labelValidator");
 var atob = require("atob");
+const helper = require("../middlewares/helper");
 
 class LabelController {
 
@@ -23,10 +24,9 @@ class LabelController {
   addlabel = async (request, response) => {
     try {
       logger.info(`TRACKED_PATH: Inside controller`);
-      var token = request.headers.authorization.split("Bearer ")[1];
-      var encodedBody = JSON.parse(atob(token.split(".")[1]));
-
+      const encodedBody = helper.getEncodedBodyFromHeader(request);
       let validatedRequestResult = LabelValidator.validate(request.body);
+
       if (validatedRequestResult.error) {
         logger.error(`SCHEMAERROR: Request did not match with schema`);
         response.send({
@@ -69,9 +69,7 @@ class LabelController {
   findAllLabels = async (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
     try {
-      var token = request.headers.authorization.split("Bearer ")[1];
-      var encodedBody = JSON.parse(atob(token.split(".")[1]));
-
+      const encodedBody = helper.getEncodedBodyFromHeader(request);
       const result = await labelServices.retrieveAllLabel(encodedBody.userId);
 
       response.send({

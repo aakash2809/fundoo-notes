@@ -86,22 +86,27 @@ class Helper {
     }
   };
 
+  getEncodedBodyFromHeader = (request) => {
+    var token = request.headers.authorization.split("Bearer ")[1];
+    var encodedBody = JSON.parse(atob(token.split(".")[1]));
+    return encodedBody;
+  }
+
   setRedisForLabel = (userId, result) => {
     client.setex(userId, 120, JSON.stringify(result));
   }
 
   redisClient = (request, response, next) => {
-    var token = request.headers.authorization.split("Bearer ")[1];
-    var encodedBody = JSON.parse(atob(token.split(".")[1]));
+    /*  var token = request.headers.authorization.split("Bearer ")[1];
+     var encodedBody = JSON.parse(atob(token.split(".")[1])); */
+    var encodedBody = this.getEncodedBodyFromHeader(request);
 
     client.get(encodedBody.userId, (error, redisData) => {
-      if (error) {
-        throw error;
-      } else if (redisData) {
+      if (error || redisData == null) {
+        next();
+      } else {
         response.send(JSON.parse(redisData));
         console.log("data Comming from redis");
-      } else {
-        next();
       }
     })
   }
