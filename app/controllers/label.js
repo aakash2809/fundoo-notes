@@ -80,6 +80,10 @@ class LabelController {
         message: "label of current account has been retrieved",
         data: result,
       });
+      client.on("error", function (error) {
+        console.error(error);
+      });
+
       logger.info("SUCCESS002:All label has been retrieved");
     } catch (error) {
       response.send({

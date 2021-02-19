@@ -1,5 +1,5 @@
 const userControllers = require(`../controllers/user`);
-const jwtAuth = require("../middlewares/JwtAuth");
+const helper = require("../middlewares/helper");
 
 class UserRoutes {
   routeToUserController = (app) => {
@@ -8,7 +8,7 @@ class UserRoutes {
     app.post("/forgotPassword", userControllers.forgotPassword);
     app.put(
       "/resetPassword",
-      jwtAuth.verifyToken,
+      helper.verifyToken,
       userControllers.restPassword
     );
   };

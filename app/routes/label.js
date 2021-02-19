@@ -1,19 +1,18 @@
-const jwtAuth = require("../middlewares/JwtAuth");
+const helper = require("../middlewares/helper");
 const labelController = require(`../controllers/label`);
 
 class LabelRoutes {
-  routeToNoteController = (app) => {
+  routeToLabelController = (app) => {
     //Create a new label
-    app.post('/addlabel', jwtAuth.verifyToken, labelController.addlabel);
+    app.post('/addlabel', helper.verifyToken, labelController.addlabel);
 
     // Retrieve all label
-    app.get('/labels', jwtAuth.verifyToken, labelController.findAllLabels);
+    app.get('/labels', helper.verifyToken, helper.redisClient, labelController.findAllLabels);
 
-    //Update a labelModel with labelId
-    app.put('/updateLabel/:labelId', jwtAuth.verifyToken, labelController.updateLabelByLabelId);
+    app.put('/updateLabel/:labelId', helper.verifyToken, labelController.updateLabelByLabelId);
 
     //Delete a note with labelId
-    app.delete('/label/:labelId', jwtAuth.verifyToken, labelController.deleteLabelByLabelId);
+    app.delete('/label/:labelId', helper.verifyToken, labelController.deleteLabelByLabelId);
   }
 }
 

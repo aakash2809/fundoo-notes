@@ -1,25 +1,24 @@
-const jwtAuth = require("../middlewares/JwtAuth");
+const helper = require("../middlewares/helper");
 const noteController = require(`../controllers/note`);
 
 class NoteRoutes {
-    routeToNoteController = (app) => {
-    
+  routeToNoteController = (app) => {
+
     //Create a new note
-    app.post('/addNote',jwtAuth.verifyToken, noteController.addNote);
+    app.post('/addNote', helper.verifyToken, noteController.addNote);
 
     // Retrieve all notes
-    app.get('/allNotes',jwtAuth.verifyToken, noteController.findAllNotes);
+    app.get('/allNotes', helper.verifyToken, noteController.findAllNotes);
 
     // Retrieve a single note with noteId
-    app.get('/uniqueNote/:noteId',jwtAuth.verifyToken, noteController.findNoteByNoteId);
+    app.get('/uniqueNote/:noteId', helper.verifyToken, noteController.findNoteByNoteId);
 
     //Update a noteModel with noteId
-    app.put('/updateNote/:noteId',jwtAuth.verifyToken, noteController.updateNoteByNoteId);
+    app.put('/updateNote/:noteId', helper.verifyToken, noteController.updateNoteByNoteId);
 
     //Delete a note with noteId
-     app.delete('/note/:noteId',jwtAuth.verifyToken, noteController.deleteNoteByNoteId);
-    }
+    app.delete('/note/:noteId', helper.verifyToken, noteController.deleteNoteByNoteId);
   }
-  
-  module.exports = new NoteRoutes
-  
+}
+
+module.exports = new NoteRoutes

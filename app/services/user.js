@@ -8,7 +8,7 @@
 
 const userModel = require('../models/user');
 const logger = require("../../config/logger");
-const jwtAuth = require("../middlewares/JwtAuth");
+const jwtAuth = require("../middlewares/helper");
 const bycrypt = require('bcryptjs');
 const resposnsCode = require("../../util/staticFile.json");
 

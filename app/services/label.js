@@ -9,6 +9,7 @@
 const labelModel = require("../models/label");
 const logger = require("../../config/logger");
 const resposnsCode = require("../../util/staticFile.json");
+const helper = require("../middlewares/helper")
 
 class LabelServices {
 
@@ -33,6 +34,7 @@ class LabelServices {
     logger.info(`TRACKED_PATH: Inside services`);
     try {
       const result = await labelModel.getAllLabels(userId);
+      helper.setRedisForLabel(userId, result);
       return result;
     } catch (error) {
       return error;

@@ -14,7 +14,10 @@ const logger = require("../../config/logger");
 var nodemailer = require("nodemailer");
 var ejs = require("ejs");
 const resposnsCode = require("../../util/staticFile.json");
-const envConfig = require("../../config/index");
+const redis = require("redis");
+const client = redis.createClient();
+require("dotenv").config();
+var atob = require("atob");
 
 class Helper {
   genrateToken = (user) => {
@@ -23,7 +26,7 @@ class Helper {
         username: user.name,
         userId: user._id,
       },
-      envConfig.SECRET_KEY,
+      process.env.SECRET_KEY,
       {
         expiresIn: "24h",
       }
@@ -33,11 +36,11 @@ class Helper {
   sendMail = async (user, token, callback) => {
     var transporter = nodemailer.createTransport({
       service: "gmail",
-      port: envConfig.PORT,
+      port: process.env.PORT,
       secure: true, // use SSL
       auth: {
-        user: envConfig.EMAIL_USER,
-        pass: envConfig.EMAIL_PASS,
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
       },
     });
     await ejs.renderFile(
@@ -50,7 +53,7 @@ class Helper {
         if (err) {
         } else {
           var mainOptions = {
-            from: envConfig.EMAIL_USER,
+            from: process.env.EMAIL_USER,
             to: user.email,
             subject: "Activate account",
             html: data,
@@ -59,7 +62,7 @@ class Helper {
             if (error) {
               callback(error, null);
             } else {
-              mailInfo = `${envConfig.CLIENT_URL}/resetpassword/${token}`;
+              mailInfo = `${process.env.CLIENT_URL}/resetpassword/${token}`;
               callback(null, mailInfo);
             }
           });
@@ -71,7 +74,7 @@ class Helper {
   verifyToken = (request, response, next) => {
     try {
       var token = request.headers.authorization.split("Bearer ")[1];
-      var decode = jwt.verify(token, envConfig.SECRET_KEY);
+      var decode = jwt.verify(token, process.env.SECRET_KEY);
       request.userData = decode;
       next();
     } catch (error) {
@@ -82,6 +85,26 @@ class Helper {
       });
     }
   };
+
+  setRedisForLabel = (userId, result) => {
+    client.setex(userId, 120, JSON.stringify(result));
+  }
+
+  redisClient = (request, response, next) => {
+    var token = request.headers.authorization.split("Bearer ")[1];
+    var encodedBody = JSON.parse(atob(token.split(".")[1]));
+
+    client.get(encodedBody.userId, (error, redisData) => {
+      if (error) {
+        throw error;
+      } else if (redisData) {
+        response.send(JSON.parse(redisData));
+        console.log("data Comming from redis");
+      } else {
+        next();
+      }
+    })
+  }
 }
 
 module.exports = new Helper();
