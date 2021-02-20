@@ -7,6 +7,7 @@
 ------------------------------------------------------------------------------------------*/
 const noteModel = require("../models/note");
 const logger = require("../../config/logger");
+const helper = require("../middlewares/helper")
 
 class NoteServices {
   /**
@@ -28,7 +29,13 @@ class NoteServices {
   retrieveAllNotes = (userId, callback) => {
     logger.info(`TRACKED_PATH: Inside services`);
     noteModel.getAllNotes(userId, (error, noteResult) => {
-      error ? callback(error, null) : callback(null, noteResult);
+      // error ? callback(error, null) : callback(null, noteResult);
+      if (error) {
+        callback(error, null);
+      } else {
+        helper.setRedisForLabel(userId, noteResult);
+        callback(null, noteResult);
+      }
     });
   };
 

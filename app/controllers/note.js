@@ -11,6 +11,7 @@ const logger = require("../../config/logger");
 const noteServices = require(`../services/note`);
 const resposnsCode = require("../../util/staticFile.json");
 var atob = require("atob");
+const helper = require("../middlewares/helper");
 
 class NoteController {
   /**
@@ -21,8 +22,7 @@ class NoteController {
   addNote = (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
     console.log(request.body);
-    var token = request.headers.authorization.split("Bearer ")[1];
-    var encodedBody = JSON.parse(atob(token.split(".")[1]));
+    const encodedBody = helper.getEncodedBodyFromHeader(request);
 
     const noteDetails = {
       title: request.body.title,
@@ -58,9 +58,8 @@ class NoteController {
    */
   findAllNotes = (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
-
-    var token = request.headers.authorization.split("Bearer ")[1];
-    var encodedBody = JSON.parse(atob(token.split(".")[1]));
+    var start = new Date();
+    const encodedBody = helper.getEncodedBodyFromHeader(request);
 
     noteServices.retrieveAllNotes(encodedBody.userId, (error, noteResult) => {
       if (error) {
@@ -78,6 +77,7 @@ class NoteController {
           message: "Notes of current account has been retrieved",
           data: noteResult,
         });
+        console.log('Request took:', new Date() - start, 'ms');
         logger.info("SUCCESS002:All data has been retrieved");
       }
     });
