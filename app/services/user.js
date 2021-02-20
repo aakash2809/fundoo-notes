@@ -11,6 +11,7 @@ const logger = require("../../config/logger");
 const jwtAuth = require("../middlewares/helper");
 const bycrypt = require('bcryptjs');
 const resposnsCode = require("../../util/staticFile.json");
+const helper = require("../middlewares/helper");
 
 require(`dotenv`).config();
 
@@ -43,9 +44,9 @@ class userServices {
      * @param {*} loginCredentials holds data to be saved in json formate
      * @param {*} callback holds a function 
     */
-    getLoginCredentialAndCallForValidation = (loginCredentials, callback) => {
+    validateAndLogin = (loginCredentials, callback) => {
         logger.info(`TRACKED_PATH: Inside services`);
-        userModel.validateLoginCredentialAndReturnResult(loginCredentials, (error, loginResult) => {
+        userModel.getDetailOfGivenEmailId(loginCredentials, (error, loginResult) => {
             loginResult = this.extractObjectFromArray(loginResult);
             if (error) {
                 callback(error, null)
@@ -76,6 +77,7 @@ class userServices {
                             data: token
                         }
                         logger.info(` token genrated: ${token}`);
+                        helper.setRedis(loginCredentials.email, loginResult);
                         callback(null, loginResult);
                     } else {
                         error = {

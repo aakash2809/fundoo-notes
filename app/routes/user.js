@@ -4,7 +4,7 @@ const helper = require("../middlewares/helper");
 class UserRoutes {
   routeToUserController = (app) => {
     app.post("/register", userControllers.register);
-    app.post("/login", userControllers.login);
+    app.post("/login", helper.redisClientForLogin, userControllers.login);
     app.post("/forgotPassword", userControllers.forgotPassword);
     app.put(
       "/resetPassword",

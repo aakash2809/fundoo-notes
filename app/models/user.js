@@ -50,7 +50,7 @@ logger.info('inside model');
 const User = mongoose.model(`User`, userSchema);
 
 class UserModel {
-    
+
     /**
       * @description save request data to database 
       * @param {*} registrationData holds data to be saved in json formate
@@ -74,7 +74,7 @@ class UserModel {
       * @param {*} loginCredential holds login credentials
       * @param {*} callback holds a function 
      */
-    validateLoginCredentialAndReturnResult = (loginCredential, callback) => {
+    getDetailOfGivenEmailId = (loginCredential, callback) => {
         const email = loginCredential.email;
         User.find({ email: `${email}` }, (error, loginResult) => {
             (error) ? callback(error, null) : callback(null, loginResult);

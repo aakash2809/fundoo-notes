@@ -88,12 +88,13 @@ class Helper {
 
   getEncodedBodyFromHeader = (request) => {
     var token = request.headers.authorization.split("Bearer ")[1];
+
     var encodedBody = JSON.parse(atob(token.split(".")[1]));
     return encodedBody;
   }
 
-  setRedisForLabel = (userId, result) => {
-    client.setex(userId, 120, JSON.stringify(result));
+  setRedis = (id, result) => {
+    client.setex(id, 120, JSON.stringify(result));
   }
 
   redisClient = (request, response, next) => {
@@ -109,6 +110,21 @@ class Helper {
         console.log('Request took:', new Date() - start, 'ms');
       }
     })
+  }
+
+  redisClientForLogin = (request, response, next) => {
+    var start = new Date();
+    client.get(request.body.email, (error, redisData) => {
+
+      if (error || redisData == null) {
+        next();
+      } else {
+        response.send(JSON.parse(redisData));
+        console.log("data Comming from redis");
+
+      }
+    })
+    console.log('Request took:', new Date() - start, 'ms');
   }
 }
 

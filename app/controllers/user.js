@@ -75,6 +75,7 @@ class UserControllers {
    */
   login = (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
+    var start = new Date();
     const loginDetails = {
       email: request.body.email,
       password: request.body.password,
@@ -82,7 +83,7 @@ class UserControllers {
     logger.info(
       `INVOKING: getLoginCredentialAndCallForValidation method of login services`
     );
-    userServices.getLoginCredentialAndCallForValidation(
+    userServices.validateAndLogin(
       loginDetails,
       (error, loginResult) => {
         error
@@ -99,6 +100,7 @@ class UserControllers {
           });
       }
     );
+    console.log('Request took:', new Date() - start, 'ms');
   };
 
   /**
