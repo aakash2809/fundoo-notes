@@ -33,7 +33,7 @@ class NoteServices {
       if (error) {
         callback(error, null);
       } else {
-        helper.setRedisForLabel(userId, noteResult);
+        helper.setRedis(userId, noteResult);
         callback(null, noteResult);
       }
     });

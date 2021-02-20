@@ -34,7 +34,8 @@ class LabelServices {
     logger.info(`TRACKED_PATH: Inside services`);
     try {
       const result = await labelModel.getAllLabels(userId);
-      helper.setRedisForLabel(userId, result);
+      //console.log(result);
+      helper.setRedis(userId, result);
       return result;
     } catch (error) {
       return error;

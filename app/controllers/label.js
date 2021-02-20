@@ -25,6 +25,7 @@ class LabelController {
     try {
       logger.info(`TRACKED_PATH: Inside controller`);
       const encodedBody = helper.getEncodedBodyFromHeader(request);
+
       let validatedRequestResult = LabelValidator.validate(request.body);
 
       if (validatedRequestResult.error) {
@@ -71,6 +72,7 @@ class LabelController {
     try {
       var start = new Date();
       const encodedBody = helper.getEncodedBodyFromHeader(request);
+      console.log(encodedBody.userId);
       const result = await labelServices.retrieveAllLabel(encodedBody.userId);
 
       response.send({
