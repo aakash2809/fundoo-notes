@@ -11,7 +11,7 @@ const isProduction = (config) => {
 };
 
 /**
- * @description It return true if the current system is production
+ * @description It return true if the current system is development
  * @param {*} config
  */
 const isDevelopement = (config) => {
