@@ -11,8 +11,8 @@ const logger = require("../../config/logger");
 const labelServices = require(`../services/label`);
 const resposnsCode = require("../../util/staticFile.json");
 const LabelValidator = require("../middlewares/labelValidator");
-var atob = require("atob");
 const helper = require("../middlewares/helper");
+
 
 class LabelController {
 
@@ -69,6 +69,7 @@ class LabelController {
   findAllLabels = async (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
     try {
+      var start = new Date();
       const encodedBody = helper.getEncodedBodyFromHeader(request);
       const result = await labelServices.retrieveAllLabel(encodedBody.userId);
 
@@ -78,9 +79,7 @@ class LabelController {
         message: "label of current account has been retrieved",
         data: result,
       });
-      client.on("error", function (error) {
-        console.error(error);
-      });
+      console.log('Request took:', new Date() - start, 'ms');
 
       logger.info("SUCCESS002:All label has been retrieved");
     } catch (error) {

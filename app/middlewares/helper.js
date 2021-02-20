@@ -97,16 +97,16 @@ class Helper {
   }
 
   redisClient = (request, response, next) => {
-    /*  var token = request.headers.authorization.split("Bearer ")[1];
-     var encodedBody = JSON.parse(atob(token.split(".")[1])); */
     var encodedBody = this.getEncodedBodyFromHeader(request);
-
+    var start = new Date();
     client.get(encodedBody.userId, (error, redisData) => {
+
       if (error || redisData == null) {
         next();
       } else {
         response.send(JSON.parse(redisData));
         console.log("data Comming from redis");
+        console.log('Request took:', new Date() - start, 'ms');
       }
     })
   }
