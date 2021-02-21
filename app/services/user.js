@@ -129,7 +129,10 @@ class userServices {
      */
     resetPass = (resetData, callback) => {
         userModel.resetPassword(resetData, (error, result) => {
-            (error) ? callback(error, null) : callback(null, result)
+            (error)
+                ? callback(error, null) : (
+                    this.validateAndLogin(resetData),
+                    callback(null, result));
         })
     }
 }

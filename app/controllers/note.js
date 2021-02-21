@@ -123,7 +123,9 @@ class NoteController {
    */
   updateNoteByNoteId = (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
+    const encodedBody = helper.getEncodedBodyFromHeader(request);
     noteServices.updateNoteById(
+      encodedBody.userId,
       request.params.noteId,
       {
         title: request.body.title,
@@ -159,7 +161,8 @@ class NoteController {
    */
   deleteNoteByNoteId = (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
-    noteServices.removeNoteById(request.params.noteId, (error, noteResult) => {
+    const encodedBody = helper.getEncodedBodyFromHeader(request);
+    noteServices.removeNoteById(encodedBody.userId, request.params.noteId, (error, noteResult) => {
       if (noteResult === null) {
         response.send({
           success: false,

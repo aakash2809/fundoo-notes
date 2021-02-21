@@ -82,6 +82,7 @@ class LabelController {
         data: result,
       });
       console.log('Request took:', new Date() - start, 'ms');
+      console.log('data comming from mongodb');
 
       logger.info("SUCCESS002:All label has been retrieved");
     } catch (error) {
@@ -102,7 +103,8 @@ class LabelController {
   updateLabelByLabelId = async (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
     try {
-      const result = await labelServices.updateLabelByLabelId(request.params.labelId, { label: request.body.label });
+      const encodedBody = helper.getEncodedBodyFromHeader(request);
+      const result = await labelServices.updateLabelByLabelId(request.params.labelId, { label: request.body.label }, encodedBody.userId);
       response.send({
         success: result.success,
         status_code: result.statusCode,
@@ -126,7 +128,8 @@ class LabelController {
   deleteLabelByLabelId = async (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
     try {
-      const result = await labelServices.removeLabelByLabelId(request.params.labelId);
+      const encodedBody = helper.getEncodedBodyFromHeader(request);
+      const result = await labelServices.removeLabelByLabelId(request.params.labelId, encodedBody.userId);
       response.send({
         success: result.success,
         status_code: result.statusCode,

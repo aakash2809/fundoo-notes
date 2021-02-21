@@ -101,7 +101,6 @@ class Helper {
     var encodedBody = this.getEncodedBodyFromHeader(request);
     var start = new Date();
     client.get(encodedBody.userId, (error, redisData) => {
-
       if (error || redisData == null) {
         next();
       } else {

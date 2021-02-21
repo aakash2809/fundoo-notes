@@ -10,6 +10,7 @@ const logger = require("../../config/logger");
 const helper = require("../middlewares/helper")
 
 class NoteServices {
+
   /**
    * @description save request data to database using model methods
    * @param {*} noteData holds data to be saved in json formate
@@ -29,13 +30,10 @@ class NoteServices {
   retrieveAllNotes = (userId, callback) => {
     logger.info(`TRACKED_PATH: Inside services`);
     noteModel.getAllNotes(userId, (error, noteResult) => {
-      // error ? callback(error, null) : callback(null, noteResult);
-      if (error) {
-        callback(error, null);
-      } else {
-        helper.setRedis(userId, noteResult);
-        callback(null, noteResult);
-      }
+      error
+        ? callback(error, null) : (
+          helper.setRedis(userId, noteResult),
+          callback(null, noteResult));
     });
   };
 
@@ -56,10 +54,13 @@ class NoteServices {
    * @param {*} noteId holds _id that is note id
    * @param {*} callback holds a function
    */
-  removeNoteById = (noteId, callback) => {
+  removeNoteById = (userId, noteId, callback) => {
     logger.info(`TRACKED_PATH: Inside services`);
     noteModel.deleteNoteByNoteId(noteId, (error, noteResult) => {
-      error ? callback(error, null) : callback(null, noteResult);
+      error
+        ? callback(error, null) : (
+          this.retrieveAllNotes(userId),
+          callback(null, noteResult));
     });
   };
 
@@ -69,10 +70,12 @@ class NoteServices {
    * @param {*} dataToReplace takes data to be upadated in json formate
    * @param {*} callback holds a function
    */
-  updateNoteById = (noteId, dataToReplace, callback) => {
+  updateNoteById = (userId, noteId, dataToReplace, callback) => {
     logger.info(`TRACKED_PATH: Inside services`);
     noteModel.updateNoteByNoteId(noteId, dataToReplace, (error, noteResult) => {
-      error ? callback(error, null) : callback(null, noteResult);
+      error ? callback(error, null) : (
+        this.retrieveAllNotes(userId),
+        callback(null, noteResult));
     });
   };
 }
