@@ -77,7 +77,7 @@ class userServices {
                             data: token
                         }
                         logger.info(` token genrated: ${token}`);
-                        helper.setRedis(loginCredentials.email, loginResult);
+                        helper.setRedisForLogin(loginResult);
                         callback(null, loginResult);
                     } else {
                         error = {

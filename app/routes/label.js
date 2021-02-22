@@ -7,7 +7,8 @@ class LabelRoutes {
     app.post('/addlabel', helper.verifyToken, labelController.addlabel);
 
     // Retrieve all label
-    app.get('/labels', helper.verifyToken, helper.redisClient, labelController.findAllLabels);
+    //app.get('/labels', helper.verifyToken, helper.redisClient, labelController.findAllLabels);
+    app.get('/labels', helper.verifyToken, helper.redislabelClient, labelController.findAllLabels);
 
     app.put('/updateLabel/:labelId', helper.verifyToken, labelController.updateLabelByLabelId);
 

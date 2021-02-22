@@ -18,6 +18,7 @@ const redis = require("redis");
 const client = redis.createClient();
 require("dotenv").config();
 var atob = require("atob");
+var key = "";
 
 class Helper {
   genrateToken = (user) => {
@@ -88,24 +89,43 @@ class Helper {
 
   getEncodedBodyFromHeader = (request) => {
     var token = request.headers.authorization.split("Bearer ")[1];
-
     var encodedBody = JSON.parse(atob(token.split(".")[1]));
     return encodedBody;
   }
 
-  setRedis = (id, result) => {
-    client.setex(id, 120, JSON.stringify(result));
+  seRedisforlabel = (result) => {
+    client.setex("label", 120, JSON.stringify(result));
   }
 
-  redisClient = (request, response, next) => {
-    var encodedBody = this.getEncodedBodyFromHeader(request);
+  setRedisfornote = (result) => {
+    client.setex("note", 120, JSON.stringify(result));
+  }
+
+  setRedisForLogin = (result) => {
+    client.setex("login", 120, JSON.stringify(result));
+  }
+
+  redislabelClient = (request, response, next) => {
     var start = new Date();
-    client.get(encodedBody.userId, (error, redisData) => {
+    client.get("label", (error, redisData) => {
       if (error || redisData == null) {
         next();
       } else {
         response.send(JSON.parse(redisData));
-        console.log("data Comming from redis");
+        console.log("labels Comming from redis");
+        console.log('Request took:', new Date() - start, 'ms');
+      }
+    })
+  }
+
+  redisNoteClient = (request, response, next) => {
+    var start = new Date();
+    client.get("note", (error, redisData) => {
+      if (error || redisData == null) {
+        next();
+      } else {
+        response.send(JSON.parse(redisData));
+        console.log("notes Comming from redis");
         console.log('Request took:', new Date() - start, 'ms');
       }
     })
@@ -113,14 +133,12 @@ class Helper {
 
   redisClientForLogin = (request, response, next) => {
     var start = new Date();
-    client.get(request.body.email, (error, redisData) => {
-
+    client.get("login", (error, redisData) => {
       if (error || redisData == null) {
         next();
       } else {
         response.send(JSON.parse(redisData));
         console.log("data Comming from redis");
-
       }
     })
     console.log('Request took:', new Date() - start, 'ms');

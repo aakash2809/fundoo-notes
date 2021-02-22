@@ -21,10 +21,14 @@ const noteSchema = new mongoose.Schema(
       type: String,
       required: true,
     },
-    userId: [{
+    userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "users",
-    }],
+      ref: "User",
+    },
+    labelId: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Label",
+    }]
   },
   {
     timestamps: true,
@@ -69,7 +73,6 @@ class NoteModel {
    */
   getNoteByNoteId = (noteId, callback) => {
     logger.info(`TRACKED_PATH: Inside model`);
-
     Note.findById(noteId, (error, noteResult) => {
       error ? callback(error, null) : callback(null, noteResult);
     });

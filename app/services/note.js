@@ -32,7 +32,7 @@ class NoteServices {
     noteModel.getAllNotes(userId, (error, noteResult) => {
       error
         ? callback(error, null) : (
-          helper.setRedis(userId, noteResult),
+          helper.setRedisfornote(noteResult),
           callback(null, noteResult));
     });
   };

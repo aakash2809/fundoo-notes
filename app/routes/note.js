@@ -8,7 +8,8 @@ class NoteRoutes {
     app.post('/addNote', helper.verifyToken, noteController.addNote);
 
     // Retrieve all notes
-    app.get('/allNotes', helper.verifyToken, helper.redisClient, noteController.findAllNotes);
+    //app.get('/allNotes', helper.verifyToken, helper.redisClient, noteController.findAllNotes);
+    app.get('/allNotes', helper.verifyToken, helper.redisNoteClient, noteController.findAllNotes);
 
     // Retrieve a single note with noteId
     app.get('/uniqueNote/:noteId', helper.verifyToken, noteController.findNoteByNoteId);
