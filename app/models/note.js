@@ -10,6 +10,7 @@
 
 const mongoose = require(`mongoose`);
 const logger = require("../../config/logger");
+const Label = require("../models/label");
 
 const noteSchema = new mongoose.Schema(
   {
@@ -74,7 +75,9 @@ class NoteModel {
   getNoteByNoteId = (noteId, callback) => {
     logger.info(`TRACKED_PATH: Inside model`);
     Note.findById(noteId, (error, noteResult) => {
-      error ? callback(error, null) : callback(null, noteResult);
+      error ? callback(error, null) : (
+
+        callback(null, noteResult));
     });
   };
 
@@ -83,7 +86,7 @@ class NoteModel {
    * @param {*} greetingId holds _id that is note  id
    * @param {*} callback holds a function
    */
-  deleteNoteByNoteId(noteData, callback) {
+  deleteNoteByNoteId = (noteData, callback) => {
     logger.info(`TRACKED_PATH: Inside model`);
     Note.findByIdAndDelete(noteData, (error, noteResult) => {
       error ? callback(error, null) : callback(null, noteResult);
@@ -96,7 +99,7 @@ class NoteModel {
    * @param {*} dataToUpdate takes data to be upadated in json formate
    * @param {*} callback holds a function
    */
-  updateNoteByNoteId(noteId, dataToUpdate, callback) {
+  updateNoteByNoteId = (noteId, dataToUpdate, callback) => {
     logger.info(`TRACKED_PATH: Inside model`);
     Note.findByIdAndUpdate(
       noteId,
@@ -107,6 +110,49 @@ class NoteModel {
       (error, noteResult) => {
         error ? callback(error, null) : callback(null, noteResult);
       }
+    );
+  }
+
+  addLabel = (requireDataToaddLabel, callback) => {
+    const labelId = requireDataToaddLabel.labelId
+    const noteId = requireDataToaddLabel.userId;
+    console.log(labelId);
+    Note.find({ _id: noteId }, (error, result) => {
+      if (error || !result) {
+        error = "Note with this noteId does not exist"
+        callback(error, null);
+      } else {
+        console.log(result);
+        //callback(null, result)
+
+        Label.find({ _id: labelId }, (error, labelResult) => {
+          if (error || !labelResult) {
+            console.log("label error ", error);
+            error = "label with this labelId does not exist"
+            callback(error, null);
+          } else {
+            console.log("label data ", labelResult);
+            /*  findByIdAndUpdate(
+               noteId,
+               { $push: {"labelId:": labelResult}},
+               {  safe: true, upsert: true} */
+            Note.findByIdAndUpdate(
+              noteId,
+              { $push: { labelId: labelResult } },
+              (error, noteResult) => {
+                if (error || !noteResult) {
+                  error = "label not saved"
+                  callback(error, null);
+                } else {
+                  console.log(noteResult);
+                  noteResult = "label saved";
+                  callback(null, noteResult)
+                }
+              })
+          }
+        })
+      }
+    }
     );
   }
 }

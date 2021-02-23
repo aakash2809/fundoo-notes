@@ -74,7 +74,7 @@ class LabelController {
       const encodedBody = helper.getEncodedBodyFromHeader(request);
       console.log(encodedBody.userId);
       const result = await labelServices.retrieveAllLabel(encodedBody.userId);
-
+      //console.log("controller", result);
       response.send({
         success: true,
         status_code: resposnsCode.SUCCESS,

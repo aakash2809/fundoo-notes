@@ -17,6 +17,9 @@ class NoteRoutes {
     //Update a noteModel with noteId
     app.put('/updateNote/:noteId', helper.verifyToken, noteController.updateNoteByNoteId);
 
+    //Update a noteModel by adding labels
+    app.put('/addLabelToNote', helper.verifyToken, noteController.addLabel);
+
     //Delete a note with noteId
     app.delete('/note/:noteId', helper.verifyToken, noteController.deleteNoteByNoteId);
   }

@@ -53,11 +53,13 @@ class LabelModel {
    * @description retrive all label data from database
    */
   getAllLabels = (userId) => {
+
     return new Promise((resolve, reject) => {
       Label.find({ userId: userId }, (error, labelResult) => {
         if (error) {
           return reject(error)
         } else {
+
           return resolve(labelResult)
         }
       })
@@ -99,3 +101,4 @@ class LabelModel {
 }
 
 module.exports = new LabelModel();
+module.exports = Label; 

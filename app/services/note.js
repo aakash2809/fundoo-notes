@@ -77,7 +77,15 @@ class NoteServices {
         this.retrieveAllNotes(userId),
         callback(null, noteResult));
     });
-  };
+  }
+
+  updateNoteByAddingLabel = (requireDataToaddLabel, callback) => {
+    noteModel.addLabel(requireDataToaddLabel, (error, noteResult) => {
+      error ? callback(error, null) : (
+
+        callback(null, noteResult));
+    });
+  }
 }
 
 module.exports = new NoteServices();

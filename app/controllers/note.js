@@ -179,7 +179,36 @@ class NoteController {
         logger.info("SUCCESS004: Note deleted successfully!");
       }
     });
-  };
+  }
+
+  addLabel = (request, response) => {
+    const requireDataToaddLabel = {
+      noteId: request.body.noteId,
+      labelId: request.body.labelId,
+    }
+    console.log(requireDataToaddLabel);
+    noteServices.updateNoteByAddingLabel(requireDataToaddLabel, (error, noteResult) => {
+      //console.log("controller result", error);
+      if (error) {
+        response.send({
+          success: false,
+          status_code: resposnsCode.NOT_FOUND,
+          message: error
+        });
+        logger.error(
+          `ERR004: Note  not found with id `
+        );
+      } else {
+        response.send({
+          success: true,
+          status_code: resposnsCode.SUCCESS,
+          message: "Note has been updated",
+          updated_data: noteResult,
+        });
+        logger.info("SUCCESS004: Note has been updated");
+      }
+    });
+  }
 }
 
 module.exports = new NoteController();
