@@ -7,7 +7,8 @@
 ------------------------------------------------------------------------------------------*/
 const noteModel = require("../models/note");
 const logger = require("../../config/logger");
-const helper = require("../middlewares/helper")
+const helper = require("../middlewares/helper");
+const Label = require("../models/label");
 
 class NoteServices {
 
@@ -80,11 +81,10 @@ class NoteServices {
   }
 
   updateNoteByAddingLabel = (requireDataToaddLabel, callback) => {
-    noteModel.addLabel(requireDataToaddLabel, (error, noteResult) => {
-      error ? callback(error, null) : (
-
-        callback(null, noteResult));
-    });
+    /*  noteModel.addLabel(requireDataToaddLabel, (error, noteResult) => {
+       error ? callback(error, null) : callback(null, noteResult);
+     })*/
+    noteModel.addLabel(requireDataToaddLabel, callback);
   }
 }
 
