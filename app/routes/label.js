@@ -7,9 +7,9 @@ class LabelRoutes {
     app.post('/addlabel', helper.verifyToken, labelController.addlabel);
 
     // Retrieve all label
-    //app.get('/labels', helper.verifyToken, helper.redisClient, labelController.findAllLabels);
-    app.get('/labels', helper.verifyToken, helper.redislabelClient, labelController.findAllLabels);
+    app.get('/labels', helper.verifyToken, helper.getLabelsDetail, labelController.findAllLabels);
 
+    // Update label by lavelId
     app.put('/updateLabel/:labelId', helper.verifyToken, labelController.updateLabelByLabelId);
 
     //Delete a note with labelId

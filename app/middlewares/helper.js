@@ -18,7 +18,7 @@ const redis = require("redis");
 const client = redis.createClient();
 require("dotenv").config();
 var atob = require("atob");
-var key = "";
+var redisKey = "";
 
 class Helper {
   genrateToken = (user) => {
@@ -93,55 +93,58 @@ class Helper {
     return encodedBody;
   }
 
-  seRedisforlabel = (result) => {
-    client.setex("label", 120, JSON.stringify(result));
+  //separate function to get and set data with redis 
+  setLabelToCache = (userId, result) => {
+    client.setex(`LABEL_${userId}`, 120, JSON.stringify(result));
   }
 
-  setRedisfornote = (result) => {
-    client.setex("note", 120, JSON.stringify(result));
+  setNoteToCache = (userId, result) => {
+    client.setex(`NOTE_${userId}`, 120, JSON.stringify(result));
   }
 
-  setRedisForLogin = (result) => {
-    client.setex("login", 120, JSON.stringify(result));
+  setLoginUser = (email, result) => {
+    client.setex(`LOGIN_${email}`, 120, JSON.stringify(result));
   }
 
-  redislabelClient = (request, response, next) => {
+  getLabelsDetail = (request, response, next) => {
+    const encodedBody = this.getEncodedBodyFromHeader(request);
     var start = new Date();
-    client.get("label", (error, redisData) => {
+    client.get(`LABEL_${encodedBody.userId}`, (error, redisData) => {
       if (error || redisData == null) {
         next();
       } else {
         response.send(JSON.parse(redisData));
-        console.log("labels Comming from redis");
-        console.log('Request took:', new Date() - start, 'ms');
+        logger.log("labels Comming from redis");
+        logger.log('Request took:', new Date() - start, 'ms');
       }
     })
   }
 
-  redisNoteClient = (request, response, next) => {
+  getNotesDetail = (request, response, next) => {
     var start = new Date();
-    client.get("note", (error, redisData) => {
+    const encodedBody = this.getEncodedBodyFromHeader(request);
+    client.get(`NOTE_${encodedBody.userId}`, (error, redisData) => {
       if (error || redisData == null) {
         next();
       } else {
         response.send(JSON.parse(redisData));
-        console.log("notes Comming from redis");
-        console.log('Request took:', new Date() - start, 'ms');
+        logger.log("notes Comming from redis");
+        logger.log('Request took:', new Date() - start, 'ms');
       }
     })
   }
 
-  redisClientForLogin = (request, response, next) => {
+  getLogedInUser = (request, response, next) => {
     var start = new Date();
-    client.get("login", (error, redisData) => {
+    client.get(`LOGIN_${request.body.email}`, (error, redisData) => {
       if (error || redisData == null) {
         next();
       } else {
-        response.send(JSON.parse(redisData));
-        console.log("data Comming from redis");
+        logger.log("data Comming from redis");
+        logger.log('Request took:', new Date() - start, 'ms');
+        return response.send(JSON.parse(redisData));
       }
     })
-    console.log('Request took:', new Date() - start, 'ms');
   }
 }
 

@@ -9,7 +9,7 @@
 const labelModel = require("../models/label");
 const logger = require("../../config/logger");
 const resposnsCode = require("../../util/staticFile.json");
-const helper = require("../middlewares/helper")
+const helper = require("../middlewares/helper");
 
 class LabelServices {
 
@@ -19,8 +19,7 @@ class LabelServices {
    */
   savelabelData = async (labelData) => {
     try {
-      const result = await labelModel.saveLabel(labelData);
-      return result;
+      return await labelModel.saveLabel(labelData);
     } catch (error) {
       return error;
     }
@@ -34,8 +33,8 @@ class LabelServices {
     logger.info(`TRACKED_PATH: Inside services`);
     try {
       const result = await labelModel.getAllLabels(userId);
-      helper.seRedisforlabel(result);
-
+      helper.setLabelToCache(userId, result);
+      //helper.setNoteToCache(`LABEL_${userId}`, noteResult),
       return result;
     } catch (error) {
       return error;

@@ -45,6 +45,7 @@ class userServices {
      * @param {*} callback holds a function 
     */
     validateAndLogin = (loginCredentials, callback) => {
+        const email = loginCredentials.email;
         logger.info(`TRACKED_PATH: Inside services`);
         userModel.getDetailOfGivenEmailId(loginCredentials, (error, loginResult) => {
             loginResult = this.extractObjectFromArray(loginResult);
@@ -77,7 +78,8 @@ class userServices {
                             data: token
                         }
                         logger.info(` token genrated: ${token}`);
-                        helper.setRedisForLogin(loginResult);
+                        helper.setLoginUser(email, loginResult);
+                        //helper.setDataToRedis(`LOGIN_${email}`, noteResult),
                         callback(null, loginResult);
                     } else {
                         error = {
