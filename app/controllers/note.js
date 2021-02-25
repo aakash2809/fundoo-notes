@@ -10,7 +10,6 @@
 const logger = require("../../config/logger");
 const noteServices = require(`../services/note`);
 const resposnsCode = require("../../util/staticFile.json");
-var atob = require("atob");
 const helper = require("../middlewares/helper");
 
 class NoteController {
@@ -21,7 +20,6 @@ class NoteController {
    */
   addNote = (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
-    console.log(request.body);
     const encodedBody = helper.getEncodedBodyFromHeader(request);
 
     const noteDetails = {
@@ -77,7 +75,8 @@ class NoteController {
           message: "Notes of current account has been retrieved",
           data: noteResult,
         });
-        console.log('Request took:', new Date() - start, 'ms');
+        logger.log('Request took:', new Date() - start, 'ms');
+        logger.log('data comming from monogodb');
         logger.info("SUCCESS002:All data has been retrieved");
       }
     });
@@ -109,7 +108,6 @@ class NoteController {
             message: "data retrived",
             data: noteResult,
           });
-
           logger.info("SUCCESS003: Data retrieved");
         }
       }
@@ -181,34 +179,66 @@ class NoteController {
     });
   }
 
+  /**
+   * @description add label to note by noteId and labelId
+   * @param {*} request having noteId and labelId in its body
+   * @param {*} response sends response from server
+   */
   addLabel = (request, response) => {
     const requireDataToaddLabel = {
       noteId: request.body.noteId,
       labelId: request.body.labelId,
     }
-    console.log(requireDataToaddLabel);
+
     noteServices.updateNoteByAddingLabel(requireDataToaddLabel, (error, noteResult) => {
-      //console.log("controller result", error);
       if (error) {
         response.send({
-          success: false,
-          status_code: resposnsCode.NOT_FOUND,
-          message: error
+          success: error.success,
+          status_code: error.status_code,
+          message: error.message
         });
-        logger.error(
-          `ERR004: Note  not found with id `
-        );
       } else {
         response.send({
-          success: true,
-          status_code: resposnsCode.SUCCESS,
-          message: "Note has been updated",
-          updated_data: noteResult,
+          success: noteResult.success,
+          status_code: noteResult.status_code,
+          message: noteResult.message,
+          updated_data: noteResult.updated_data,
+        });
+        logger.info("SUCCESS004: Note has been updated");
+      }
+    });
+  }
+
+  /**
+    * @description remove a label from note by noteId and labelId
+    * @param {*} request having noteId and labelId in its body
+    * @param {*} response sends response from server
+    */
+  removeLabel = (request, response) => {
+    const requireDataToDeleteLabel = {
+      noteId: request.body.noteId,
+      labelId: request.body.labelId,
+    }
+
+    noteServices.updateNoteByRemovingLabel(requireDataToDeleteLabel, (error, noteResult) => {
+      if (error) {
+        response.send({
+          success: error.success,
+          status_code: error.status_code,
+          message: error.message
+        });
+      } else {
+        response.send({
+          success: noteResult.success,
+          status_code: noteResult.status_code,
+          message: noteResult.message,
+          updated_data: noteResult.updated_data,
         });
         logger.info("SUCCESS004: Note has been updated");
       }
     });
   }
 }
+
 
 module.exports = new NoteController();

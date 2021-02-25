@@ -103,37 +103,43 @@ class NoteModel {
     Note.findByIdAndUpdate(
       noteId,
       dataToUpdate,
-      {
-        new: true,
-      },
+      { new: true },
       (error, noteResult) => {
         error ? callback(error, null) : callback(null, noteResult);
       }
     );
   }
 
-
+  /**
+    * @description update note  data existed in database by adding existing 
+    * label in label collection
+    * @param {*}requireDataToaddLabel takes data to be upadated in json formate
+    * @param {*} callback holds a function
+    */
   addLabel = (requireDataToaddLabel, callback) => {
     const labelId = requireDataToaddLabel.labelId
     const noteId = requireDataToaddLabel.noteId;
     Note.findByIdAndUpdate(
       noteId,
-      { $push: { labelId: labelId } }, {
-      new: true,
-    },
-      (error, noteResult) => {
-        if (error) {
-          callback(error, null);
-        }
-        else if (!noteResult) {
-          error = "label not saved"
-          callback(error, null);
-        }
-        else {
-          noteResult = "label saved";
-          callback(null, noteResult)
-        }
-      })
+      { $push: { labelId: labelId } },
+      { new: true },
+      callback)
+  }
+
+  /**
+     * @description update note  data existed in database by deleting 
+     * label from note asociated with given noteId
+     * @param {*}requireDataToaddLabel takes data to be upadated in json formate
+     * @param {*} callback holds a function
+     */
+  removeLabel = (requireDataToaddLabel, callback) => {
+    const labelId = requireDataToaddLabel.labelId
+    const noteId = requireDataToaddLabel.noteId;
+    Note.findByIdAndUpdate(
+      noteId,
+      { $pull: { labelId: labelId } },
+      { new: true },
+      callback);
   }
 }
 

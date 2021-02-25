@@ -8,7 +8,7 @@
 const noteModel = require("../models/note");
 const logger = require("../../config/logger");
 const helper = require("../middlewares/helper");
-const Label = require("../models/label");
+const resposnsCode = require("../../util/staticFile.json");
 
 class NoteServices {
 
@@ -33,7 +33,8 @@ class NoteServices {
     noteModel.getAllNotes(userId, (error, noteResult) => {
       error
         ? callback(error, null) : (
-          helper.setRedisfornote(noteResult),
+          helper.setNoteToCache(userId, noteResult),
+          //helper.setNoteToCache(`NOTE_${userId}`, noteResult),
           callback(null, noteResult));
     });
   };
@@ -80,11 +81,78 @@ class NoteServices {
     });
   }
 
+  /**
+ * @description update note  data existed in database, using model's mothod
+  * by adding new label Object Id to Note
+  * @param {*} requireDataToaddLabel takes data to be upadated in json formate
+  * @param {*} callback holds a function
+  */
   updateNoteByAddingLabel = (requireDataToaddLabel, callback) => {
-    /*  noteModel.addLabel(requireDataToaddLabel, (error, noteResult) => {
-       error ? callback(error, null) : callback(null, noteResult);
-     })*/
-    noteModel.addLabel(requireDataToaddLabel, callback);
+    const labelId = requireDataToaddLabel.labelId
+    const noteId = requireDataToaddLabel.noteId;
+    noteModel.addLabel(requireDataToaddLabel, (error, noteResult) => {
+      if (error) {
+        error = {
+          success: false,
+          status_code: resposnsCode.INTERNAL_SERVER_ERROR,
+          message: `Internal server error : ${error} `,
+        }
+        callback(error, null);
+      }
+      else if (!noteResult) {
+        error = {
+          success: false,
+          status_code: resposnsCode.NOT_FOUND,
+          message: `No note availabe associated with : ${noteId} `,
+        }
+        callback(error, null);
+      }
+      else {
+        noteResult = {
+          success: true,
+          status_code: resposnsCode.SUCCESS,
+          message: `Label successfully added to Note`,
+          updated_data: noteResult,
+        }
+        callback(null, noteResult)
+      }
+    });
+  }
+
+  /**
+  * @description update note  data existed in database, using model's mothod
+  * by deleting label Object Id from Note
+  * @param {*} requireDataToaddLabeltakes data to be upadated in json formate
+  * @param {*} callback holds a function
+  */
+  updateNoteByRemovingLabel = (requireDataToaddLabel, callback) => {
+    noteModel.removeLabel(requireDataToaddLabel, (error, noteResult) => {
+      if (error) {
+        error = {
+          success: false,
+          status_code: resposnsCode.INTERNAL_SERVER_ERROR,
+          message: `Internal server error : ${error} `,
+        }
+        callback(error, null);
+      }
+      else if (!noteResult) {
+        error = {
+          success: false,
+          status_code: resposnsCode.NOT_FOUND,
+          message: `No note availabe associated with : ${noteId} `,
+        }
+        callback(error, null);
+      }
+      else {
+        noteResult = {
+          success: true,
+          status_code: resposnsCode.SUCCESS,
+          message: `Label successfully removed from Note associated with given Id`,
+          updated_data: noteResult,
+        }
+        callback(null, noteResult)
+      }
+    })
   }
 }
 

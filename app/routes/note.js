@@ -9,7 +9,7 @@ class NoteRoutes {
 
     // Retrieve all notes
     //app.get('/allNotes', helper.verifyToken, helper.redisClient, noteController.findAllNotes);
-    app.get('/allNotes', helper.verifyToken, helper.redisNoteClient, noteController.findAllNotes);
+    app.get('/allNotes', helper.verifyToken, helper.getNotesDetail, noteController.findAllNotes);
 
     // Retrieve a single note with noteId
     app.get('/uniqueNote/:noteId', helper.verifyToken, noteController.findNoteByNoteId);
@@ -19,6 +19,9 @@ class NoteRoutes {
 
     //Update a noteModel by adding labels
     app.put('/addLabelToNote', helper.verifyToken, noteController.addLabel);
+
+    //delete label from note
+    app.put('/deleteLabelFromNote', helper.verifyToken, noteController.removeLabel);
 
     //Delete a note with noteId
     app.delete('/note/:noteId', helper.verifyToken, noteController.deleteNoteByNoteId);
