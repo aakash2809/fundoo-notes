@@ -21,6 +21,9 @@ var atob = require("atob");
 var redisKey = "";
 
 class Helper {
+  /**
+   * @description it genrate the token
+   */
   genrateToken = (user) => {
     return jwt.sign(
       {
@@ -34,6 +37,9 @@ class Helper {
     );
   };
 
+  /**
+   * @description this function sending mail for reset password 
+   */
   sendMail = async (user, token, callback) => {
     var transporter = nodemailer.createTransport({
       service: "gmail",
@@ -72,6 +78,9 @@ class Helper {
     );
   };
 
+  /**
+   * @description this function verify the token 
+   */
   verifyToken = (request, response, next) => {
     try {
       var token = request.headers.authorization.split("Bearer ")[1];
@@ -87,65 +96,33 @@ class Helper {
     }
   };
 
+  /**
+   * @description this function return encodedbody from given token 
+   */
   getEncodedBodyFromHeader = (request) => {
     var token = request.headers.authorization.split("Bearer ")[1];
     var encodedBody = JSON.parse(atob(token.split(".")[1]));
     return encodedBody;
   }
 
-  //separate function to get and set data with redis 
-  setLabelToCache = (userId, result) => {
-    client.setex(`LABEL_${userId}`, 120, JSON.stringify(result));
+  /**
+   * @description retrive all label data from database
+   */
+  setDataToRedis = (KEY, data) => {
+    client.setex(KEY, 120, JSON.stringify(data));
   }
 
-  setNoteToCache = (userId, result) => {
-    client.setex(`NOTE_${userId}`, 120, JSON.stringify(result));
-  }
 
-  setLoginUser = (email, result) => {
-    client.setex(`LOGIN_${email}`, 120, JSON.stringify(result));
-  }
-
-  getLabelsDetail = (request, response, next) => {
-    const encodedBody = this.getEncodedBodyFromHeader(request);
-    var start = new Date();
-    client.get(`LABEL_${encodedBody.userId}`, (error, redisData) => {
-      if (error || redisData == null) {
-        next();
-      } else {
-        response.send(JSON.parse(redisData));
-        logger.log("labels Comming from redis");
-        logger.log('Request took:', new Date() - start, 'ms');
-      }
+  getResponseFromRedis = (KEY, callback) => {
+    client.get(KEY, (error, redisData) => {
+      (error)
+        ? (logger.info("error in retriving data from redis", error),
+          callback(error, null)) :
+          (logger.info("Does not got error but data can be null"),
+          callback(null, JSON.parse(redisData)));
     })
   }
 
-  getNotesDetail = (request, response, next) => {
-    var start = new Date();
-    const encodedBody = this.getEncodedBodyFromHeader(request);
-    client.get(`NOTE_${encodedBody.userId}`, (error, redisData) => {
-      if (error || redisData == null) {
-        next();
-      } else {
-        response.send(JSON.parse(redisData));
-        logger.log("notes Comming from redis");
-        logger.log('Request took:', new Date() - start, 'ms');
-      }
-    })
-  }
-
-  getLogedInUser = (request, response, next) => {
-    var start = new Date();
-    client.get(`LOGIN_${request.body.email}`, (error, redisData) => {
-      if (error || redisData == null) {
-        next();
-      } else {
-        logger.log("data Comming from redis");
-        logger.log('Request took:', new Date() - start, 'ms');
-        return response.send(JSON.parse(redisData));
-      }
-    })
-  }
 }
 
 module.exports = new Helper();

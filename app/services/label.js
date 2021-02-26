@@ -29,17 +29,48 @@ class LabelServices {
    * @description retrive all label data from database using model's mothod
    * @param {*} userId holds a userId
    */
-  retrieveAllLabel = async (userId) => {
+  retrieveAllLabel = (userId, callback) => {
     logger.info(`TRACKED_PATH: Inside services`);
-    try {
-      const result = await labelModel.getAllLabels(userId);
-      helper.setLabelToCache(userId, result);
-      //helper.setNoteToCache(`LABEL_${userId}`, noteResult),
-      return result;
-    } catch (error) {
-      return error;
-    }
-  }
+    const KEY = `LABEL_${userId}`
+    helper.getResponseFromRedis(KEY, (error, dataFromRedis) => {
+      if (error) {
+        error = {
+          success: false,
+          statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+          message: error
+        }
+        callback(error, null)
+      } else if (!dataFromRedis) {
+        labelModel.getAllLabels(userId, (error, labelResult) => {
+          error
+            ? (error = {
+              success: false,
+              statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+              message: error
+            },
+              callback(error, null)) : (
+              helper.setDataToRedis(KEY, labelResult),
+              console.log("comming from mongodb"),
+              labelResult = {
+                success: true,
+                statusCode: resposnsCode.SUCCESS,
+                message: 'Label of current account has been retrieved',
+                data: labelResult
+              },
+              callback(null, labelResult));
+        });
+      } else {
+        console.log("comming from redis");
+        dataFromRedis = {
+          success: true,
+          statusCode: resposnsCode.SUCCESS,
+          message: 'Label of current account has been retrieved',
+          data: dataFromRedis
+        }
+        callback(null, dataFromRedis);
+      }
+    })
+  };
 
   /**
    * @description remove label from database using model's mothod
@@ -80,7 +111,7 @@ class LabelServices {
     logger.info(`TRACKED_PATH: Inside services`);
     try {
       const result = await labelModel.updateLabelByLabelId(labelId, dataToReplace);
-      console
+
       let responseResult = "";
       if (result == null) {
         responseResult = {

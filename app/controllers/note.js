@@ -62,22 +62,20 @@ class NoteController {
     noteServices.retrieveAllNotes(encodedBody.userId, (error, noteResult) => {
       if (error) {
         response.send({
-          success: false,
-          status_code: resposnsCode.INTERNAL_SERVER_ERROR,
-          message:
-            error.message || `Some error occurred while retrieving note.`,
+          success: error.success,
+          status_code: error.statusCode,
+          message: error.message
         });
         logger.error(`ERR002: Some error occurred while retrieving notes.`);
       } else {
         response.send({
-          success: true,
-          status_code: resposnsCode.SUCCESS,
-          message: "Notes of current account has been retrieved",
-          data: noteResult,
+          success: noteResult.success,
+          status_code: noteResult.statusCode,
+          message: noteResult.message,
+          data: noteResult.data,
         });
-        logger.log('Request took:', new Date() - start, 'ms');
-        logger.log('data comming from monogodb');
-        logger.info("SUCCESS002:All data has been retrieved");
+        logger.info("SUCCESS002:All notes has been retrieved");
+        console.log('Request took:', new Date() - start, 'ms');
       }
     });
   };

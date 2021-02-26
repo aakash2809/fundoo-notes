@@ -46,50 +46,76 @@ class userServices {
     */
     validateAndLogin = (loginCredentials, callback) => {
         const email = loginCredentials.email;
+        const KEY = `LOGIN_${email}`
         logger.info(`TRACKED_PATH: Inside services`);
-        userModel.getDetailOfGivenEmailId(loginCredentials, (error, loginResult) => {
-            loginResult = this.extractObjectFromArray(loginResult);
+        helper.getResponseFromRedis(KEY, (error, dataFromRedis) => {
             if (error) {
-                callback(error, null)
-            }
-            else if (loginResult == null) {
-                loginResult = {
+                error = {
                     success: false,
-                    statusCode: resposnsCode.NOT_FOUND,
-                    message: "email id does not exist"
+                    statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+                    message: error
                 }
-                callback(null, loginResult);
-            } else {
-                bycrypt.compare(loginCredentials.password, loginResult.password, function (error, result) {
+                callback(error, null)
+            } else if (!dataFromRedis) {
+                userModel.getDetailOfGivenEmailId(loginCredentials, (error, loginResult) => {
+                    loginResult = this.extractObjectFromArray(loginResult);
                     if (error) {
                         error = {
-                            success: true,
-                            statusCode: resposnsCode.BAD_REQUEST,
-                            message: 'Invalid password'
+                            success: false,
+                            statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+                            message: error
                         }
-                        callback(error, null);
+                        callback(error, null)
                     }
-                    else if (result) {
-                        var token = jwtAuth.genrateToken(loginResult);
+                    else if (loginResult == null) {
                         loginResult = {
-                            success: true,
-                            statusCode: resposnsCode.SUCCESS,
-                            message: 'login successfull',
-                            data: token
+                            success: false,
+                            statusCode: resposnsCode.NOT_FOUND,
+                            message: "email id does not exist"
                         }
-                        logger.info(` token genrated: ${token}`);
-                        helper.setLoginUser(email, loginResult);
-                        //helper.setDataToRedis(`LOGIN_${email}`, noteResult),
                         callback(null, loginResult);
                     } else {
-                        error = {
-                            success: false,
-                            statusCode: resposnsCode.BAD_REQUEST,
-                            message: 'Invalid password',
-                        }
-                        callback(error, null);
+                        bycrypt.compare(loginCredentials.password, loginResult.password, (error, result) => {
+                            if (error) {
+                                error = {
+                                    success: true,
+                                    statusCode: resposnsCode.BAD_REQUEST,
+                                    message: 'Invalid password'
+                                }
+                                callback(error, null);
+                            }
+                            else if (result) {
+                                var token = jwtAuth.genrateToken(loginResult);
+                                loginResult = {
+                                    success: true,
+                                    statusCode: resposnsCode.SUCCESS,
+                                    message: 'login successfull',
+                                    data: token
+                                }
+                                logger.info(` token genrated: ${token}`);
+                                helper.setDataToRedis(KEY, loginResult),
+                                    console.log("response comming from mongodb");
+                                callback(null, loginResult);
+                            } else {
+                                error = {
+                                    success: false,
+                                    statusCode: resposnsCode.BAD_REQUEST,
+                                    message: 'Invalid password',
+                                }
+                                callback(error, null);
+                            }
+                        });
                     }
                 });
+            } else {
+                console.log("response comming from redis");
+                dataFromRedis = {
+                    success: true,
+                    statusCode: resposnsCode.SUCCESS,
+                    message: 'login successfull',
+                    data: dataFromRedis.data
+                }
+                callback(null, dataFromRedis);
             }
         })
     }

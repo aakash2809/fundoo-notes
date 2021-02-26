@@ -27,16 +27,49 @@ class NoteServices {
   /**
    * @description retrive all note  data from database using model's mothod
    * @param {*} callback holds a function
+   * @param {*} callback holds a function
+   * 
    */
   retrieveAllNotes = (userId, callback) => {
     logger.info(`TRACKED_PATH: Inside services`);
-    noteModel.getAllNotes(userId, (error, noteResult) => {
-      error
-        ? callback(error, null) : (
-          helper.setNoteToCache(userId, noteResult),
-          //helper.setNoteToCache(`NOTE_${userId}`, noteResult),
-          callback(null, noteResult));
-    });
+    const KEY = `NOTE_${userId}`
+    helper.getResponseFromRedis(KEY, (error, dataFromRedis) => {
+      if (error) {
+        error = {
+          success: false,
+          statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+          message: error
+        }
+        callback(error, null)
+      } else if (!dataFromRedis) {
+        noteModel.getAllNotes(userId, (error, noteResult) => {
+          error
+            ? (error = {
+              success: false,
+              statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+              message: error
+            }, callback(error, null)) : (
+              helper.setDataToRedis(KEY, noteResult),
+              console.log("comming from mongodb"),
+              noteResult = {
+                success: true,
+                statusCode: resposnsCode.SUCCESS,
+                message: 'Notes of current account has been retrieved',
+                data: noteResult
+              },
+              callback(null, noteResult));
+        });
+      } else {
+        console.log("comming from redis");
+        dataFromRedis = {
+          success: true,
+          statusCode: resposnsCode.SUCCESS,
+          message: 'Notes of current account has been retrieved',
+          data: dataFromRedis
+        }
+        callback(null, dataFromRedis);
+      }
+    })
   };
 
   /**
@@ -82,13 +115,12 @@ class NoteServices {
   }
 
   /**
- * @description update note  data existed in database, using model's mothod
-  * by adding new label Object Id to Note
-  * @param {*} requireDataToaddLabel takes data to be upadated in json formate
-  * @param {*} callback holds a function
-  */
+   * @description update note  data existed in database, using model's mothod
+    * by adding new label Object Id to Note
+    * @param {*} requireDataToaddLabel takes data to be upadated in json formate
+    * @param {*} callback holds a function
+    */
   updateNoteByAddingLabel = (requireDataToaddLabel, callback) => {
-    const labelId = requireDataToaddLabel.labelId
     const noteId = requireDataToaddLabel.noteId;
     noteModel.addLabel(requireDataToaddLabel, (error, noteResult) => {
       if (error) {

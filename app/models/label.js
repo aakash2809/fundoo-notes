@@ -52,17 +52,12 @@ class LabelModel {
   /**
    * @description retrive all label data from database
    */
-  getAllLabels = (userId) => {
-    return new Promise((resolve, reject) => {
-      Label.find({ userId: userId }, (error, labelResult) => {
-        if (error) {
-          return reject(error)
-        } else {
-          return resolve(labelResult)
-        }
-      })
-    })
-  }
+  getAllLabels = (userId, callback) => {
+    logger.info(`TRACKED_PATH: Inside model`);
+    Label.find({ userId: userId }, (error, labelData) => {
+      error ? callback(error, null) : callback(null, labelData);
+    });
+  };
 
   /**
    * @description remove label data from database

@@ -67,22 +67,21 @@ class LabelController {
    * @param {*} request does not take any parameter
    * @param {*} response sends response from server
    */
-  findAllLabels = async (request, response) => {
+  /* findAllLabels = async (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
     try {
-      var start = new Date();
+      //var start = new Date();
       const encodedBody = helper.getEncodedBodyFromHeader(request);
-      console.log(encodedBody.userId);
       const result = await labelServices.retrieveAllLabel(encodedBody.userId);
-      //console.log("controller", result);
+      // console.log(result);
       response.send({
         success: true,
         status_code: resposnsCode.SUCCESS,
         message: "label of current account has been retrieved",
         data: result,
       });
-      console.log('Request took:', new Date() - start, 'ms');
-      console.log('data comming from mongodb');
+      //logger.log('Request took:', new Date() - start, 'ms');
+      //logger.log('data comming from mongodb');
 
       logger.info("SUCCESS002:All label has been retrieved");
     } catch (error) {
@@ -93,7 +92,34 @@ class LabelController {
       });
       logger.error(`ERR002: Some error occurred while retrieving label.`);
     }
+  }; */
+
+  findAllLabels = (request, response) => {
+    logger.info(`TRACKED_PATH: Inside controller`);
+    var start = new Date();
+    const encodedBody = helper.getEncodedBodyFromHeader(request);
+
+    labelServices.retrieveAllLabel(encodedBody.userId, (error, labelResult) => {
+      if (error) {
+        response.send({
+          success: error.success,
+          status_code: error.statusCode,
+          message: error.message
+        });
+        logger.error(`ERR002: Some error occurred while retrieving label.`);
+      } else {
+        response.send({
+          success: labelResult.success,
+          status_code: labelResult.statusCode,
+          message: labelResult.message,
+          data: labelResult.data,
+        });
+        logger.info("SUCCESS002:All data has been retrieved");
+        console.log('Request took:', new Date() - start, 'ms');
+      }
+    });
   };
+
 
   /**
    * @description update label by _id
