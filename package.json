@@ -25,6 +25,7 @@
     "winston": "^3.3.3"
   },
   "dependencies": {
+    "amqplib": "^0.7.0",
     "atob": "^2.1.2",
     "bcryptjs": "^2.4.3",
     "dotenv": "^8.2.0",
