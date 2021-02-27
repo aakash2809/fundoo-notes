@@ -39,6 +39,92 @@ class userServices {
         })
     }
 
+    signUpUser = (signUpData, callback) => {
+        userModel.checkMailExistenceInDb(signUpData, (error, mailExistenceResult) => {
+            if (error) {
+                error = {
+                    success: false,
+                    statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+                    message: `internal server error ${error}`
+                }
+                callback(error, null)
+            } else if (mailExistenceResult[0] == null) {
+                var token = jwtAuth.genrateTokenForSignUp(signUpData);
+                jwtAuth.sendMail(signUpData, token, (error, mailVerificationLink) => {
+                    if (error) {
+                        error = {
+                            success: false,
+                            statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+                            message: "jwt error"
+                        }
+                        callback(error, null);
+                    } else {
+                        mailExistenceResult = {
+                            success: true,
+                            message: "Email has been sent, kindly activate your account",
+                            statusCode: resposnsCode.SUCCESS,
+                            data: mailVerificationLink
+                        }
+                        callback(null, mailExistenceResult);
+                    }
+                })
+            } else {
+                error = {
+                    success: false,
+                    statusCode: resposnsCode.ALREADY_EXIST,
+                    message: "mail already exist"
+                }
+                callback(error, null)
+            }
+        })
+    }
+
+
+    /**
+       * @description validate credentials and return result accordingly to database using model methods
+       * @param {*} email 
+       * @param {*}  callback callback funcntion
+       */
+    verifyEmail = (request, callback) => {
+        const encodedBody = helper.getEncodedBodyFromHeader(request);
+        userModel.checkMailExistenceInDb(encodedBody, (error, result) => {
+            if (error) {
+                error = {
+                    success: false,
+                    statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+                    message: `internal server error ${error}`
+                }
+                callback(error, null);
+            } else if (mailExistenceResult[0] == null) {
+                result = {
+                    success: false,
+                    statusCode: resposnsCode.ALREADY_EXIST,
+                    message: `email id already exist`
+                }
+                callback(null, result);
+            } else {
+                userModel.register(registrationData, (error, registrationResult) => {
+                    if (error) {
+                        error = {
+                            success: false,
+                            statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+                            message: `internal server error ${error}`
+                        }
+                        callback(error, null)
+                    }
+                    else {
+                        registrationResult = {
+                            success: true,
+                            statusCode: resposnsCode.SUCCESS,
+                            message: `registered successfully`
+                        }
+                        callback(null, registrationResult);
+                    };
+                })
+            }
+        })
+    }
+
     /**
      * @description validate credentials and return result accordingly to database using model methods
      * @param {*} loginCredentials holds data to be saved in json formate

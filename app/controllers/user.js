@@ -11,6 +11,7 @@ const logger = require("../../config/logger");
 const userServices = require("../services/user");
 const userValidator = require("../middlewares/userValidator");
 const resposnsCode = require("../../util/staticFile.json");
+const helper = require("../middlewares/helper");
 
 class UserControllers {
   /**
@@ -148,6 +149,85 @@ class UserControllers {
         });
     });
   };
+
+
+  signUp = (request, response) => {
+    logger.info(`TRACKED_PATH: Inside controller`);
+
+    let validatedRequestResult = userValidator.validate(request.body);
+    if (validatedRequestResult.error) {
+      logger.error(`SCHEMAERROR: Request did not match with schema`);
+      response.send({
+        success: false,
+        status_code: resposnsCode.BAD_REQUEST,
+        message: validatedRequestResult.error.details[0].message,
+      });
+      return;
+    }
+
+    const signUpDetail = {
+      name: request.body.name,
+      email: request.body.email,
+      password: request.body.password,
+      confirmPassword: request.body.confirmPassword,
+    };
+
+    if (request.body.password != request.body.confirmPassword) {
+      response.send({
+        success: false,
+        status_code: resposnsCode.BAD_REQUEST,
+        message: "password does not match with confirm password",
+      });
+      return;
+    }
+
+    logger.info(`INVOKING: registerUser method of services`);
+    console.log("controller:", signUpDetail);
+    userServices.signUpUser(
+      signUpDetail,
+      (error, registrationResult) => {
+        error
+          ? response.send({
+            success: error.success,
+            status_code: error.statusCode,
+            message: error.message,
+          })
+          : response.send({
+            success: registrationResult.success,
+            status_code: registrationResult.statusCode,
+            message: registrationResult.message,
+            token: registrationResult.data,
+          });
+        logger.info("SUCCESS001: User registered successfully");
+      }
+    );
+
+
+  }
+
+  /**
+     * @description Verify email account
+     * @param {*} request
+     * @param {*} response
+     */
+  activateAccount = (request, response) => {
+    logger.info(`INVOKING: getEmail method of login services`);
+    userServices.verifyEmail(request, (error, result) => {
+      error
+        ? response.send({
+          success: error.success,
+          status_code: error.statusCode,
+          message: error.message,
+        })
+        : response.send({
+          success: result.success,
+          statusCode: result.statusCode,
+          message: result.message
+        });
+    });
+  };
+
+
 }
 
 module.exports = new UserControllers();

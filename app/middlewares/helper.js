@@ -38,9 +38,27 @@ class Helper {
   };
 
   /**
+ * @description it genrate the token
+ */
+  genrateTokenForSignUp = (user) => {
+    return jwt.sign(
+      {
+        username: user.name,
+        userId: user.email,
+        password: user.password
+      },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: "24h",
+      }
+    );
+  };
+
+  /**
    * @description this function sending mail for reset password 
    */
   sendMail = async (user, token, callback) => {
+    console.log("send mail", user);
     var transporter = nodemailer.createTransport({
       service: "gmail",
       port: process.env.PORT,
@@ -112,17 +130,15 @@ class Helper {
     client.setex(KEY, 120, JSON.stringify(data));
   }
 
-
   getResponseFromRedis = (KEY, callback) => {
     client.get(KEY, (error, redisData) => {
       (error)
         ? (logger.info("error in retriving data from redis", error),
           callback(error, null)) :
-          (logger.info("Does not got error but data can be null"),
+        (logger.info("Does not got error but data can be null"),
           callback(null, JSON.parse(redisData)));
     })
   }
-
 }
 
 module.exports = new Helper();
