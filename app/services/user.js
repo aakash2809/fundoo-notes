@@ -12,6 +12,8 @@ const jwtAuth = require("../middlewares/helper");
 const bycrypt = require('bcryptjs');
 const resposnsCode = require("../../util/staticFile.json");
 const helper = require("../middlewares/helper");
+const { any } = require('joi');
+var response;
 
 require(`dotenv`).config();
 
@@ -103,7 +105,7 @@ class userServices {
                 }
                 callback(null, result);
             } else {
-                userModel.register(registrationData, (error, registrationResult) => {
+                userModel.updateActivationStatus(encodedBody, (error, registrationResult) => {
                     if (error) {
                         error = {
                             success: false,
@@ -249,6 +251,75 @@ class userServices {
                     callback(null, result));
         })
     }
+
+    saveJwtResponse = (responseData) => {
+        console.log("jwt save", responseData);
+        response = responseData;
+    }
+
+    jwt = async (result, token) => {
+        try {
+
+            return await jwtAuth.sendMail(result, token, (error, resetPasswordLink) => {
+                console.log(resetPasswordLink);
+                if (error) {
+                    return jwtResponse = {
+                        success: false,
+                        statusCode: resposnsCode.SUCCESS,
+                        message: 'jwt error',
+                    }
+                    //this.saveJwtResponse(jwtResponse);
+                } else {
+                    jwtResponse = {
+                        success: true,
+                        statusCode: resposnsCode.SUCCESS,
+                        message: 'token genrated and mail successfully sent',
+                        data: resetPasswordLink
+                    }
+                    console.log(jwtResponse);
+                    // this.saveJwtResponse(jwtResponse);
+                    return jwtResponse;
+                }
+            })
+        } catch (error) {
+            return error;
+        }
+    }
+
+
+    sendVerificationLinkToUser = async (email) => {
+        try {
+            console.log(email);
+            const result = await userModel.checkEmailExistenceInDb(email);
+            console.log(result);
+            let responseResult = "";
+            if (result[0] == null) {
+                responseResult = {
+                    success: false,
+                    statusCode: resposnsCode.NOT_FOUND,
+                    message: `user does not exist with ${email} you need to register first`
+                }
+                return responseResult;
+            } else {
+                if (result[0].isActivated == false) {
+                    var token = jwtAuth.genrateTokenForSignUp(result[0]);
+
+                    var re = await this.jwt(result[0], token);
+                    console.log(re);
+                    return re;
+                } else {
+                    return responseResult = {
+                        success: true,
+                        statusCode: resposnsCode.ALREADY_EXIST,
+                        message: 'email is already verified'
+                    }
+                }
+            }
+        } catch (error) {
+            return error;
+        }
+    }
+
 }
 
 module.exports = new userServices

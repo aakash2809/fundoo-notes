@@ -10,7 +10,6 @@ require("dotenv").config();
 require("./config/index").set(process.env.NODE_ENV, app);
 const config = require("./config/index").get();
 
-
 // parse requests 
 app.use(express.urlencoded({ extended: true }));
 

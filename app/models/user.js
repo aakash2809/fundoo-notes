@@ -31,6 +31,10 @@ const userSchema = new mongoose.Schema({
     confirmPassword: {
         type: String,
     },
+    isActivated: {
+        type: Boolean,
+        default: false
+    }
 },
     {
         timestamps: true,
@@ -74,6 +78,20 @@ class UserModel {
         User.find({ email: `${email}` }, (error, userExistence) => {
             (error) ? callback(error, null) : callback(null, userExistence);
         });
+    }
+
+
+    checkEmailExistenceInDb = (email) => {
+        return new Promise((resolve, reject) => {
+            User.find({ email: `${email}` }, (error, emailResult) => {
+                if (error) {
+                    return reject(error)
+                } else {
+
+                    return resolve(emailResult)
+                }
+            })
+        })
     }
 
     registerUser = (user, callback) => {
@@ -147,6 +165,22 @@ class UserModel {
                 );
             }
         });
+    }
+
+    updateActivationStatus = () => {
+        User.findOneAndUpdate(
+            { email: email },
+            { isActivated: true }, (error, result) => {
+                if (error) {
+
+                    callback(error, null);
+                } else {
+
+                    callback(null, result);
+                }
+            }
+        );
+
     }
 }
 

@@ -1,5 +1,5 @@
-
 const ampqp = require('amqplib/callback_api');
+
 //create connection
 ampqp.connect('amqp://localhost', (connError, connection) => {
     if (connError) {
@@ -18,4 +18,7 @@ ampqp.connect('amqp://localhost', (connError, connection) => {
         console.log(`Message send ${QUEUE}`);
     })
 })
+
+
+
 

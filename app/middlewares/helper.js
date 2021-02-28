@@ -57,44 +57,56 @@ class Helper {
   /**
    * @description this function sending mail for reset password 
    */
-  sendMail = async (user, token, callback) => {
-    console.log("send mail", user);
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
-      port: process.env.PORT,
-      secure: true, // use SSL
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-    await ejs.renderFile(
-      "app/views/forgotPassword.ejs",
-      {
-        name: user.name,
-        resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}`,
-      },
-      (err, data) => {
-        if (err) {
-        } else {
-          var mainOptions = {
-            from: process.env.EMAIL_USER,
-            to: user.email,
-            subject: "Activate account",
-            html: data,
-          };
-          transporter.sendMail(mainOptions, (error, mailInfo) => {
-            if (error) {
-              callback(error, null);
-            } else {
-              mailInfo = `${process.env.CLIENT_URL}/resetpassword/${token}`;
-              callback(null, mailInfo);
-            }
-          });
-        }
+  /*  sendMail = async (user, token, callback) => {
+     var transporter = nodemailer.createTransport({
+       service: "gmail",
+       port: process.env.PORT,
+       secure: true, // use SSL
+       auth: {
+         user: process.env.EMAIL_USER,
+         pass: process.env.EMAIL_PASS,
+       },
+     });
+     await ejs.renderFile(
+       "app/views/forgotPassword.ejs",
+       {
+         name: user.name,
+         resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}`,
+       },
+       (err, data) => {
+         if (err) {
+         } else {
+           var mainOptions = {
+             from: process.env.EMAIL_USER,
+             to: user.email,
+             subject: "Activate account",
+             html: data,
+           };
+           transporter.sendMail(mainOptions, (error, mailInfo) => {
+             if (error) {
+               callback(error, null);
+             } else {
+               mailInfo = `${process.env.CLIENT_URL}/resetpassword/${token}`;
+               callback(null, mailInfo);
+             }
+           });
+         }
+       }
+     );
+   }; */
+  sendMail = async (user, token) => {
+    return new Promise((resolve, reject) => {
+      let a = 5
+      if (a == 6) {
+        return reject("rejected")
+      } else {
+        return resolve("propblem resolve")
       }
-    );
-  };
+
+    })
+  }
+
+
 
   /**
    * @description this function verify the token 

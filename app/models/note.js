@@ -68,7 +68,6 @@ class NoteModel {
 
   /**
    * @description retrive one note data from database
-   *
    * @param {*} greetingID holds _id that is note id
    * @param {*} callback holds a function
    */

@@ -21,3 +21,6 @@ ampqp.connect('amqp://localhost', (connError, connection) => {
         })
     })
 })
+
+
+

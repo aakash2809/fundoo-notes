@@ -182,7 +182,6 @@ class UserControllers {
     }
 
     logger.info(`INVOKING: registerUser method of services`);
-    console.log("controller:", signUpDetail);
     userServices.signUpUser(
       signUpDetail,
       (error, registrationResult) => {
@@ -225,6 +224,28 @@ class UserControllers {
           message: result.message
         });
     });
+  };
+
+
+
+  VerifyEmailAccount = async (request, response) => {
+    try {
+      console.log(request.body.email);
+      const result = await userServices.sendVerificationLinkToUser(request.body.email);
+      console.log(result);
+      response.send({
+        success: result.success,
+        status_code: result.statusCode,
+        message: result.message,
+      });
+    } catch (error) {
+      response.send({
+        success: false,
+        status_code: resposnsCode.INTERNAL_SERVER_ERROR,
+        message: `Internal server error: ${error}`,
+      });
+
+    }
   };
 
 
