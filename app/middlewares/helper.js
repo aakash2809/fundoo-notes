@@ -128,7 +128,7 @@ class Helper {
               reject(error);
             }
             else {
-              info = `${process.env.CLIENT_URL}/resetpassword/${token}`
+              info = `${process.env.CLIENT_URL}/ActivateAccount/${token}`
               resolve(info);
             }
           })

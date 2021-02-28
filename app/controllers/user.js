@@ -174,7 +174,7 @@ class UserControllers {
      */
   activateAccount = (request, response) => {
     logger.info(`INVOKING: getEmail method of login services`);
-    userServices.verifyEmail(request, (error, result) => {
+    userServices.verifyAndAtivateAccount(request, (error, result) => {
       error
         ? response.send({
           success: error.success,

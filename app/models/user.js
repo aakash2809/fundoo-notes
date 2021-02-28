@@ -75,7 +75,7 @@ class UserModel {
 
     checkMailExistenceInDb = (signUpData, callback) => {
         const email = signUpData.email;
-        User.find({ email: `${email}` }, (error, userExistence) => {
+        User.find(email, (error, userExistence) => {
             (error) ? callback(error, null) : callback(null, userExistence);
         });
     }
@@ -167,20 +167,14 @@ class UserModel {
         });
     }
 
-    updateActivationStatus = () => {
+    updateActivationStatus = (user, callback) => {
+        console.log("model", user.email);
         User.findOneAndUpdate(
-            { email: email },
+            { email: user.email },
             { isActivated: true }, (error, result) => {
-                if (error) {
-
-                    callback(error, null);
-                } else {
-
-                    callback(null, result);
-                }
+                (error) ? callback(error, null) : callback(null, result);
             }
         );
-
     }
 }
 

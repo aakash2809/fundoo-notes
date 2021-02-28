@@ -42,54 +42,62 @@ class userServices {
         })
     }
 
-    signUpUser = (signUpData, callback) => {
-        userModel.checkMailExistenceInDb(signUpData, (error, mailExistenceResult) => {
-            if (error) {
-                error = {
+    /**
+     * @description save request data to database using model methods
+     * @param {*} email holds email id to which need to activate
+    */
+    sendVerificationLinkToUser = async (email) => {
+        try {
+            const result = await userModel.checkEmailExistenceInDb(email);
+            let responseResult = "";
+            if (result[0] == null) {
+                responseResult = {
                     success: false,
-                    statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
-                    message: `internal server error ${error}`
+                    statusCode: resposnsCode.NOT_FOUND,
+                    message: `user does not exist with ${email} you need to register first`
                 }
-                callback(error, null)
-            } else if (mailExistenceResult[0] == null) {
-                var token = jwtAuth.genrateTokenForSignUp(signUpData);
-                jwtAuth.sendMail(signUpData, token, (error, mailVerificationLink) => {
-                    if (error) {
+                return responseResult;
+            } else {
+                if (result[0].isActivated == false) {
+                    var token = jwtAuth.genrateTokenForSignUp(result[0]);
+                    try {
+                        var mailRespnse = await helper.sendMailToActivateAccount(result[0], token);
+                        responseResult = {
+                            success: true,
+                            statusCode: resposnsCode.SUCCESS,
+                            message: 'mail sent successfully to given email id',
+                            data: mailRespnse
+                        }
+                        return responseResult;
+                    } catch (error) {
                         error = {
                             success: false,
                             statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
-                            message: "jwt error"
+                            message: error,
                         }
-                        callback(error, null);
-                    } else {
-                        mailExistenceResult = {
-                            success: true,
-                            message: "Email has been sent, kindly activate your account",
-                            statusCode: resposnsCode.SUCCESS,
-                            data: mailVerificationLink
-                        }
-                        callback(null, mailExistenceResult);
+                        return error;
                     }
-                })
-            } else {
-                error = {
-                    success: false,
-                    statusCode: resposnsCode.ALREADY_EXIST,
-                    message: "mail already exist"
+                } else {
+                    return responseResult = {
+                        success: false,
+                        statusCode: resposnsCode.ALREADY_EXIST,
+                        message: 'email is already verified'
+                    }
                 }
-                callback(error, null)
             }
-        })
+        } catch (error) {
+            return error;
+        }
     }
-
 
     /**
        * @description validate credentials and return result accordingly to database using model methods
        * @param {*} email 
        * @param {*}  callback callback funcntion
        */
-    verifyEmail = (request, callback) => {
+    verifyAndAtivateAccount = (request, callback) => {
         const encodedBody = helper.getEncodedBodyFromHeader(request);
+
         userModel.checkMailExistenceInDb(encodedBody, (error, result) => {
             if (error) {
                 error = {
@@ -98,11 +106,11 @@ class userServices {
                     message: `internal server error ${error}`
                 }
                 callback(error, null);
-            } else if (mailExistenceResult[0] == null) {
+            } else if (result[0] == null) {
                 result = {
                     success: false,
                     statusCode: resposnsCode.ALREADY_EXIST,
-                    message: `email id already exist`
+                    message: `email does not exist you need to register first`
                 }
                 callback(null, result);
             } else {
@@ -119,7 +127,7 @@ class userServices {
                         registrationResult = {
                             success: true,
                             statusCode: resposnsCode.SUCCESS,
-                            message: `registered successfully`
+                            message: `verified successfully`
                         }
                         callback(null, registrationResult);
                     };
@@ -254,49 +262,8 @@ class userServices {
     }
 
 
-    sendVerificationLinkToUser = async (email) => {
-        try {
-            const result = await userModel.checkEmailExistenceInDb(email);
-            let responseResult = "";
-            if (result[0] == null) {
-                responseResult = {
-                    success: false,
-                    statusCode: resposnsCode.NOT_FOUND,
-                    message: `user does not exist with ${email} you need to register first`
-                }
-                return responseResult;
-            } else {
-                if (result[0].isActivated == false) {
-                    var token = jwtAuth.genrateTokenForSignUp(result[0]);
-                    try {
-                        var mailRespnse = await helper.sendMailToActivateAccount(result[0], token);
-                        responseResult = {
-                            success: true,
-                            statusCode: resposnsCode.SUCCESS,
-                            message: 'mail sent successfully to given email id',
-                            data: mailRespnse
-                        }
-                        return responseResult;
-                    } catch (error) {
-                        error = {
-                            success: false,
-                            statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
-                            message: error,
-                        }
-                        return error;
-                    }
-                } else {
-                    return responseResult = {
-                        success: false,
-                        statusCode: resposnsCode.ALREADY_EXIST,
-                        message: 'email is already verified'
-                    }
-                }
-            }
-        } catch (error) {
-            return error;
-        }
-    }
+
+
 
 }
 
