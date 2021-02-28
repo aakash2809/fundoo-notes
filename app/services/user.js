@@ -253,46 +253,10 @@ class userServices {
         })
     }
 
-    saveJwtResponse = (responseData) => {
-        console.log("jwt save", responseData);
-        response = responseData;
-    }
-
-    jwt = async (result, token) => {
-        try {
-
-            return await jwtAuth.sendMail(result, token, (error, resetPasswordLink) => {
-                console.log(resetPasswordLink);
-                if (error) {
-                    return jwtResponse = {
-                        success: false,
-                        statusCode: resposnsCode.SUCCESS,
-                        message: 'jwt error',
-                    }
-                    //this.saveJwtResponse(jwtResponse);
-                } else {
-                    jwtResponse = {
-                        success: true,
-                        statusCode: resposnsCode.SUCCESS,
-                        message: 'token genrated and mail successfully sent',
-                        data: resetPasswordLink
-                    }
-                    console.log(jwtResponse);
-                    // this.saveJwtResponse(jwtResponse);
-                    return jwtResponse;
-                }
-            })
-        } catch (error) {
-            return error;
-        }
-    }
-
 
     sendVerificationLinkToUser = async (email) => {
         try {
-            console.log(email);
             const result = await userModel.checkEmailExistenceInDb(email);
-            console.log(result);
             let responseResult = "";
             if (result[0] == null) {
                 responseResult = {
@@ -304,18 +268,26 @@ class userServices {
             } else {
                 if (result[0].isActivated == false) {
                     var token = jwtAuth.genrateTokenForSignUp(result[0]);
-                    console.log("user", result[0]);
-                    var re = await sendMail(result[0], token);
-                    // console.log("user", re);
-                    re = {
-                        success: true,
-                        statusCode: resposnsCode.ALREADY_EXIST,
-                        message: re
+                    try {
+                        var mailRespnse = await helper.sendMailToActivateAccount(result[0], token);
+                        responseResult = {
+                            success: true,
+                            statusCode: resposnsCode.SUCCESS,
+                            message: 'mail sent successfully to given email id',
+                            data: mailRespnse
+                        }
+                        return responseResult;
+                    } catch (error) {
+                        error = {
+                            success: false,
+                            statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+                            message: error,
+                        }
+                        return error;
                     }
-                    return re;
                 } else {
                     return responseResult = {
-                        success: true,
+                        success: false,
                         statusCode: resposnsCode.ALREADY_EXIST,
                         message: 'email is already verified'
                     }

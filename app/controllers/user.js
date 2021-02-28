@@ -150,60 +150,23 @@ class UserControllers {
     });
   };
 
-
-  signUp = (request, response) => {
-    logger.info(`TRACKED_PATH: Inside controller`);
-
-    let validatedRequestResult = userValidator.validate(request.body);
-    if (validatedRequestResult.error) {
-      logger.error(`SCHEMAERROR: Request did not match with schema`);
+  VerifyEmailAccount = async (request, response) => {
+    try {
+      const result = await userServices.sendVerificationLinkToUser(request.body.email);
+      response.send({
+        success: result.success,
+        status_code: result.statusCode,
+        message: result.message,
+        data: result.data
+      });
+    } catch (error) {
       response.send({
         success: false,
-        status_code: resposnsCode.BAD_REQUEST,
-        message: validatedRequestResult.error.details[0].message,
+        status_code: resposnsCode.INTERNAL_SERVER_ERROR,
+        message: `Internal server error: ${error}`,
       });
-      return;
     }
-
-    const signUpDetail = {
-      name: request.body.name,
-      email: request.body.email,
-      password: request.body.password,
-      confirmPassword: request.body.confirmPassword,
-    };
-
-    if (request.body.password != request.body.confirmPassword) {
-      response.send({
-        success: false,
-        status_code: resposnsCode.BAD_REQUEST,
-        message: "password does not match with confirm password",
-      });
-      return;
-    }
-
-    logger.info(`INVOKING: registerUser method of services`);
-    userServices.signUpUser(
-      signUpDetail,
-      (error, registrationResult) => {
-        error
-          ? response.send({
-            success: error.success,
-            status_code: error.statusCode,
-            message: error.message,
-          })
-          : response.send({
-            success: registrationResult.success,
-            status_code: registrationResult.statusCode,
-            message: registrationResult.message,
-            token: registrationResult.data,
-          });
-        logger.info("SUCCESS001: User registered successfully");
-      }
-    );
-
-
   }
-
   /**
      * @description Verify email account
      * @param {*} request
@@ -221,32 +184,15 @@ class UserControllers {
         : response.send({
           success: result.success,
           statusCode: result.statusCode,
-          message: result.message
+          message: result.message,
+          data: result.data
         });
     });
   };
 
 
 
-  VerifyEmailAccount = async (request, response) => {
-    try {
-      console.log(request.body.email);
-      const result = await userServices.sendVerificationLinkToUser(request.body.email);
-      console.log(result);
-      response.send({
-        success: result.success,
-        status_code: result.statusCode,
-        message: result.message,
-      });
-    } catch (error) {
-      response.send({
-        success: false,
-        status_code: resposnsCode.INTERNAL_SERVER_ERROR,
-        message: `Internal server error: ${error}`,
-      });
 
-    }
-  };
 
 
 }

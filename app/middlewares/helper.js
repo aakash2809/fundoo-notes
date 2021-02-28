@@ -17,7 +17,7 @@ const redis = require("redis");
 const client = redis.createClient();
 require("dotenv").config();
 var atob = require("atob");
-var redisKey = "";
+const { isRef } = require("joi");
 
 class Helper {
   /**
@@ -56,45 +56,48 @@ class Helper {
   /**
    * @description this function sending mail for reset password 
    */
-  /*  sendMail = async (user, token, callback) => {
-     var transporter = nodemailer.createTransport({
-       service: "gmail",
-       port: process.env.PORT,
-       secure: true, // use SSL
-       auth: {
-         user: process.env.EMAIL_USER,
-         pass: process.env.EMAIL_PASS,
-       },
-     });
-     await ejs.renderFile(
-       "app/views/forgotPassword.ejs",
-       {
-         name: user.name,
-         resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}`,
-       },
-       (err, data) => {
-         if (err) {
-         } else {
-           var mainOptions = {
-             from: process.env.EMAIL_USER,
-             to: user.email,
-             subject: "Activate account",
-             html: data,
-           };
-           transporter.sendMail(mainOptions, (error, mailInfo) => {
-             if (error) {
-               callback(error, null);
-             } else {
-               mailInfo = `${process.env.CLIENT_URL}/resetpassword/${token}`;
-               callback(null, mailInfo);
-             }
-           });
-         }
-       }
-     );
-   }; */
-  sendMail = (user, token) => {
-    console.log("helper user", user);
+  sendMail = async (user, token, callback) => {
+    var transporter = nodemailer.createTransport({
+      service: "gmail",
+      port: process.env.PORT,
+      secure: true, // use SSL
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+    await ejs.renderFile(
+      "app/views/forgotPassword.ejs",
+      {
+        name: user.name,
+        resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}`,
+      },
+      (err, data) => {
+        if (err) {
+        } else {
+          var mainOptions = {
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: "Activate account",
+            html: data,
+          };
+          transporter.sendMail(mainOptions, (error, mailInfo) => {
+            if (error) {
+              callback(error, null);
+            } else {
+              mailInfo = `${process.env.CLIENT_URL}/resetpassword/${token}`;
+              callback(null, mailInfo);
+            }
+          });
+        }
+      }
+    );
+  };
+
+  /**
+  * @description this function sending mail to activate the Account
+  */
+  sendMailToActivateAccount = (user, token) => {
     return new Promise((resolve, reject) => {
       let transporter = nodemailer.createTransport({
         //settings
@@ -107,38 +110,32 @@ class Helper {
         }
 
       });
-      /*  let data = ejs.renderFile(
-         "app/views/forgotPassword.ejs",
-         {
-           name: user.name,
-           resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}`,
-         })
-  */
-      var mailOptions = {
-        from: process.env.EMAIL_USER,
-        to: user.email,
-        subject: "Activate account",
-        html: `<b>${process.env.CLIENT_URL}/resetpassword/${token}</b>`
+      ejs.renderFile("app/views/activateEmail.ejs", {
+        name: user.name,
+        resetLink: `${process.env.CLIENT_URL}/ActivateAccount/${token}`,
+      }, function (err, data) {
+        if (err) {
 
-      };
-      console.log(mailOptions);
-      transporter.sendMail(mailOptions, function (error, info) {
-
-        if (error) {
-          console.log("helper error is ", error);
-          resolve(error); // or use rejcet(false) but then you will have to handle errors
+        } else {
+          var mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: user.email,
+            subject: "Activate account",
+            html: data
+          };
+          transporter.sendMail(mailOptions, function (error, info) {
+            if (error) {
+              reject(error);
+            }
+            else {
+              info = `${process.env.CLIENT_URL}/resetpassword/${token}`
+              resolve(info);
+            }
+          })
         }
-        else {
-          console.log("Email sent: ");
-          info = `${process.env.CLIENT_URL}/resetpassword/${token}`
-          resolve(info);
-        }
-      })
-
+      });
     })
   }
-
-
 
   /**
    * @description this function verify the token 
