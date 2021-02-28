@@ -11,7 +11,6 @@
 const jwt = require("jsonwebtoken");
 var nodemailer = require("nodemailer");
 const logger = require("../../config/logger");
-var nodemailer = require("nodemailer");
 var ejs = require("ejs");
 const resposnsCode = require("../../util/staticFile.json");
 const redis = require("redis");
@@ -94,14 +93,47 @@ class Helper {
        }
      );
    }; */
-  sendMail = async (user, token) => {
+  sendMail = (user, token) => {
+    console.log("helper user", user);
     return new Promise((resolve, reject) => {
-      let a = 5
-      if (a == 6) {
-        return reject("rejected")
-      } else {
-        return resolve("propblem resolve")
-      }
+      let transporter = nodemailer.createTransport({
+        //settings
+        service: "gmail",
+        port: process.env.PORT,
+        secure: true, // use SSL
+        auth: {
+          user: process.env.EMAIL_USER,
+          pass: process.env.EMAIL_PASS
+        }
+
+      });
+      /*  let data = ejs.renderFile(
+         "app/views/forgotPassword.ejs",
+         {
+           name: user.name,
+           resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}`,
+         })
+  */
+      var mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: user.email,
+        subject: "Activate account",
+        html: `<b>${process.env.CLIENT_URL}/resetpassword/${token}</b>`
+
+      };
+      console.log(mailOptions);
+      transporter.sendMail(mailOptions, function (error, info) {
+
+        if (error) {
+          console.log("helper error is ", error);
+          resolve(error); // or use rejcet(false) but then you will have to handle errors
+        }
+        else {
+          console.log("Email sent: ");
+          info = `${process.env.CLIENT_URL}/resetpassword/${token}`
+          resolve(info);
+        }
+      })
 
     })
   }

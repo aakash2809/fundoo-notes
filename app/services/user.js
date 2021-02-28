@@ -13,6 +13,7 @@ const bycrypt = require('bcryptjs');
 const resposnsCode = require("../../util/staticFile.json");
 const helper = require("../middlewares/helper");
 const { any } = require('joi');
+const { sendMail } = require('../middlewares/helper');
 var response;
 
 require(`dotenv`).config();
@@ -303,9 +304,14 @@ class userServices {
             } else {
                 if (result[0].isActivated == false) {
                     var token = jwtAuth.genrateTokenForSignUp(result[0]);
-
-                    var re = await this.jwt(result[0], token);
-                    console.log(re);
+                    console.log("user", result[0]);
+                    var re = await sendMail(result[0], token);
+                    // console.log("user", re);
+                    re = {
+                        success: true,
+                        statusCode: resposnsCode.ALREADY_EXIST,
+                        message: re
+                    }
                     return re;
                 } else {
                     return responseResult = {
