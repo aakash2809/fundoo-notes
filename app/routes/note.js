@@ -25,6 +25,9 @@ class NoteRoutes {
     //delete label from note
     app.put('/deleteLabelFromNote', helper.verifyToken, noteController.removeLabel);
 
+    //delete User from note
+    app.put('/deleteUserFromNote', helper.verifyToken, noteController.removeUser);
+
     //Delete a note with noteId
     app.delete('/note/:noteId', helper.verifyToken, noteController.deleteNoteByNoteId);
   }

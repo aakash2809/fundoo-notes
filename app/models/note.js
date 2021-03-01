@@ -160,6 +160,22 @@ class NoteModel {
       { new: true },
       callback);
   }
+
+  /**
+   * @description update note  data existed in database by deleting 
+   * label from note asociated with given noteId
+   * @param {*}requireDataToaddUser takes data to be upadated in json formate
+   * @param {*} callback holds a function
+   */
+  removeUser = (requireDataToaddUser, callback) => {
+    const userId = requireDataToaddUser.userId
+    const noteId = requireDataToaddUser.noteId;
+    Note.findByIdAndUpdate(
+      noteId,
+      { $pull: { collaborator: userId } },
+      { new: true },
+      callback);
+  }
 }
 
 module.exports = new NoteModel();

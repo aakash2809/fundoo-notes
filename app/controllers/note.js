@@ -208,8 +208,8 @@ class NoteController {
   }
 
   /**
-  * @description add label to note by noteId and labelId
-  * @param {*} request having noteId and labelId in its body
+  * @description add user to note by noteId and userId
+  * @param {*} request having noteId and userId in its body
   * @param {*} response sends response from server
   */
   addUserToNote = (request, response) => {
@@ -217,7 +217,7 @@ class NoteController {
       noteId: request.body.noteId,
       userId: request.body.userId,
     }
-    console.log(requireDataToaddUser);
+
     noteServices.updateNoteByAddingUser(requireDataToaddUser, (error, noteResult) => {
       if (error) {
         response.send({
@@ -266,6 +266,37 @@ class NoteController {
       }
     });
   }
+
+  /**
+    * @description remove a label from note by noteId and userlId
+    * @param {*} request having noteId and userId in its body
+    * @param {*} response sends response from server
+    */
+  removeUser = (request, response) => {
+    const requireDataToDeleteUser = {
+      noteId: request.body.noteId,
+      userId: request.body.userId,
+    }
+
+    noteServices.updateNoteByRemovingUser(requireDataToDeleteUser, (error, noteResult) => {
+      if (error) {
+        response.send({
+          success: error.success,
+          status_code: error.status_code,
+          message: error.message
+        });
+      } else {
+        response.send({
+          success: noteResult.success,
+          status_code: noteResult.status_code,
+          message: noteResult.message,
+          updated_data: noteResult.updated_data,
+        });
+        logger.info("SUCCESS004: Note has been updated");
+      }
+    });
+  }
+
 }
 
 

@@ -154,12 +154,11 @@ class NoteServices {
   /**
    * @description update note  data existed in database, using model's mothod
     * by adding new label Object Id to Note
-    * @param {*} requireDataToaddLabel takes data to be upadated in json formate
+    * @param {*} requireDataToaddUser takes data to be upadated in json formate
     * @param {*} callback holds a function
     */
   updateNoteByAddingUser = (requireDataToaddUser, callback) => {
     const noteId = requireDataToaddUser.noteId;
-
     noteModel.addUser(requireDataToaddUser, (error, noteResult) => {
       if (error) {
         error = {
@@ -181,7 +180,7 @@ class NoteServices {
         noteResult = {
           success: true,
           status_code: resposnsCode.SUCCESS,
-          message: `Label successfully added to Note`,
+          message: `User successfully added to Note`,
           updated_data: noteResult,
         }
         callback(null, noteResult)
@@ -218,6 +217,42 @@ class NoteServices {
           success: true,
           status_code: resposnsCode.SUCCESS,
           message: `Label successfully removed from Note associated with given Id`,
+          updated_data: noteResult,
+        }
+        callback(null, noteResult)
+      }
+    })
+  }
+
+  /**
+  * @description update note  data existed in database, using model's mothod
+  * by deleting User Object Id from Note
+  * @param {*} requireDataToaddUser takes data to be upadated in json formate
+  * @param {*} callback holds a function
+  */
+  updateNoteByRemovingUser = (requireDataToaddUser, callback) => {
+    noteModel.removeUser(requireDataToaddUser, (error, noteResult) => {
+      if (error) {
+        error = {
+          success: false,
+          status_code: resposnsCode.INTERNAL_SERVER_ERROR,
+          message: `Internal server error : ${error} `,
+        }
+        callback(error, null);
+      }
+      else if (!noteResult) {
+        error = {
+          success: false,
+          status_code: resposnsCode.NOT_FOUND,
+          message: `No note availabe associated with : ${userId} `,
+        }
+        callback(error, null);
+      }
+      else {
+        noteResult = {
+          success: true,
+          status_code: resposnsCode.SUCCESS,
+          message: `User successfully removed from Note associated with given Id`,
           updated_data: noteResult,
         }
         callback(null, noteResult)
