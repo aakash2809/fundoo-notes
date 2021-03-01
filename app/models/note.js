@@ -29,6 +29,10 @@ const noteSchema = new mongoose.Schema(
     labelId: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Label",
+    }],
+    collaborator: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
     }]
   },
   {
@@ -121,6 +125,22 @@ class NoteModel {
     Note.findByIdAndUpdate(
       noteId,
       { $push: { labelId: labelId } },
+      { new: true },
+      callback)
+  }
+
+  /**
+  * @description update note  data existed in database by adding existing 
+  * user in user collection
+  * @param {*}requireDataToaddUser takes data to be upadated in json formate
+  * @param {*} callback holds a function
+  */
+  addUser = (requireDataToaddUser, callback) => {
+    const userId = requireDataToaddUser.userId
+    const noteId = requireDataToaddUser.noteId;
+    Note.findByIdAndUpdate(
+      noteId,
+      { $push: { collaborator: userId } },
       { new: true },
       callback)
   }

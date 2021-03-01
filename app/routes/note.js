@@ -19,6 +19,9 @@ class NoteRoutes {
     //Update a noteModel by adding labels
     app.put('/addLabelToNote', helper.verifyToken, noteController.addLabel);
 
+    //Update a noteModel by adding users
+    app.put('/addUserToNote', helper.verifyToken, noteController.addUserToNote);
+
     //delete label from note
     app.put('/deleteLabelFromNote', helper.verifyToken, noteController.removeLabel);
 
