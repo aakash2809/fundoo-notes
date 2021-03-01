@@ -97,7 +97,7 @@ class userServices {
        */
     verifyAndAtivateAccount = (request, callback) => {
         const encodedBody = helper.getEncodedBodyFromHeader(request);
-
+        console.log("inside service", encodedBody);
         userModel.checkMailExistenceInDb(encodedBody, (error, result) => {
             if (error) {
                 error = {

@@ -40,10 +40,11 @@ class Helper {
  * @description it genrate the token
  */
   genrateTokenForSignUp = (user) => {
+    console.log("helper genrate token", user);
     return jwt.sign(
       {
         username: user.name,
-        userId: user.email,
+        email: user.email,
         password: user.password
       },
       process.env.SECRET_KEY,
