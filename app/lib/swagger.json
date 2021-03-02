@@ -318,6 +318,135 @@
           }
         }
       }
+    },
+    "/labels": {
+      "get": {
+        "tags": [
+          "Label"
+        ],
+        "summary": "get all Labels",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "responses": {
+          "200": {
+            "description": "retirved successfully"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        }
+      }
+    },
+    "/addlabel": {
+      "post": {
+        "tags": [
+          "Label"
+        ],
+        "summary": "Add a new Label",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Label",
+            "description": "Label object",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Label"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": " Label inserted successfully"
+          },
+          "400": {
+            "description": "Bad Request ,Invalid input"
+          }
+        }
+      }
+    },
+    "/updateLabel/{labelId}": {
+      "put": {
+        "tags": [
+          "Label"
+        ],
+        "summary": "update exiting Label ",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "labelId",
+            "type": "string",
+            "description": "id that need to be updated successfully",
+            "required": true
+          },
+          {
+            "in": "body",
+            "name": "Note",
+            "description": "label object that needs to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Label"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note  not found with input id"
+          }
+        }
+      }
+    },
+    "/label/{labelId}": {
+      "delete": {
+        "tags": [
+          "Label"
+        ],
+        "summary": "delete lavel ",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "path",
+            "name": "labelId",
+            "description": "id for label that need to be deleted",
+            "type": "string",
+            "required": true
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note deleted successfully with input id"
+          },
+          "404": {
+            "description": "note  not found with input id"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
     }
   },
   "definitions": {
@@ -408,6 +537,18 @@
         "note": {
           "type": "string",
           "example": "Rent- 8000"
+        }
+      }
+    },
+    "Label": {
+      "type": "object",
+      "required": [
+        "label"
+      ],
+      "properties": {
+        "label": {
+          "type": "string",
+          "example": "Aakash"
         }
       }
     }
