@@ -59,10 +59,10 @@ class UserControllers {
             message: error,
           })
           : response.send({
-            success: true,
-            status_code: resposnsCode.SUCCESS,
-            message: "Registered successfully",
-            data: registrationResult,
+            success: registrationResult.success,
+            status_code: registrationResult.statusCode,
+            message: registrationResult.message,
+            data: registrationResult.data,
           });
         logger.info("SUCCESS001: User registered successfully");
       }
@@ -150,25 +150,9 @@ class UserControllers {
     });
   };
 
-  VerifyEmailAccount = async (request, response) => {
-    try {
-      const result = await userServices.sendVerificationLinkToUser(request.body.email);
-      response.send({
-        success: result.success,
-        status_code: result.statusCode,
-        message: result.message,
-        data: result.data
-      });
-    } catch (error) {
-      response.send({
-        success: false,
-        status_code: resposnsCode.INTERNAL_SERVER_ERROR,
-        message: `Internal server error: ${error}`,
-      });
-    }
-  }
+
   /**
-     * @description Verify email account
+     * @description activate email account
      * @param {*} request
      * @param {*} response
      */

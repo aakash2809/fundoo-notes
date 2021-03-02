@@ -73,10 +73,28 @@ class UserModel {
         })
     }
 
+    /**
+     * @description find email id in database and return data associated with id
+     * @param {*} signUpData holds login credentials
+     * @param {*} callback holds a function 
+    */
     checkMailExistenceInDb = (signUpData, callback) => {
         const email = signUpData.email;
         User.find({ email: `${email}` }, (error, userExistence) => {
             (error) ? callback(error, null) : callback(null, userExistence);
+        });
+    }
+
+
+    /**
+      * @description find email id in database and validate
+      * @param {*} loginCredential holds login credentials
+      * @param {*} callback holds a function 
+     */
+    getDetailOfGivenEmailId = (loginCredential, callback) => {
+        const email = loginCredential.email;
+        User.find({ email: `${email}` }, (error, loginResult) => {
+            (error) ? callback(error, null) : callback(null, loginResult);
         });
     }
 
@@ -90,38 +108,6 @@ class UserModel {
                 }
             })
         })
-    }
-
-    registerUser = (user, callback) => {
-        this.checkMailExistenceInDb(user, (error, userExistence) => {
-            if (error) {
-                callback(error, null)
-            } else if (!userExistence) {
-                error = "already registered";
-                callback(error, null);
-            } else {
-                const userRegistration = new User(registrationData);
-                userRegistration.save((error, registrationResult) => {
-                    if (error) {
-                        callback(error, null)
-                    } else {
-                        callback(null, registrationResult)
-                    }
-                })
-            }
-        })
-    }
-
-    /**
-      * @description find email id in database and validate
-      * @param {*} loginCredential holds login credentials
-      * @param {*} callback holds a function 
-     */
-    getDetailOfGivenEmailId = (loginCredential, callback) => {
-        const email = loginCredential.email;
-        User.find({ email: `${email}` }, (error, loginResult) => {
-            (error) ? callback(error, null) : callback(null, loginResult);
-        });
     }
 
     /**

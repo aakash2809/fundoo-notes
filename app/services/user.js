@@ -35,10 +35,22 @@ class userServices {
      * @param {*} registrationData holds data to be saved in json formate
      * @param {*} callback holds a function 
     */
-    registerUser = (registrationData, callback) => {
+    /* registerUser = (registrationData, callback) => {
         logger.info(`TRACKED_PATH: Inside services`);
         userModel.register(registrationData, (error, registrationResult) => {
             (error) ? callback(error, null) : callback(null, registrationResult);
+        })
+    } */
+
+    registerUser = (registrationData, callback) => {
+        logger.info(`TRACKED_PATH: Inside services`);
+        userModel.register(registrationData, async (error, registrationResult) => {
+            if (error) {
+                callback(error, null)
+            } else {
+                let verificationResponse = await this.sendVerificationLinkToUser(registrationResult.email);
+                callback(null, verificationResponse);
+            }
         })
     }
 
