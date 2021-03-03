@@ -46,7 +46,7 @@
         ],
         "responses": {
           "200": {
-            "description": "user registered successfully"
+            "description": "verification link has been sent successfully to activate the account"
           },
           "400": {
             "description": "Bad Request ,Invalid input"
@@ -160,6 +160,39 @@
         }
       }
     },
+    "/activateEmail": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "activate the account",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "User",
+            "description": "send mail to user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ForgotPassword"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user registered successfully"
+          },
+          "400": {
+            "description": "Bad Request ,Invalid input"
+          }
+        }
+      }
+    },
     "/addNote": {
       "post": {
         "tags": [
@@ -250,7 +283,7 @@
         "tags": [
           "Note"
         ],
-        "summary": "update exiting greeting ",
+        "summary": "update exiting note",
         "consumes": [
           "application/json"
         ],
@@ -301,7 +334,7 @@
           {
             "in": "path",
             "name": "noteId",
-            "description": "id for greeting that need to be deleted",
+            "description": "id for Note that need to be deleted",
             "type": "string",
             "required": true
           }
@@ -315,6 +348,138 @@
           },
           "500": {
             "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/addLabelToNote": {
+      "put": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "update existing note",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Note",
+            "description": "note objectId and label ObjecId that needs to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note not found with input id"
+          }
+        }
+      }
+    },
+    "/addUserToNote": {
+      "put": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "update existing note",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Note",
+            "description": "note objectId and user ObjecId that needs to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note not found with input id"
+          }
+        }
+      }
+    },
+    "/deleteLabelFromNote": {
+      "put": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "update existing note",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Note",
+            "description": "note objectId and label ObjecId that needs to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note not found with input id"
+          }
+        }
+      }
+    },
+    "/deleteUserFromNote": {
+      "put": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "update existing note",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Note",
+            "description": "note objectId and user ObjecId that needs to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/Note"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note not found with input id"
           }
         }
       }
