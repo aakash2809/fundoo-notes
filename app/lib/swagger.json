@@ -134,13 +134,6 @@
         ],
         "parameters": [
           {
-            "in": "path",
-            "name": "Token",
-            "type": "string",
-            "description": "token for authentication",
-            "required": true
-          },
-          {
             "in": "body",
             "name": "ResetPassword",
             "description": "new password that needs to be updated",
@@ -223,7 +216,13 @@
           "400": {
             "description": "Bad Request ,Invalid input"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
     },
     "/allNotes": {
@@ -245,7 +244,13 @@
           "500": {
             "description": "internal server error"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
     },
     "/uniqueNote/{noteId}": {
@@ -315,7 +320,13 @@
           "404": {
             "description": "note  not found with input id"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
     },
     "/note/{noteId}": {
@@ -349,7 +360,13 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
     },
     "/addLabelToNote": {
@@ -371,7 +388,7 @@
             "description": "note objectId and label ObjecId that needs to be updated",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Note"
+              "$ref": "#/definitions/updateNoteByLabel"
             }
           }
         ],
@@ -404,7 +421,7 @@
             "description": "note objectId and user ObjecId that needs to be updated",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Note"
+              "$ref": "#/definitions/updateNoteByUser"
             }
           }
         ],
@@ -415,7 +432,13 @@
           "404": {
             "description": "note not found with input id"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
     },
     "/deleteLabelFromNote": {
@@ -437,7 +460,7 @@
             "description": "note objectId and label ObjecId that needs to be updated",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Note"
+              "$ref": "#/definitions/updateNoteByLabel"
             }
           }
         ],
@@ -448,7 +471,13 @@
           "404": {
             "description": "note not found with input id"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
     },
     "/deleteUserFromNote": {
@@ -470,7 +499,7 @@
             "description": "note objectId and user ObjecId that needs to be updated",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/Note"
+              "$ref": "#/definitions/updateNoteByUser"
             }
           }
         ],
@@ -481,7 +510,13 @@
           "404": {
             "description": "note not found with input id"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
     },
     "/labels": {
@@ -503,7 +538,13 @@
           "500": {
             "description": "internal server error"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
     },
     "/addlabel": {
@@ -536,7 +577,13 @@
           "400": {
             "description": "Bad Request ,Invalid input"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
     },
     "/updateLabel/{labelId}": {
@@ -576,7 +623,13 @@
           "404": {
             "description": "note  not found with input id"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
     },
     "/label/{labelId}": {
@@ -610,8 +663,21 @@
           "500": {
             "description": "Internal Server Error"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
+    }
+  },
+  "securityDefinitions": {
+    "JWT": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
     }
   },
   "definitions": {
@@ -702,6 +768,40 @@
         "note": {
           "type": "string",
           "example": "Rent- 8000"
+        }
+      }
+    },
+    "updateNoteByLabel": {
+      "type": "object",
+      "required": [
+        "noteId",
+        "labelId"
+      ],
+      "properties": {
+        "noteId": {
+          "type": "string",
+          "example": ""
+        },
+        "labelId": {
+          "type": "string",
+          "example": ""
+        }
+      }
+    },
+    "updateNoteByUser": {
+      "type": "object",
+      "required": [
+        "noteId",
+        "userId"
+      ],
+      "properties": {
+        "noteId": {
+          "type": "string",
+          "example": ""
+        },
+        "userId": {
+          "type": "string",
+          "example": ""
         }
       }
     },
