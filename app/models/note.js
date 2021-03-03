@@ -61,6 +61,7 @@ class NoteModel {
 
   /**
    * @description retrive all note data from database
+   *@param {*} userId will contain user Object id 
    * @param {*} callback holds a function
    */
   getAllNotes = (userId, callback) => {

@@ -130,12 +130,11 @@ class UserControllers {
 
   /**
    * @description reset password
-   * @param {*} request
-   * @param {*} response
+   * @param {*} request will contain new password to be updated
+   * @param {*} response give response after updating password
    */
   restPassword = (request, response) => {
-    var newPassword = request.body;
-    userServices.resetPass(newPassword, (error, result) => {
+    userServices.resetPass(request.body, (error, result) => {
       error
         ? response.send({
           success: false,

@@ -85,7 +85,6 @@ class UserModel {
         });
     }
 
-
     /**
       * @description find email id in database and validate
       * @param {*} loginCredential holds login credentials
@@ -98,6 +97,10 @@ class UserModel {
         });
     }
 
+    /**
+     * @description find email id in database and validate
+     * @param {*} email holds email id
+    */
     checkEmailExistenceInDb = (email) => {
         return new Promise((resolve, reject) => {
             User.find({ email: `${email}` }, (error, emailResult) => {
@@ -151,6 +154,11 @@ class UserModel {
         });
     }
 
+    /**
+      * @description find email id in database and callback with user data or error
+      * @param {*} user contain user data
+      * @param {*} callback holds a function 
+      */
     updateActivationStatus = (user, callback) => {
         User.findOneAndUpdate(
             { email: user.email },

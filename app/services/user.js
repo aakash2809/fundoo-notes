@@ -228,31 +228,6 @@ class userServices {
      * @param {*} email 
      * @param {*}  callback callback funcntion
      */
-    /*   getEmail = (email, callback) => {
-          logger.info(`TRACKED_PATH: Inside services getEmail`);
-          userModel.forgetPassword(email, (error, result) => {
-              if (error) {
-                  callback(error, null);
-              }
-              else if (result.length < 1) {
-                  result = { message: "User with this email id does not exist", status: resposnsCode.NOT_FOUND, data: null }
-                  callback(null, result);
-              }
-              else {
-                  result = result[0];
-                  var token = jwtAuth.genrateToken(result);
-                  jwtAuth.sendMailToResetPassword(result, token, (error, resetPasswordLink) => {
-                      if (error) {
-                          callback(error, null);
-                      } else {
-                          result = { data: resetPasswordLink, message: "token genrated and mail successfully sent", status: resposnsCode.SUCCESS };
-                          callback(null, result);
-                      }
-                  })
-              }
-          })
-      } */
-
     getEmail = (email, callback) => {
         logger.info(`TRACKED_PATH: Inside services getEmail`);
         userModel.forgetPassword(email, (error, result) => {
@@ -266,16 +241,6 @@ class userServices {
             else {
                 result = result[0];
                 var token = jwtAuth.genrateToken(result);
-
-
-                /*  jwtAuth.sendMailToResetPassword(result, token, (error, resetPasswordLink) => {
-                     if (error) {
-                         callback(error, null);
-                     } else {
-                         result = { data: resetPasswordLink, message: "token genrated and mail successfully sent", status: resposnsCode.SUCCESS };
-                         callback(null, result);
-                     }
-                 }) */
                 publish.getMessage(result.email, callback);
                 consume.consumeMessage((error, message) => {
                     console.log("in cousme return", message);
@@ -286,9 +251,6 @@ class userServices {
                             null
                         );
                     else {
-                        //result.email = message;
-                        console.log("aakash", result);
-
                         jwtAuth.sendMailToResetPassword(result, token, (error, resetPasswordLink) => {
                             if (error) {
                                 callback(error, null);

@@ -67,33 +67,6 @@ class LabelController {
    * @param {*} request does not take any parameter
    * @param {*} response sends response from server
    */
-  /* findAllLabels = async (request, response) => {
-    logger.info(`TRACKED_PATH: Inside controller`);
-    try {
-      //var start = new Date();
-      const encodedBody = helper.getEncodedBodyFromHeader(request);
-      const result = await labelServices.retrieveAllLabel(encodedBody.userId);
-      // console.log(result);
-      response.send({
-        success: true,
-        status_code: resposnsCode.SUCCESS,
-        message: "label of current account has been retrieved",
-        data: result,
-      });
-      //logger.log('Request took:', new Date() - start, 'ms');
-      //logger.log('data comming from mongodb');
-
-      logger.info("SUCCESS002:All label has been retrieved");
-    } catch (error) {
-      response.send({
-        success: false,
-        status_code: resposnsCode.INTERNAL_SERVER_ERROR,
-        message: `Some error occurred while retrieving label.`,
-      });
-      logger.error(`ERR002: Some error occurred while retrieving label.`);
-    }
-  }; */
-
   findAllLabels = (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
     var start = new Date();
@@ -137,12 +110,12 @@ class LabelController {
         message: result.message,
       });
     } catch (error) {
+      logger.error(`ERR004: Label  not found with id ${request.params.labelId}`);
       response.send({
         success: false,
         status_code: resposnsCode.INTERNAL_SERVER_ERROR,
         message: `Internal server error`,
       });
-      logger.error(`ERR004: Label  not found with id ${request.params.labelId}`);
     }
   };
 

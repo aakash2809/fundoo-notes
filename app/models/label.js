@@ -51,6 +51,8 @@ class LabelModel {
 
   /**
    * @description retrive all label data from database
+   * @param {*} userId will contain user Object id 
+   * @param {*} callback holds a callback function
    */
   getAllLabels = (userId, callback) => {
     logger.info(`TRACKED_PATH: Inside model`);

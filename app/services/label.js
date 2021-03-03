@@ -15,7 +15,7 @@ class LabelServices {
 
   /**
    * @description save request data to database using model methods
-   * @param {*}  holds data to be saved in json formate
+   * @param {*}  labelData data to be saved in json formate
    */
   savelabelData = async (labelData) => {
     try {
@@ -28,6 +28,7 @@ class LabelServices {
   /**
    * @description retrive all label data from database using model's mothod
    * @param {*} userId holds a userId
+   * @param {*} callback holds a callback function
    */
   retrieveAllLabel = (userId, callback) => {
     logger.info(`TRACKED_PATH: Inside services`);
@@ -74,7 +75,8 @@ class LabelServices {
 
   /**
    * @description remove label from database using model's mothod
-   * @param {*}  holds _id that is label id
+   * @param {*}  labelId holds label Object id
+   *  @param {*}  userId holds user Object id
    */
   removeLabelByLabelId = async (labelId, userId) => {
     logger.info(`TRACKED_PATH: Inside services`);

@@ -87,6 +87,7 @@ class NoteServices {
   /**
    * @description remove note  data from database using model's mothod
    * @param {*} noteId holds _id that is note id
+   * @param {*}  userId holds user Object id
    * @param {*} callback holds a function
    */
   removeNoteById = (userId, noteId, callback) => {
