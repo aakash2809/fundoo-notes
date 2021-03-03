@@ -56,7 +56,8 @@ class Helper {
   /**
    * @description this function sending mail for reset password 
    */
-  sendMail = async (user, token, callback) => {
+  sendMailToResetPassword = async (user, token, callback) => {
+    console.log("hello helper");
     var transporter = nodemailer.createTransport({
       service: "gmail",
       port: process.env.PORT,
@@ -112,7 +113,7 @@ class Helper {
       });
       ejs.renderFile("app/views/activateEmail.ejs", {
         name: user.name,
-        resetLink: `${process.env.CLIENT_URL}/ActivateAccount/${token}`,
+        accountActivationLink: `${process.env.CLIENT_URL}/ActivateAccount/${token}`,
       }, function (err, data) {
         if (err) {
 

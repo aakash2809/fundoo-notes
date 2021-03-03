@@ -13,7 +13,7 @@ ampqp.connect('amqp://localhost', (connError, connection) => {
         //assert Queue
         const QUEUE = 'aakashrajak2809@gmail';
         channel.assertQueue(QUEUE);
-        //recieve message 
+        //recieve message
         channel.consume(QUEUE, (msg) => {
             console.log(`Message recieved : ${msg.content}`);
         }, {
@@ -23,7 +23,9 @@ ampqp.connect('amqp://localhost', (connError, connection) => {
 })
  */
 const amqp = require("amqplib/callback_api");
-
+//const EventEmitter = require("events");
+//const event = new EventEmitter();
+//ar ee = require("event-emitter");
 
 class Subscriber {
     consumeMessage = (callback) => {
@@ -31,18 +33,14 @@ class Subscriber {
             console.log("inside subsciriber");
             amqp.connect("amqp://localhost", (error, connection) => {
                 if (error) {
-                    //   logger.connect("Error while connecting to Rabbit Mq");
                     return callback(error, null);
                 }
                 connection.createChannel((error, channel) => {
                     if (error) {
-                        //  logger.error("Error while creating chnannel");
                         return callback(error, null);
                     }
                     let queueName = "EmailInQueues1";
-                    channel.assertQueue(queueName, {
-                        durable: false,
-                    });
+                    channel.assertQueue(queueName);
                     channel.consume(queueName, (msg) => {
                         console.log("mess");
                         console.log(`Message consumes: ${msg.content.toString()}`);

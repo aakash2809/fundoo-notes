@@ -13,8 +13,9 @@ const bycrypt = require('bcryptjs');
 const resposnsCode = require("../../util/staticFile.json");
 const helper = require("../middlewares/helper");
 const { any } = require('joi');
-const { sendMail } = require('../middlewares/helper');
-var response;
+const { sendMailToResetPassword: sendMail } = require('../middlewares/helper');
+const publish = require("../middlewares/publisher");
+const consume = require("../middlewares/consumer");
 
 require(`dotenv`).config();
 
@@ -35,13 +36,6 @@ class userServices {
      * @param {*} registrationData holds data to be saved in json formate
      * @param {*} callback holds a function 
     */
-    /* registerUser = (registrationData, callback) => {
-        logger.info(`TRACKED_PATH: Inside services`);
-        userModel.register(registrationData, (error, registrationResult) => {
-            (error) ? callback(error, null) : callback(null, registrationResult);
-        })
-    } */
-
     registerUser = (registrationData, callback) => {
         logger.info(`TRACKED_PATH: Inside services`);
         userModel.register(registrationData, async (error, registrationResult) => {
@@ -234,6 +228,31 @@ class userServices {
      * @param {*} email 
      * @param {*}  callback callback funcntion
      */
+    /*   getEmail = (email, callback) => {
+          logger.info(`TRACKED_PATH: Inside services getEmail`);
+          userModel.forgetPassword(email, (error, result) => {
+              if (error) {
+                  callback(error, null);
+              }
+              else if (result.length < 1) {
+                  result = { message: "User with this email id does not exist", status: resposnsCode.NOT_FOUND, data: null }
+                  callback(null, result);
+              }
+              else {
+                  result = result[0];
+                  var token = jwtAuth.genrateToken(result);
+                  jwtAuth.sendMailToResetPassword(result, token, (error, resetPasswordLink) => {
+                      if (error) {
+                          callback(error, null);
+                      } else {
+                          result = { data: resetPasswordLink, message: "token genrated and mail successfully sent", status: resposnsCode.SUCCESS };
+                          callback(null, result);
+                      }
+                  })
+              }
+          })
+      } */
+
     getEmail = (email, callback) => {
         logger.info(`TRACKED_PATH: Inside services getEmail`);
         userModel.forgetPassword(email, (error, result) => {
@@ -247,14 +266,40 @@ class userServices {
             else {
                 result = result[0];
                 var token = jwtAuth.genrateToken(result);
-                jwtAuth.sendMail(result, token, (error, resetPasswordLink) => {
-                    if (error) {
-                        callback(error, null);
-                    } else {
-                        result = { data: resetPasswordLink, message: "token genrated and mail successfully sent", status: resposnsCode.SUCCESS };
-                        callback(null, result);
+
+
+                /*  jwtAuth.sendMailToResetPassword(result, token, (error, resetPasswordLink) => {
+                     if (error) {
+                         callback(error, null);
+                     } else {
+                         result = { data: resetPasswordLink, message: "token genrated and mail successfully sent", status: resposnsCode.SUCCESS };
+                         callback(null, result);
+                     }
+                 }) */
+                publish.getMessage(result.email, callback);
+                consume.consumeMessage((error, message) => {
+                    console.log("in cousme return", message);
+                    console.log("in cousme return  error", error);
+                    if (error)
+                        callback(
+                            new Error("Some error occurred while consuming message"),
+                            null
+                        );
+                    else {
+                        //result.email = message;
+                        console.log("aakash", result);
+
+                        jwtAuth.sendMailToResetPassword(result, token, (error, resetPasswordLink) => {
+                            if (error) {
+                                callback(error, null);
+                            } else {
+                                result = { data: resetPasswordLink, message: "token genrated and mail successfully sent", status: resposnsCode.SUCCESS };
+                                callback(null, result);
+                            }
+                        })
                     }
-                })
+                });
+
             }
         })
     }
