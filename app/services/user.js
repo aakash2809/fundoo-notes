@@ -18,10 +18,24 @@ const publish = require("../middlewares/publisher");
 const consume = require("../middlewares/consumer");
 
 require(`dotenv`).config();
+const EventEmitter = require('events');
+const emmiter = new EventEmitter();
+
+emmiter.on("publish", (result, token) => {
+    publish.getMessage(result, token);
+})
+
+emmiter.on("consume", (callback) => {
+    consume.consumeMessage(callback);
+})
 
 class userServices {
-    extractObjectFromArray = (objectInArray) => {
 
+    /**
+      * @description extract json object from array
+      * @param {*} objectInArray holds data having the array
+      */
+    extractObjectFromArray = (objectInArray) => {
         var returnObj = null;
         (objectInArray < 1) ? returnObj : returnObj = {
             name: objectInArray[0].name,
@@ -98,12 +112,11 @@ class userServices {
 
     /**
        * @description validate credentials and return result accordingly to database using model methods
-       * @param {*} email 
-       * @param {*}  callback callback funcntion
+       * @param {*}   email 
+       * @param {*}   callback callback funcntion
        */
     verifyAndAtivateAccount = (request, callback) => {
         const encodedBody = helper.getEncodedBodyFromHeader(request);
-        console.log("inside service", encodedBody);
         userModel.checkMailExistenceInDb(encodedBody, (error, result) => {
             if (error) {
                 error = {
@@ -235,30 +248,30 @@ class userServices {
                 callback(error, null);
             }
             else if (result.length < 1) {
-                result = { message: "User with this email id does not exist", status: resposnsCode.NOT_FOUND, data: null }
+                result = {
+                    message: "User with this email id does not exist",
+                    status: resposnsCode.NOT_FOUND,
+                    data: null
+                }
                 callback(null, result);
             }
             else {
                 result = result[0];
                 var token = jwtAuth.genrateToken(result);
-                publish.getMessage(result.email, callback);
-                consume.consumeMessage((error, message) => {
-                    console.log("in cousme return", message);
-                    console.log("in cousme return  error", error);
+                emmiter.emit("publish", result, token);
+                emmiter.emit("consume", (error, message) => {
                     if (error)
                         callback(
                             new Error("Some error occurred while consuming message"),
                             null
                         );
                     else {
-                        jwtAuth.sendMailToResetPassword(result, token, (error, resetPasswordLink) => {
-                            if (error) {
-                                callback(error, null);
-                            } else {
-                                result = { data: resetPasswordLink, message: "token genrated and mail successfully sent", status: resposnsCode.SUCCESS };
-                                callback(null, result);
-                            }
-                        })
+                        message = {
+                            data: message,
+                            message: "token genrated and mail successfully sent",
+                            status: resposnsCode.SUCCESS
+                        };
+                        callback(null, message);
                     }
                 });
 
@@ -279,11 +292,6 @@ class userServices {
                     callback(null, result));
         })
     }
-
-
-
-
-
 }
 
 module.exports = new userServices

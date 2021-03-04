@@ -148,6 +148,7 @@ class Helper {
       request.userData = decode;
       next();
     } catch (error) {
+      console.log("helper", error);
       response.send({
         success: false,
         status_code: resposnsCode.BAD_REQUEST,
