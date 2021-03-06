@@ -54,6 +54,45 @@
         }
       }
     },
+    "/activateEmail": {
+      "post": {
+        "tags": [
+          "User"
+        ],
+        "summary": "activate the account",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "User",
+            "description": "send mail to user",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ForgotPassword"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "user registered successfully"
+          },
+          "400": {
+            "description": "Bad Request ,Invalid input"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
+      }
+    },
     "/login": {
       "post": {
         "tags": [
@@ -150,40 +189,13 @@
           "404": {
             "description": "user not found with input id"
           }
-        }
-      }
-    },
-    "/activateEmail": {
-      "post": {
-        "tags": [
-          "User"
-        ],
-        "summary": "activate the account",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
-        "parameters": [
+        },
+        "security": [
           {
-            "in": "body",
-            "name": "User",
-            "description": "send mail to user",
-            "required": true,
-            "schema": {
-              "$ref": "#/definitions/ForgotPassword"
-            }
+            "JWT": []
           }
         ],
-        "responses": {
-          "200": {
-            "description": "user registered successfully"
-          },
-          "400": {
-            "description": "Bad Request ,Invalid input"
-          }
-        }
+        "deprecated": false
       }
     },
     "/addNote": {
@@ -399,7 +411,13 @@
           "404": {
             "description": "note not found with input id"
           }
-        }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
       }
     },
     "/addUserToNote": {
