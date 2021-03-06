@@ -14,5 +14,21 @@
     "emptyTitle": {
         "title": "",
         "description": "c = 8:30AM , c++ = 11:30 AM"
+    },
+    "validSampleForAddOrDeleteLabel": {
+        "noteId": "602a27879ecf9a1f5cf89a7e",
+        "labelId": "602d8872855276127462b2e2"
+    },
+    "validSampleForCollaborator": {
+        "noteId": "602a27879ecf9a1f5cf89a7e",
+        "userId": "603da5ac484ec50f2090dc6a"
+    },
+    "sampleWithWrongNoteId": {
+        "noteId": "602a27879ecf9a1f5cf89",
+        "labelId": "602d8872855276127462b2e2"
+    },
+    "collaboratorSampleWithWrongNoteId": {
+        "noteId": "602a27879ecf9a1f5cf89a",
+        "userId": "602d8872855276127462b2e2"
     }
 }

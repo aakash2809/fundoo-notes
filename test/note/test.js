@@ -15,7 +15,7 @@ const responseCode = require('../../util/staticFile.json');
 
 chai.should();
 chai.use(chaiHttp);
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFobWFkIEFsaSIsInVzZXJJZCI6IjYwMjhjNjQ1ODhlMTkyMWNkNDQ2YTMxYSIsImlhdCI6MTYxMzMxNjY1MCwiZXhwIjoxNjEzNDAzMDUwfQ._l3-xB4HSFNOpKKDuzOtGZchgP1DxqJKBZyTEBNbi94'
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFobWFkIEFsaSIsInVzZXJJZCI6IjYwMjhjNjQ1ODhlMTkyMWNkNDQ2YTMxYSIsImlhdCI6MTYxNDg1MTU2NSwiZXhwIjoxNjE0OTM3OTY1fQ.k8U8m4F3U3hdjzdC4-yde8qmYkI96CPpq-c6VWm5VdQ'
 const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZS.khuiyghjkh'
 
 describe('Test Note API', () => {
@@ -47,6 +47,7 @@ describe('Test Note API', () => {
                 })
             done();
         })
+
         it('WhenGivenProperEndPointsAndEmptyDescriptionPass_shouldReturn_ErrorMessage', (done) => {
             chai.request(server)
                 .post('/addNote')
@@ -93,6 +94,165 @@ describe('Test Note API', () => {
     })
 
     /**
+    * @description note test for /addLabelToNote
+    */
+    describe('POST /addLabelToNote', () => {
+        it.only('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessMessageAddLabelToNote', (done) => {
+            chai.request(server)
+                .put('/addLabelToNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.validSampleForAddOrDeleteLabel)
+                .end((error, response) => {
+                    response.should.have.status(responseCode.SUCCESS);
+                    response.body.message.should.have.equal("Label successfully added to Note");
+                })
+            done();
+        })
+
+        it.only('WhenGivenWrongNoteIdWithCorrectEndPointsPassAndCorrectHeader_shouldReturn_MessageOfFail', (done) => {
+            chai.request(server)
+                .put('/addLabelToNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.sampleWithWrongNoteId)
+                .end((error, response) => {
+                    response.body.message.should.have.equal(`No note availabe associated with : 602a27879ecf9a1f5cf89`);
+                })
+            done();
+        })
+
+        it.only('WhenGivenProperEndPointsAndInvalidTokenPass_shouldReturn_ErrorMessage', (done) => {
+            chai.request(server)
+                .put('/addLabelToNote')
+                .set('Authorization', `Bearer ${invalidToken}`)
+                .send(testSamples.validSampleForAddOrDeleteLabel)
+                .end((error, response) => {
+                    console.log(response.body);
+                    response.body.message.should.have.equal("Authentication failed");
+                })
+            done();
+        })
+    })
+
+    /**
+      * @description note test for /deleteLabelFromNote
+      */
+    describe('PUT /deleteLabelFromNote', () => {
+        it.only('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessMessageAddLabelToNote', (done) => {
+            chai.request(server)
+                .put('/deleteLabelFromNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.validSampleForAddOrDeleteLabel)
+                .end((error, response) => {
+                    response.should.have.status(responseCode.SUCCESS);
+                    response.body.message.should.have.equal("Label successfully removed from Note associated with given Id");
+                })
+            done();
+        })
+
+        it.only('WhenGivenWrongNoteIdWithCorrectEndPointsPassAndCorrectHeader_shouldReturn_MessageOfFail', (done) => {
+            chai.request(server)
+                .put('/deleteLabelFromNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.sampleWithWrongNoteId)
+                .end((error, response) => {
+                    response.body.message.should.have.equal(`No note availabe associated with : 602a27879ecf9a1f5cf89a`);
+                })
+            done();
+        })
+
+        it.only('WhenGivenProperEndPointsAndInvalidTokenPass_shouldReturn_ErrorMessage', (done) => {
+            chai.request(server)
+                .put('/deleteLabelFromNote')
+                .set('Authorization', `Bearer ${invalidToken}`)
+                .send(testSamples.validSampleForAddOrDeleteLabel)
+                .end((error, response) => {
+                    console.log(response.body);
+                    response.body.message.should.have.equal("Authentication failed");
+                })
+            done();
+        })
+    })
+
+    /**
+     * @description note test for /addUserToNote
+     */
+    describe('PUT /addUserToNote', () => {
+        it.only('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessMessageAddUserToNote', (done) => {
+            chai.request(server)
+                .put('/addUserToNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.validSampleForCollaborator)
+                .end((error, response) => {
+                    response.should.have.status(responseCode.SUCCESS);
+                    response.body.message.should.have.equal("User successfully added to Note");
+                })
+            done();
+        })
+
+        it.only('WhenGivenWrongNoteIdWithCorrectEndPointsPassAndCorrectHeader_shouldReturn_MessageOfFail', (done) => {
+            chai.request(server)
+                .put('/addUserToNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.collaboratorSampleWithWrongNoteId)
+                .end((error, response) => {
+                    response.body.message.should.have.equal(`No note availabe associated with : 602a27879ecf9a1f5cf89a`);
+                })
+            done();
+        })
+
+        it.only('WhenGivenProperEndPointsAndInvalidTokenPass_shouldReturn_ErrorMessage', (done) => {
+            chai.request(server)
+                .put('/addUserToNote')
+                .set('Authorization', `Bearer ${invalidToken}`)
+                .send(testSamples.validSampleForAddOrDeleteLabel)
+                .end((error, response) => {
+                    console.log(response.body);
+                    response.body.message.should.have.equal("Authentication failed");
+                })
+            done();
+        })
+    })
+
+
+    /**
+     * @description note test for /deleteUserFromNote
+     */
+    describe('PUT /deleteUserFromNote', () => {
+        it.only('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessMessageAndDeleteuserFromNote', (done) => {
+            chai.request(server)
+                .put('/deleteUserFromNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.validSampleForCollaborator)
+                .end((error, response) => {
+                    response.should.have.status(responseCode.SUCCESS);
+                    response.body.message.should.have.equal("User successfully removed from Note associated with given Id");
+                })
+            done();
+        })
+
+        it.only('WhenGivenWrongNoteIdWithCorrectEndPointsPassAndCorrectHeader_shouldReturn_MessageOfFail', (done) => {
+            chai.request(server)
+                .put('/deleteUserFromNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.collaboratorSampleWithWrongNoteId)
+                .end((error, response) => {
+                    response.body.message.should.have.equal(`No note availabe associated with : 602a27879ecf9a1f5cf89a`);
+                })
+            done();
+        })
+
+        it.only('WhenGivenProperEndPointsAndInvalidTokenPass_shouldReturn_ErrorMessage', (done) => {
+            chai.request(server)
+                .put('/deleteUserFromNote')
+                .set('Authorization', `Bearer ${invalidToken}`)
+                .send(testSamples.validSampleForAddOrDeleteLabel)
+                .end((error, response) => {
+                    response.body.message.should.have.equal("Authentication failed");
+                })
+            done();
+        })
+    })
+    /**
      * @description note test for /updateNote/:noteId /
      */
     describe('PUT /updateNote/:noteId', () => {
@@ -109,7 +269,6 @@ describe('Test Note API', () => {
         })
 
         it('WhenGivenProperEndPointsAndInvalidTokenPass_shouldReturn_ErrorMessage', (done) => {
-           
             chai.request(server)
                 .put('/updateNote/6029cfb728d3021a0822f3e0')
                 .set('Authorization', `Bearer ${invalidToken}`)
@@ -122,16 +281,15 @@ describe('Test Note API', () => {
 
         it('WhenGivenProperEndPointsAndInvalidNoteIdPass_shouldReturn_MessageOfNotFound', (done) => {
             chai.request(server)
-           .put('/updateNote/6029cfb728d3021a0822')
-           .set('Authorization', `Bearer ${token}`)
-           .end((error, response) => {
-               response.body.status_code.should.have.equal(responseCode.NOT_FOUND);
-               response.body.message.should.have.equal(`Note not found with id 6029cfb728d3021a0822`);
-           })
-       done();
-   })
-        
-})
+                .put('/updateNote/6029cfb728d3021a0822')
+                .set('Authorization', `Bearer ${token}`)
+                .end((error, response) => {
+                    response.body.status_code.should.have.equal(responseCode.NOT_FOUND);
+                    response.body.message.should.have.equal(`Note not found with id 6029cfb728d3021a0822`);
+                })
+            done();
+        })
+    })
 
     /**
      * @description note test for /updateNote/:noteId /
@@ -154,16 +312,6 @@ describe('Test Note API', () => {
                 .set('Authorization', `Bearer ${invalidToken}`)
                 .end((error, response) => {
                     response.body.message.should.have.equal("Authentication failed");
-                })
-            done();
-        })
-
-        it('WhenGivenProperEndPointsAndInvalidNoteIdPass_shouldReturn_MessageOfNotFound', (done) => {
-             chai.request(server)
-                 .delete('/note/6029cfb728d3021a0822f3e0')
-                 .set('Authorization', `Bearer ${token}`)
-                 .end((error, response) => {
-                    response.body.message.should.have.equal(`Note not found with id 6029cfb728d3021a0822f3e0`);
                 })
             done();
         })
