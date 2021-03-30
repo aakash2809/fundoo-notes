@@ -310,12 +310,12 @@ class NoteController {
           error ?
             (logger.warn("note not found with id " + noteID),
               res.send({
-                status_code: status.Not_Found,
+                status_code: resposnsCode.NOT_FOUND,
                 message: "note not found with id " + noteID,
               })) :
             logger.info("note permentely deleted successfully!"),
           res.send({
-            status_code: status.Success,
+            status_code: resposnsCode.SUCCESS,
             message: "note permentely deleted successfully!",
           })
         );
@@ -325,12 +325,12 @@ class NoteController {
         error.kind === "ObjectId" || error.title === "NotFound" ?
           (logger.error("could not found note with id" + noteID),
             res.send({
-              status_code: status.Not_Found,
+              status_code: resposnsCode.NOT_FOUND,
               message: "note not found with id " + noteID,
             })) :
           logger.error("Could not delete note with id " + noteID),
         res.send({
-          status_code: status.Internal_Server_Error,
+          status_code: resposnsCode.INTERNAL_SERVER_ERROR,
           message: "Could not delete note with id " + noteID,
         })
       );
@@ -350,12 +350,12 @@ class NoteController {
           error ?
             (logger.warn("note not found with id " + noteID),
               res.send({
-                status_code: status.Not_Found,
+                status_code: resposnsCode.NOT_FOUND,
                 message: "note not found with id " + noteID,
               })) :
             logger.info("note deleted successfully!"),
           res.send({
-            status_code: status.Success,
+            status_code: resposnsCode.SUCCESS,
             message: "note deleted successfully!",
           })
         );
@@ -365,12 +365,12 @@ class NoteController {
         error.kind === "ObjectId" || error.title === "NotFound" ?
           (logger.error("could not found note with id" + noteID),
             res.send({
-              status_code: status.Not_Found,
+              status_code: resposnsCode.NOT_FOUND,
               message: "note not found with id " + noteID,
             })) :
           logger.error("Could not delete note with id " + noteID),
         res.send({
-          status_code: status.Internal_Server_Error,
+          status_code: resposnsCode.INTERNAL_SERVER_ERROR,
           message: "Could not delete note with id " + noteID,
         })
       );
