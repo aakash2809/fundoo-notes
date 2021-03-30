@@ -30,6 +30,14 @@ const noteSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Label",
     }],
+    isArchived: {
+      type: Boolean,
+      default: false,
+    },
+    isDeleted: {
+      type: Boolean,
+      default: false,
+    },
     collaborator: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
