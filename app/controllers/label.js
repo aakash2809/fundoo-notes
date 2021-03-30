@@ -13,7 +13,6 @@ const resposnsCode = require("../../util/staticFile.json");
 const LabelValidator = require("../middlewares/labelValidator");
 const helper = require("../middlewares/helper");
 
-
 class LabelController {
 
   /**

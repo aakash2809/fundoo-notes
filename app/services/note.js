@@ -123,12 +123,13 @@ class NoteServices {
     */
   updateNoteByAddingLabel = (requireDataToaddLabel, callback) => {
     const noteId = requireDataToaddLabel.noteId;
+    console.log("inside service", requireDataToaddLabel);
     noteModel.addLabel(requireDataToaddLabel, (error, noteResult) => {
       if (error) {
         error = {
           success: false,
-          status_code: resposnsCode.INTERNAL_SERVER_ERROR,
-          message: `Internal server error : ${error} `,
+          status_code: resposnsCode.NOT_FOUND,
+          message: `No note availabe associated with : ${noteId}`,
         }
         callback(error, null);
       }
@@ -136,7 +137,7 @@ class NoteServices {
         error = {
           success: false,
           status_code: resposnsCode.NOT_FOUND,
-          message: `No note availabe associated with : ${noteId} `,
+          message: `No note availabe associated with : ${noteId}`,
         }
         callback(error, null);
       }
@@ -165,7 +166,7 @@ class NoteServices {
         error = {
           success: false,
           status_code: resposnsCode.INTERNAL_SERVER_ERROR,
-          message: `Internal server error : ${error} `,
+          message: `No note availabe associated with : ${noteId}`,
         }
         callback(error, null);
       }
@@ -173,7 +174,7 @@ class NoteServices {
         error = {
           success: false,
           status_code: resposnsCode.NOT_FOUND,
-          message: `No note availabe associated with : ${noteId} `,
+          message: `No note availabe associated with : ${noteId}`,
         }
         callback(error, null);
       }
@@ -196,12 +197,13 @@ class NoteServices {
   * @param {*} callback holds a function
   */
   updateNoteByRemovingLabel = (requireDataToaddLabel, callback) => {
+    const noteId = requireDataToaddUser.noteId;
     noteModel.removeLabel(requireDataToaddLabel, (error, noteResult) => {
       if (error) {
         error = {
           success: false,
           status_code: resposnsCode.INTERNAL_SERVER_ERROR,
-          message: `Internal server error : ${error} `,
+          message: `No note availabe associated with : ${noteId}`,
         }
         callback(error, null);
       }
@@ -209,7 +211,7 @@ class NoteServices {
         error = {
           success: false,
           status_code: resposnsCode.NOT_FOUND,
-          message: `No note availabe associated with : ${noteId} `,
+          message: `No note availabe associated with : ${noteId}`,
         }
         callback(error, null);
       }
@@ -232,12 +234,13 @@ class NoteServices {
   * @param {*} callback holds a function
   */
   updateNoteByRemovingUser = (requireDataToaddUser, callback) => {
+    const noteId = requireDataToaddUser.noteId;
     noteModel.removeUser(requireDataToaddUser, (error, noteResult) => {
       if (error) {
         error = {
           success: false,
           status_code: resposnsCode.INTERNAL_SERVER_ERROR,
-          message: `Internal server error : ${error} `,
+          message: `No note availabe associated with : ${noteId}`,
         }
         callback(error, null);
       }
@@ -245,7 +248,7 @@ class NoteServices {
         error = {
           success: false,
           status_code: resposnsCode.NOT_FOUND,
-          message: `No note availabe associated with : ${userId} `,
+          message: `No note availabe associated with : ${noteId}`,
         }
         callback(error, null);
       }

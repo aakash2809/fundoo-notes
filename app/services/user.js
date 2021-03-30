@@ -174,7 +174,8 @@ class userServices {
                 callback(error, null)
             } else if (!dataFromRedis) {
                 userModel.getDetailOfGivenEmailId(loginCredentials, (error, loginResult) => {
-                    loginResult = this.extractObjectFromArray(loginResult);
+
+                    let loginFilteredResult = this.extractObjectFromArray(loginResult);
                     if (error) {
                         error = {
                             success: false,
@@ -183,35 +184,36 @@ class userServices {
                         }
                         callback(error, null)
                     }
-                    else if (loginResult == null) {
-                        loginResult = {
+                    else if (loginFilteredResult == null) {
+                        loginFilteredResult = {
                             success: false,
                             statusCode: resposnsCode.NOT_FOUND,
                             message: "email id does not exist"
                         }
-                        callback(null, loginResult);
+                        callback(null, loginFilteredResult);
                     } else {
-                        bycrypt.compare(loginCredentials.password, loginResult.password, (error, result) => {
+                        bycrypt.compare(loginCredentials.password, loginFilteredResult.password, (error, result) => {
                             if (error) {
                                 error = {
-                                    success: true,
+                                    success: false,
                                     statusCode: resposnsCode.BAD_REQUEST,
                                     message: 'Invalid password'
                                 }
                                 callback(error, null);
                             }
                             else if (result) {
-                                var token = jwtAuth.genrateToken(loginResult);
-                                loginResult = {
+                                var token = jwtAuth.genrateToken(loginFilteredResult);
+                                loginFilteredResult = {
                                     success: true,
                                     statusCode: resposnsCode.SUCCESS,
                                     message: 'login successfull',
-                                    data: token
+                                    data: token,
+                                    user: loginResult
                                 }
                                 logger.info(` token genrated: ${token}`);
-                                helper.setDataToRedis(KEY, loginResult),
+                                helper.setDataToRedis(KEY, loginFilteredResult),
                                     console.log("response comming from mongodb");
-                                callback(null, loginResult);
+                                callback(null, loginFilteredResult);
                             } else {
                                 error = {
                                     success: false,
@@ -248,6 +250,7 @@ class userServices {
                 callback(error, null);
             }
             else if (result.length < 1) {
+
                 result = {
                     message: "User with this email id does not exist",
                     status: resposnsCode.NOT_FOUND,
@@ -259,13 +262,17 @@ class userServices {
                 result = result[0];
                 var token = jwtAuth.genrateToken(result);
                 emmiter.emit("publish", result, token);
+
                 emmiter.emit("consume", (error, message) => {
-                    if (error)
+                    if (error) {
+                        console.log("error after consuming");
                         callback(
                             new Error("Some error occurred while consuming message"),
                             null
                         );
+                    }
                     else {
+                        console.log("sent sussefully");
                         message = {
                             data: message,
                             message: "token genrated and mail successfully sent",
@@ -274,7 +281,6 @@ class userServices {
                         callback(null, message);
                     }
                 });
-
             }
         })
     }

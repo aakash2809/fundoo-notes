@@ -7,7 +7,6 @@ class Publish {
     getMessage = (userInfo, token) => {
         // Create connection to AMQP server
         amqplib.connect("amqp://localhost", (err, connection) => {
-
             if (err) {
                 console.error(err);
                 return process.exit(1);
@@ -51,7 +50,7 @@ class Publish {
                             "app/views/forgotPassword.ejs",
                             {
                                 name: userInfo.name,
-                                resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}`,
+                                resetLink: `${process.env.CLIENT_URL}/resetPassword/${token}`,
                             })
                         if (sent >= 1) {
                             console.log(' messages sent!');
@@ -65,7 +64,7 @@ class Publish {
                             to: userInfo.email,
                             subject: 'Reset Password' + sent,
                             html: dataToSend,
-                            link: `${process.env.CLIENT_URL}/resetpassword/${token}`
+                            link: `${process.env.CLIENT_URL}/resetPassword/${token}`
                         }, sendNext);
                     };
                     sendNext();

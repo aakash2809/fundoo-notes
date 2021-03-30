@@ -86,7 +86,7 @@ class NoteModel {
 
   /**
    * @description remove note data from database
-   * @param {*} greetingId holds _id that is note  id
+   * @param {*} noteData holds _id that is note  id
    * @param {*} callback holds a function
    */
   deleteNoteByNoteId = (noteData, callback) => {

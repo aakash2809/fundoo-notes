@@ -20,6 +20,7 @@ var atob = require("atob");
 const { isRef } = require("joi");
 
 class Helper {
+
   /**
    * @description it genrate the token
    */
@@ -101,10 +102,9 @@ class Helper {
   sendMailToActivateAccount = (user, token) => {
     return new Promise((resolve, reject) => {
       let transporter = nodemailer.createTransport({
-        //settings
         service: "gmail",
         port: process.env.PORT,
-        secure: true, // use SSL
+        secure: true,
         auth: {
           user: process.env.EMAIL_USER,
           pass: process.env.EMAIL_PASS
@@ -143,12 +143,13 @@ class Helper {
    */
   verifyToken = (request, response, next) => {
     try {
+      console.log("helper request:", request.headers);
       var token = request.headers.authorization.split("Bearer ")[1];
+      console.log("helper token:", token);
       var decode = jwt.verify(token, process.env.SECRET_KEY);
       request.userData = decode;
       next();
     } catch (error) {
-      console.log("helper", error);
       response.send({
         success: false,
         status_code: resposnsCode.BAD_REQUEST,

@@ -11,7 +11,6 @@ const logger = require("../../config/logger");
 const userServices = require("../services/user");
 const userValidator = require("../middlewares/userValidator");
 const resposnsCode = require("../../util/staticFile.json");
-const helper = require("../middlewares/helper");
 
 class UserControllers {
   /**
@@ -34,6 +33,7 @@ class UserControllers {
 
     const registrationDetails = {
       name: request.body.name,
+      lastName: request.body.lastName,
       email: request.body.email,
       password: request.body.password,
       confirmPassword: request.body.confirmPassword,
@@ -98,12 +98,13 @@ class UserControllers {
             statusCode: loginResult.statusCode,
             message: loginResult.message,
             token: loginResult.data,
+            user: loginResult.user
           });
       }
     );
     console.log('Request took:', new Date() - start, 'ms');
   };
-
+  
   /**
    * @description forgot password
    * @param {*} request
@@ -113,18 +114,27 @@ class UserControllers {
     const { email } = request.body;
     logger.info(`INVOKING: getEmail method of login services`);
     userServices.getEmail({ email }, (error, result) => {
-      error
-        ? response.send({
-          success: false,
-          statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
-          message: "internal server error",
-        })
-        : response.send({
-          success: true,
-          statusCode: result.status,
-          message: result.message,
-          data: result.data,
-        });
+      try {
+        console.log(result)
+        if (error) {
+          return response.send({
+            success: false,
+            statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
+            message: "internal server error",
+          })
+
+        } else {
+          return response.send({
+            success: true,
+            statusCode: result.status,
+            message: result.message,
+            data: result.data,
+          })
+        }
+      } catch (error) {
+        return error;
+      }
+
     });
   };
 
@@ -134,7 +144,7 @@ class UserControllers {
    * @param {*} response give response after updating password
    */
   restPassword = (request, response) => {
-    userServices.resetPass(request.body, (error, result) => {
+    return userServices.resetPass(request.body, (error, result) => {
       error
         ? response.send({
           success: false,
@@ -151,10 +161,10 @@ class UserControllers {
 
 
   /**
-     * @description activate email account
-     * @param {*} request
-     * @param {*} response
-     */
+    * @description activate email account
+    * @param {*} request
+    * @param {*} response
+    */
   activateAccount = (request, response) => {
     logger.info(`INVOKING: getEmail method of login services`);
     userServices.verifyAndAtivateAccount(request, (error, result) => {
