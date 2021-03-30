@@ -19,6 +19,11 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    lastName: {
+        type: String,
+        default: null
+
+    },
     email: {
         type: String,
         required: true,
@@ -98,7 +103,7 @@ class UserModel {
     }
 
     /**
-     * @description find email id in database and validate
+     * @description find email id in database and validate using promises
      * @param {*} email holds email id
     */
     checkEmailExistenceInDb = (email) => {
