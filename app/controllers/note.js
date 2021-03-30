@@ -297,6 +297,87 @@ class NoteController {
     });
   }
 
+  /**
+     * @message delete note with id
+     * @method delete is service class method
+     * @param response is used to send the response
+     */
+  deleteForever(req, res) {
+    try {
+      const noteID = req.params.noteId;
+      noteServices.deleteNote(noteID, (error, data) => {
+        return (
+          error ?
+            (logger.warn("note not found with id " + noteID),
+              res.send({
+                status_code: status.Not_Found,
+                message: "note not found with id " + noteID,
+              })) :
+            logger.info("note permentely deleted successfully!"),
+          res.send({
+            status_code: status.Success,
+            message: "note permentely deleted successfully!",
+          })
+        );
+      });
+    } catch (error) {
+      return (
+        error.kind === "ObjectId" || error.title === "NotFound" ?
+          (logger.error("could not found note with id" + noteID),
+            res.send({
+              status_code: status.Not_Found,
+              message: "note not found with id " + noteID,
+            })) :
+          logger.error("Could not delete note with id " + noteID),
+        res.send({
+          status_code: status.Internal_Server_Error,
+          message: "Could not delete note with id " + noteID,
+        })
+      );
+    }
+  }
+
+  /**
+   * @message delete note with id whitch is setting isDeleted value true
+   * @method removeNote is service class method
+   * @param response is used to send the response
+   */
+  deleteNote(req, res) {
+    try {
+      const noteID = req.params.noteId;
+      noteServices.removeNote(noteID, (error, data) => {
+        return (
+          error ?
+            (logger.warn("note not found with id " + noteID),
+              res.send({
+                status_code: status.Not_Found,
+                message: "note not found with id " + noteID,
+              })) :
+            logger.info("note deleted successfully!"),
+          res.send({
+            status_code: status.Success,
+            message: "note deleted successfully!",
+          })
+        );
+      });
+    } catch (error) {
+      return (
+        error.kind === "ObjectId" || error.title === "NotFound" ?
+          (logger.error("could not found note with id" + noteID),
+            res.send({
+              status_code: status.Not_Found,
+              message: "note not found with id " + noteID,
+            })) :
+          logger.error("Could not delete note with id " + noteID),
+        res.send({
+          status_code: status.Internal_Server_Error,
+          message: "Could not delete note with id " + noteID,
+        })
+      );
+    }
+  }
+
+
 }
 
 module.exports = new NoteController();

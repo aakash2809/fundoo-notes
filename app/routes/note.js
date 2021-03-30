@@ -30,6 +30,13 @@ class NoteRoutes {
 
     //Delete a note with noteId
     app.delete('/note/:noteId', helper.verifyToken, noteController.deleteNoteByNoteId);
+
+    // delete note by setting isdeleted flag true
+    app.put("/notes/delete/:noteId", helper.verifyToken, noteController.deleteNote);
+
+    // delete note forever
+    app.delete("/notes/deleteforever/:noteId", helper.verifyToken, noteController.deleteForever);
+
   }
 }
 

@@ -263,6 +263,24 @@ class NoteServices {
       }
     })
   }
+
+  /**
+   * @description Delete Note by id and return response to controller
+   * @method deleteById is used to remove Note by ID
+   * @param callback is the callback for controller
+   */
+  deleteNote = (noteID, callback) => {
+    return noteModel.deleteNoteById(noteID, callback);
+  };
+
+  /**
+   * @description Delete Note by id and return response to controller
+   * @method removeNote is used to remove Note by ID
+   * @param callback is the callback for controller
+   */
+  removeNote = (noteID, callback) => {
+    return noteModel.removeNote(noteID, callback);
+  };
 }
 
 module.exports = new NoteServices();
