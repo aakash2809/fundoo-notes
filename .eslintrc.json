@@ -16,7 +16,6 @@
         "eslint import/newline-after-import": "off",
         "linebreak-style": 0 ,
         "eslint no-console": "allow",
-        "parser": "babel-eslint"
-       
+        "parser": "babel-eslint"  
     }
 }
