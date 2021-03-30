@@ -9,6 +9,9 @@ const app = express();
 require("dotenv").config();
 require("./config/index").set(process.env.NODE_ENV, app);
 const config = require("./config/index").get();
+const cors = require('cors');
+
+app.use(cors());
 
 // parse requests 
 app.use(express.urlencoded({ extended: true }));

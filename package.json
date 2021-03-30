@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon server.js",
-    "test": "mocha test/label/test.js",
+    "test": "mocha test/note/test.js",
     "coverage": "nyc npm run test",
     "lint": "eslint ./"
   },
@@ -28,6 +28,7 @@
     "amqplib": "^0.7.0",
     "atob": "^2.1.2",
     "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.5",
     "event-emitter": "^0.3.5",
