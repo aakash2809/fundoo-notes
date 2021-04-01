@@ -281,6 +281,35 @@ class NoteServices {
   removeNote = (noteID, callback) => {
     return noteModel.removeNote(noteID, callback);
   };
+
+  /**
+     * @description archive Note by id and return response to controller
+     * @method archiveNote is used to remove Note by ID
+     * @param callback is the callback for controller
+     */
+  archiveNoteData = (noteID, callback) => {
+    return noteModel.archiveNote(noteID, callback);
+  };
+
+  /**
+     * @description unarchive Note by id and return response to controller
+     * @method UnArchiveNote  
+     * @param callback is the callback for controller
+     */
+  unArchiveNoteData = (noteID, callback) => {
+    return noteModel.unArchiveNote(noteID, callback);
+  };
+
+  /**
+     * @description unarchive Note by id and return response to controller
+     * @method restoreNoteData restore tempararty deleted data 
+     * @param callback is the callback for controller
+     */
+  restoreNoteData = (noteID, callback) => {
+    return noteModel.restoreNote(noteID, callback);
+  };
+
 }
+
 
 module.exports = new NoteServices();

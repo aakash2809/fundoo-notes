@@ -213,6 +213,42 @@ class NoteModel {
       callback
     );
   };
+
+  /**
+   * @description  by setting isarchived flag true
+   * @param {*} noteID
+   * @param {*} callback
+   */
+  archiveNote = (noteID, callback) => {
+    Note.findByIdAndUpdate(
+      noteID, { isArchived: true }, { new: true },
+      callback
+    );
+  };
+
+  /**
+    * @description  setting isArchived flag false
+    * @param {*} noteID
+    * @param {*} callback
+    */
+  unArchiveNote = (noteID, callback) => {
+    Note.findByIdAndUpdate(
+      noteID, { isArchived: false }, { new: true },
+      callback
+    );
+  };
+
+  /**
+     * @description  setting isDeleted flag false
+     * @param {*} noteID
+     * @param {*} callback
+     */
+  restoreNote = (noteID, callback) => {
+    Note.findByIdAndUpdate(
+      noteID, { isDeleted: false }, { new: true },
+      callback
+    );
+  };
 }
 
 module.exports = new NoteModel();

@@ -34,6 +34,15 @@ class NoteRoutes {
     // delete note by setting isdeleted flag true
     app.put("/notes/delete/:noteId", helper.verifyToken, noteController.deleteNote);
 
+    // Archive note by setting isarchived flag true
+    app.put("/notes/archive/:noteId", helper.verifyToken, noteController.archiveNote);
+
+    // UnArchive note by setting isarchived flag false
+    app.put("/notes/unarchive/:noteId", helper.verifyToken, noteController.unArchiveNote);
+
+    // restore note by setting isdeleted flag false
+    app.put("/notes/restore/:noteId", helper.verifyToken, noteController.restoreNote);
+
     // delete note forever
     app.delete("/notes/deleteforever/:noteId", helper.verifyToken, noteController.deleteForever);
 

@@ -377,7 +377,115 @@ class NoteController {
     }
   }
 
+  archiveNote = (req, res) => {
+    try {
+      const noteID = req.params.noteId;
+      noteServices.archiveNoteData(noteID, (error, data) => {
+        return (
+          error ?
+            (logger.warn("note not found with id " + noteID),
+              res.send({
+                status_code: resposnsCode.NOT_FOUND,
+                message: "note not found with id " + noteID,
+              })) :
+            logger.info("note archived successfully!"),
+          res.send({
+            status_code: resposnsCode.SUCCESS,
+            message: "note archived successfully!",
+          })
+        );
+      });
+    } catch (error) {
+      return (
+        error.kind === "ObjectId" || error.title === "NotFound" ?
+          (logger.error("could not found note with id" + noteID),
+            res.send({
+              status_code: resposnsCode.NOT_FOUND,
+              message: "note not found with id " + noteID,
+            })) :
+          logger.error("Could not delete note with id " + noteID),
+        res.send({
+          status_code: resposnsCode.INTERNAL_SERVER_ERROR,
+          message: "Could not delete note with id " + noteID,
+        })
+      );
+    }
+  }
 
+  unArchiveNote = (req, res) => {
+    try {
+      const noteID = req.params.noteId;
+      console.log("archive input", noteID);
+      noteServices.unArchiveNoteData(noteID, (error, data) => {
+        console.log("archive output", data);
+        return (
+          error ?
+            (logger.warn("note not found with id " + noteID),
+              res.send({
+                status_code: resposnsCode.NOT_FOUND,
+                message: "note not found with id " + noteID,
+              })) :
+            logger.info("note UnArchived successfully!"),
+          res.send({
+            status_code: resposnsCode.SUCCESS,
+            message: "note UnArchived successfully!",
+          })
+        );
+      });
+    } catch (error) {
+      return (
+        error.kind === "ObjectId" || error.title === "NotFound" ?
+          (logger.error("could not found note with id" + noteID),
+            res.send({
+              status_code: resposnsCode.NOT_FOUND,
+              message: "note not found with id " + noteID,
+            })) :
+          logger.error("Could not delete note with id " + noteID),
+        res.send({
+          status_code: resposnsCode.INTERNAL_SERVER_ERROR,
+          message: "Could not delete note with id " + noteID,
+        })
+      );
+    }
+  }
+
+
+  restoreNote = (req, res) => {
+    try {
+      const noteID = req.params.noteId;
+      console.log("archive input", noteID);
+      noteServices.restoreNoteData(noteID, (error, data) => {
+        console.log("archive output", data);
+        return (
+          error ?
+            (logger.warn("Note not found with id " + noteID),
+              res.send({
+                status_code: resposnsCode.NOT_FOUND,
+                message: "Note not found with id " + noteID,
+              })) :
+            logger.info("Note restored successfully!"),
+          res.send({
+            status_code: resposnsCode.SUCCESS,
+            message: "Note restored successfully!",
+          })
+        );
+      });
+    } catch (error) {
+      return (
+        error.kind === "ObjectId" || error.title === "NotFound" ?
+          (logger.error("could not found note with id" + noteID),
+            res.send({
+              status_code: resposnsCode.NOT_FOUND,
+              message: "Note not found with id " + noteID,
+            })) :
+          logger.error("Could not delete note with id " + noteID),
+        res.send({
+          status_code: resposnsCode.INTERNAL_SERVER_ERROR,
+          message: "Could not delete note with id " + noteID,
+        })
+      );
+    }
+  }
 }
 
 module.exports = new NoteController();
