@@ -288,24 +288,6 @@ class NoteServices {
 
   /**
    * @description Delete Note by id and return response to controller
-   * @method deleteById is used to remove Note by ID
-   * @param callback is the callback for controller
-   */
-  deleteNote = (userId, noteID, callback) => {
-    return noteModel.deleteNoteById(noteID, (error, result) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        this.updateRedis(userId);
-        callback(null, result)
-      }
-    });
-
-
-  };
-
-  /**
-   * @description Delete Note by id and return response to controller
    * @method removeNote is used to remove Note by ID
    * @param callback is the callback for controller
    */

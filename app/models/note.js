@@ -187,22 +187,6 @@ class NoteModel {
   }
 
   /**
-     * @description delte note forever from db by id
-     * @param {*} noteID
-     * @param {*} callback
-     */
-  deleteNoteById = (noteID, callback) => {
-    Note.findById(noteID, (error, data) => {
-      if (error) return callback(error, null);
-      else {
-        logger.info("Note found");
-        Note.findByIdAndRemove(noteID, callback);
-        return callback(null, data);
-      }
-    });
-  };
-
-  /**
    * @description remove note temporary by setting isdeleted flag true
    * @param {*} noteID
    * @param {*} callback
