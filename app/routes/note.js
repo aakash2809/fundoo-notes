@@ -29,7 +29,7 @@ class NoteRoutes {
     app.put('/deleteUserFromNote', helper.verifyToken, noteController.removeUser);
 
     //Delete a note with noteId
-    app.delete('/note/:noteId', helper.verifyToken, noteController.deleteNoteByNoteId);
+    app.delete('/notes/deleteforever/:noteId', helper.verifyToken, noteController.deleteNoteByNoteId);
 
     // delete note by setting isdeleted flag true
     app.put("/notes/delete/:noteId", helper.verifyToken, noteController.deleteNote);
@@ -44,7 +44,7 @@ class NoteRoutes {
     app.put("/notes/restore/:noteId", helper.verifyToken, noteController.restoreNote);
 
     // delete note forever
-    app.delete("/notes/deleteforever/:noteId", helper.verifyToken, noteController.deleteForever);
+    //app.delete("/notes/deleteforever/:noteId", helper.verifyToken, noteController.deleteForever);
 
   }
 }
