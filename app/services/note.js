@@ -13,6 +13,18 @@ const resposnsCode = require("../../util/staticFile.json");
 class NoteServices {
 
   /**
+      * @description update redis
+      * @param userId holds a user's Id
+      */
+  updateRedis = (userId) => {
+    const KEY = `NOTE_${userId}`
+    noteModel.getAllNotes(userId, (error, noteResult) => {
+      error
+        ? console.log("got error") :
+        helper.setDataToRedis(KEY, noteResult);
+    });
+  }
+  /**
    * @description save request data to database using model methods
    * @param {*} noteData holds data to be saved in json formate
    * @param {*} callback holds a function
@@ -20,7 +32,12 @@ class NoteServices {
   saveNoteData = (noteData, callback) => {
     logger.info(`TRACKED_PATH: Inside services`);
     noteModel.saveNote(noteData, (error, noteResult) => {
-      error ? callback(error, null) : callback(null, noteResult);
+      if (error) {
+        callback(error, null);
+      } else {
+        this.updateRedis(userId);
+        callback(null, noteResult)
+      }
     });
   };
 
@@ -93,10 +110,12 @@ class NoteServices {
   removeNoteById = (userId, noteId, callback) => {
     logger.info(`TRACKED_PATH: Inside services`);
     noteModel.deleteNoteByNoteId(noteId, (error, noteResult) => {
-      error
-        ? callback(error, null) : (
-          this.retrieveAllNotes(userId),
-          callback(null, noteResult));
+      if (error) {
+        callback(error, null);
+      } else {
+        this.updateRedis(userId);
+        callback(null, noteResult)
+      }
     });
   };
 
@@ -109,9 +128,12 @@ class NoteServices {
   updateNoteById = (userId, noteId, dataToReplace, callback) => {
     logger.info(`TRACKED_PATH: Inside services`);
     noteModel.updateNoteByNoteId(noteId, dataToReplace, (error, noteResult) => {
-      error ? callback(error, null) : (
-        this.retrieveAllNotes(userId),
-        callback(null, noteResult));
+      if (error) {
+        callback(error, null);
+      } else {
+        this.updateRedis(userId);
+        callback(null, noteResult)
+      }
     });
   }
 
@@ -269,8 +291,17 @@ class NoteServices {
    * @method deleteById is used to remove Note by ID
    * @param callback is the callback for controller
    */
-  deleteNote = (noteID, callback) => {
-    return noteModel.deleteNoteById(noteID, callback);
+  deleteNote = (userId, noteID, callback) => {
+    return noteModel.deleteNoteById(noteID, (error, result) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        this.updateRedis(userId);
+        callback(null, result)
+      }
+    });
+
+
   };
 
   /**
@@ -278,8 +309,15 @@ class NoteServices {
    * @method removeNote is used to remove Note by ID
    * @param callback is the callback for controller
    */
-  removeNote = (noteID, callback) => {
-    return noteModel.removeNote(noteID, callback);
+  removeNote = (userId, noteID, callback) => {
+    return noteModel.removeNote(noteID, (error, result) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        this.updateRedis(userId);
+        callback(null, result)
+      }
+    });
   };
 
   /**
@@ -287,8 +325,15 @@ class NoteServices {
      * @method archiveNote is used to remove Note by ID
      * @param callback is the callback for controller
      */
-  archiveNoteData = (noteID, callback) => {
-    return noteModel.archiveNote(noteID, callback);
+  archiveNoteData = (userId, noteID, callback) => {
+    return noteModel.archiveNote(noteID, (error, result) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        this.updateRedis(userId);
+        callback(null, result)
+      }
+    });
   };
 
   /**
@@ -296,8 +341,15 @@ class NoteServices {
      * @method UnArchiveNote  
      * @param callback is the callback for controller
      */
-  unArchiveNoteData = (noteID, callback) => {
-    return noteModel.unArchiveNote(noteID, callback);
+  unArchiveNoteData = (userId, noteID, callback) => {
+    return noteModel.unArchiveNote(noteID, (error, result) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        this.updateRedis(userId);
+        callback(null, result)
+      }
+    });
   };
 
   /**
@@ -305,11 +357,17 @@ class NoteServices {
      * @method restoreNoteData restore tempararty deleted data 
      * @param callback is the callback for controller
      */
-  restoreNoteData = (noteID, callback) => {
-    return noteModel.restoreNote(noteID, callback);
+  restoreNoteData = (userId, noteID, callback) => {
+    return noteModel.restoreNote(noteID, (error, result) => {
+      if (error) {
+        callback(error, null);
+      } else {
+        this.updateRedis(userId);
+        callback(null, result)
+      }
+    });
   };
 
 }
-
 
 module.exports = new NoteServices();
