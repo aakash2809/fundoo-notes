@@ -35,7 +35,7 @@ class NoteServices {
       if (error) {
         callback(error, null);
       } else {
-        this.updateRedis(userId);
+        this.updateRedis(noteData.userId);
         callback(null, noteResult)
       }
     });
