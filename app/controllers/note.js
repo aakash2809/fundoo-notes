@@ -454,6 +454,36 @@ class NoteController {
       );
     }
   }
+
+  /**
+ * @description add color to note by noteId and color
+ * @param {*} request having noteId and color in its body
+ * @param {*} response sends response from server
+ */
+  noteColor = (request, response) => {
+    const requireDataToaddLabel = {
+      noteId: request.body.noteId,
+      color: request.body.color,
+    }
+    console.log("controller", requireDataToaddLabel);
+    noteServices.addColorToNote(requireDataToaddLabel, (error, noteResult) => {
+      if (error) {
+        response.send({
+          success: error.success,
+          status_code: error.status_code,
+          message: error.message
+        });
+      } else {
+        response.send({
+          success: noteResult.success,
+          status_code: noteResult.status_code,
+          message: noteResult.message,
+          updated_data: noteResult.updated_data,
+        });
+        logger.info("SUCCESS004: Note has been updated");
+      }
+    });
+  }
 }
 
 module.exports = new NoteController();

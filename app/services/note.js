@@ -350,6 +350,45 @@ class NoteServices {
     });
   };
 
+  /**
+  * @description update note  data existed in database, using model's mothod
+   * by adding new label Object Id to Note
+   * @param {*} requireDataToaddColor takes data to be upadated in json formate
+   * @param {*} callback holds a function
+   */
+  addColorToNote = (requireDataToaddColor, callback) => {
+    const noteId = requireDataToaddColor.noteId;
+    console.log("inside service", requireDataToaddColor);
+    noteModel.addColor(requireDataToaddColor, (error, noteResult) => {
+      if (error) {
+        error = {
+          success: false,
+          status_code: resposnsCode.NOT_FOUND,
+          message: `No note availabe associated with : ${noteId}`,
+        }
+        callback(error, null);
+      }
+      else if (!noteResult) {
+        error = {
+          success: false,
+          status_code: resposnsCode.NOT_FOUND,
+          message: `No note availabe associated with : ${noteId}`,
+        }
+        callback(error, null);
+      }
+      else {
+        noteResult = {
+          success: true,
+          status_code: resposnsCode.SUCCESS,
+          message: `color successfully added to Note`,
+          updated_data: noteResult,
+        }
+        callback(null, noteResult)
+      }
+    });
+  }
+
+
 }
 
 module.exports = new NoteServices();

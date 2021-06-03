@@ -38,14 +38,14 @@ const noteSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    collaborator: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
-    }],
     color: {
       type: String,
       default: "#FFFFFF"
     },
+    collaborator: [{
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "User",
+    }],
   },
   {
     timestamps: true,
@@ -237,6 +237,24 @@ class NoteModel {
       callback
     );
   };
+
+  /**
+  * @description update note  data existed in database by adding existing 
+  * label in label collection
+  * @param {*}requireDataToaddColor takes data to be upadated in json formate
+  * @param {*} callback holds a function
+  */
+  addColor = (requireDataToaddColor, callback) => {
+    const noteColor = requireDataToaddColor.color;
+    const noteId = requireDataToaddColor.noteId;
+    console.log("model color check", noteColor);
+    const updateColor = { "color": noteColor };
+    Note.findByIdAndUpdate(
+      noteId,
+      updateColor,
+      { new: true },
+      callback)
+  }
 }
 
 module.exports = new NoteModel();
