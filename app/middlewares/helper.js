@@ -16,8 +16,7 @@ const resposnsCode = require("../../util/staticFile.json");
 const redis = require("redis");
 const client = redis.createClient();
 require("dotenv").config();
-var atob = require("atob");
-const { isRef } = require("joi");
+const atob = require("atob");
 
 class Helper {
 
@@ -49,7 +48,7 @@ class Helper {
       },
       process.env.SECRET_KEY,
       {
-        expiresIn: "24h",
+        expiresIn: "20d",
       }
     );
   };
@@ -58,11 +57,10 @@ class Helper {
    * @description this function sending mail for reset password 
    */
   sendMailToResetPassword = async (user, token, callback) => {
-    console.log("hello helper");
     var transporter = nodemailer.createTransport({
       service: "gmail",
       port: process.env.PORT,
-      secure: true, // use SSL
+      secure: true,
       auth: {
         user: process.env.EMAIL_USER,
         pass: process.env.EMAIL_PASS,
@@ -143,9 +141,7 @@ class Helper {
    */
   verifyToken = (request, response, next) => {
     try {
-      console.log("helper request:", request.headers);
       var token = request.headers.authorization.split("Bearer ")[1];
-      console.log("helper token:", token);
       var decode = jwt.verify(token, process.env.SECRET_KEY);
       request.userData = decode;
       next();
