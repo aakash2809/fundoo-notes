@@ -41,7 +41,11 @@ const noteSchema = new mongoose.Schema(
     collaborator: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
-    }]
+    }],
+    color: {
+      type: String,
+      default: "#FFFFFF"
+    },
   },
   {
     timestamps: true,
