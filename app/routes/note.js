@@ -43,8 +43,7 @@ class NoteRoutes {
     // restore note by setting isdeleted flag false
     app.put("/notes/restore/:noteId", helper.verifyToken, noteController.restoreNote);
 
-    // delete note forever
-    //app.delete("/notes/deleteforever/:noteId", helper.verifyToken, noteController.deleteForever);
+    app.post('/noteColor', helper.verifyToken, noteController.noteColor);
 
   }
 }
