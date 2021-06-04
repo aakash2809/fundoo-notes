@@ -20,7 +20,7 @@ class NoteServices {
     const KEY = `NOTE_${userId}`
     noteModel.getAllNotes(userId, (error, noteResult) => {
       error
-        ? console.log("got error") :
+        ? logger.info("got error") :
         helper.setDataToRedis(KEY, noteResult);
     });
   }
@@ -67,7 +67,7 @@ class NoteServices {
               message: error
             }, callback(error, null)) : (
               helper.setDataToRedis(KEY, noteResult),
-              console.log("comming from mongodb"),
+              logger.info("comming from mongodb"),
               noteResult = {
                 success: true,
                 statusCode: resposnsCode.SUCCESS,
@@ -77,7 +77,7 @@ class NoteServices {
               callback(null, noteResult));
         });
       } else {
-        console.log("comming from redis");
+        logger.info("comming from redis");
         dataFromRedis = {
           success: true,
           statusCode: resposnsCode.SUCCESS,
@@ -138,14 +138,13 @@ class NoteServices {
   }
 
   /**
-   * @description update note  data existed in database, using model's mothod
+   * @description update note data existed in database, using model's mothod
     * by adding new label Object Id to Note
     * @param {*} requireDataToaddLabel takes data to be upadated in json formate
     * @param {*} callback holds a function
     */
   updateNoteByAddingLabel = (requireDataToaddLabel, callback) => {
     const noteId = requireDataToaddLabel.noteId;
-    console.log("inside service", requireDataToaddLabel);
     noteModel.addLabel(requireDataToaddLabel, (error, noteResult) => {
       if (error) {
         error = {
@@ -352,13 +351,12 @@ class NoteServices {
 
   /**
   * @description update note  data existed in database, using model's mothod
-   * by adding new label Object Id to Note
+   * by adding new color Object Id to Note
    * @param {*} requireDataToaddColor takes data to be upadated in json formate
-   * @param {*} callback holds a function
+   * @param {*} callback holds a function.
    */
   addColorToNote = (requireDataToaddColor, callback) => {
     const noteId = requireDataToaddColor.noteId;
-    console.log("inside service", requireDataToaddColor);
     noteModel.addColor(requireDataToaddColor, (error, noteResult) => {
       if (error) {
         error = {
@@ -387,8 +385,6 @@ class NoteServices {
       }
     });
   }
-
-
 }
 
 module.exports = new NoteServices();

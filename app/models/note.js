@@ -239,15 +239,15 @@ class NoteModel {
   };
 
   /**
-  * @description update note  data existed in database by adding existing 
-  * label in label collection
+  * @description update note data existed in database by updating color 
+  * field
   * @param {*}requireDataToaddColor takes data to be upadated in json formate
   * @param {*} callback holds a function
   */
   addColor = (requireDataToaddColor, callback) => {
     const noteColor = requireDataToaddColor.color;
     const noteId = requireDataToaddColor.noteId;
-    console.log("model color check", noteColor);
+
     const updateColor = { "color": noteColor };
     Note.findByIdAndUpdate(
       noteId,
