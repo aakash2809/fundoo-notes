@@ -42,6 +42,9 @@ const noteSchema = new mongoose.Schema(
       type: String,
       default: "#FFFFFF"
     },
+    image: {
+      type: String
+    },
     collaborator: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
