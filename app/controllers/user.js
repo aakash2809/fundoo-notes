@@ -102,9 +102,9 @@ class UserControllers {
           });
       }
     );
-    console.log('Request took:', new Date() - start, 'ms');
+    logger.info('Request took:', new Date() - start, 'ms');
   };
-  
+
   /**
    * @description forgot password
    * @param {*} request
@@ -115,7 +115,6 @@ class UserControllers {
     logger.info(`INVOKING: getEmail method of login services`);
     userServices.getEmail({ email }, (error, result) => {
       try {
-        console.log(result)
         if (error) {
           return response.send({
             success: false,

@@ -10,6 +10,7 @@ require("dotenv").config();
 require("./config/index").set(process.env.NODE_ENV, app);
 const config = require("./config/index").get();
 const cors = require('cors');
+const logger = require("./config/logger");
 
 app.use(cors());
 
@@ -23,7 +24,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // listen for request
 app.listen(config.port, () => {
-  console.log(`CONNECT_SERVER: Connected, server started listening on port : ${config.port}`);
+  logger.info(`CONNECT_SERVER: Connected, server started listening on port : ${config.port}`);
 });
 
 new dbconnection(config.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).connect();

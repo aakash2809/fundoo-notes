@@ -1,6 +1,7 @@
 require("dotenv").config();
 const amqplib = require('amqplib/callback_api');
 const nodemailer = require('nodemailer');
+const logger = require("../../config/logger");
 
 class Subscriber {
 
@@ -57,11 +58,11 @@ class Subscriber {
                         // Send the message using the previously set up Nodemailer transport
                         transport.sendMail(message, (err, info) => {
                             if (err) {
-                                console.log("getting error in sending data", err);
+                                logger.info("getting error in sending data", err);
                                 // put the failed message item back to queue
                                 return channel.nack(data);
                             }
-                            console.log('Delivered message %s', info.messageId);
+                            logger.info('Delivered message %s', info.messageId);
                             // remove message item from the queue
                             channel.ack(data);
                             callback(null, message.link);

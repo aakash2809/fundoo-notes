@@ -12,8 +12,6 @@ const jwtAuth = require("../middlewares/helper");
 const bycrypt = require('bcryptjs');
 const resposnsCode = require("../../util/staticFile.json");
 const helper = require("../middlewares/helper");
-const { any } = require('joi');
-const { sendMailToResetPassword: sendMail } = require('../middlewares/helper');
 const publish = require("../middlewares/publisher");
 const consume = require("../middlewares/consumer");
 
@@ -212,7 +210,7 @@ class userServices {
                                 }
                                 logger.info(` token genrated: ${token}`);
                                 helper.setDataToRedis(KEY, loginFilteredResult),
-                                    console.log("response comming from mongodb");
+                                    logger.info("response comming from mongodb");
                                 callback(null, loginFilteredResult);
                             } else {
                                 error = {
@@ -226,7 +224,7 @@ class userServices {
                     }
                 });
             } else {
-                console.log("response comming from redis");
+                logger.info("response comming from redis");
                 dataFromRedis = {
                     success: true,
                     statusCode: resposnsCode.SUCCESS,
@@ -265,14 +263,14 @@ class userServices {
 
                 emmiter.emit("consume", (error, message) => {
                     if (error) {
-                        console.log("error after consuming");
+                        logger.info("error after consuming");
                         callback(
                             new Error("Some error occurred while consuming message"),
                             null
                         );
                     }
                     else {
-                        console.log("sent sussefully");
+                        logger.info("mail sent sussefully");
                         message = {
                             data: message,
                             message: "token genrated and mail successfully sent",

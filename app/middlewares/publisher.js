@@ -2,20 +2,21 @@
 require("dotenv").config();
 var ejs = require("ejs");
 const amqplib = require('amqplib/callback_api');
+const logger = require("../../config/logger");
 
 class Publish {
     getMessage = (userInfo, token) => {
         // Create connection to AMQP server
         amqplib.connect("amqp://localhost", (err, connection) => {
             if (err) {
-                console.error(err);
+                logger.error(err);
                 return process.exit(1);
             }
 
             // Create channel
             connection.createChannel((err, channel) => {
                 if (err) {
-                    console.error(err.stack);
+                    logger.error(err.stack);
                     return process.exit(1);
                 }
 
@@ -53,7 +54,7 @@ class Publish {
                                 resetLink: `${process.env.CLIENT_URL}/resetPassword/${token}`,
                             })
                         if (sent >= 1) {
-                            console.log(' messages sent!');
+                            logger.info(' messages sent!');
                             // Close connection to AMQP server
                             // We need to call channel.close first, otherwise pending
                             // messages are not written to the queue

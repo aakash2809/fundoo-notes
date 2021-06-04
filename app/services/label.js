@@ -51,7 +51,7 @@ class LabelServices {
             },
               callback(error, null)) : (
               helper.setDataToRedis(KEY, labelResult),
-              console.log("comming from mongodb"),
+              logger.info("comming from mongodb"),
               labelResult = {
                 success: true,
                 statusCode: resposnsCode.SUCCESS,
@@ -61,7 +61,7 @@ class LabelServices {
               callback(null, labelResult));
         });
       } else {
-        console.log("comming from redis");
+        logger.info("comming from redis");
         dataFromRedis = {
           success: true,
           statusCode: resposnsCode.SUCCESS,

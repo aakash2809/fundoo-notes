@@ -87,7 +87,7 @@ class LabelController {
           data: labelResult.data,
         });
         logger.info("SUCCESS002:All data has been retrieved");
-        console.log('Request took:', new Date() - start, 'ms');
+        logger.info('Request took:', new Date() - start, 'ms');
       }
     });
   };
