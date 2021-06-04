@@ -11,6 +11,7 @@ const logger = require("../../config/logger");
 const noteServices = require(`../services/note`);
 const resposnsCode = require("../../util/staticFile.json");
 const helper = require("../middlewares/helper");
+const colorCodeValidator = require("../middlewares/colorCodeValidator");
 
 class NoteController {
   /**
@@ -461,6 +462,16 @@ class NoteController {
  * @param {*} response sends response from server
  */
   noteColor = (request, response) => {
+    let validatedRequestResult = colorCodeValidator.validate(request.body);
+    if (validatedRequestResult.error) {
+      logger.error(`SCHEMAERROR: Request did not match with schema`);
+      response.send({
+        success: false,
+        status_code: resposnsCode.BAD_REQUEST,
+        message: validatedRequestResult.error.details[0].message,
+      });
+      return;
+    }
     const requireDataToaddLabel = {
       noteId: request.body.noteId,
       color: request.body.color,
