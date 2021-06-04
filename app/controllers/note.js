@@ -22,13 +22,11 @@ class NoteController {
   addNote = (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
     const encodedBody = helper.getEncodedBodyFromHeader(request);
-    console.log("note detail1", request.body);
     const noteDetails = {
       title: request.body.title,
       description: request.body.description,
       userId: encodedBody.userId,
     };
-    console.log("note detail", noteDetails);
     logger.info(`INVOKING: saveData method of services`);
     noteServices.saveNoteData(noteDetails, (error, noteResult) => {
       if (error) {
@@ -59,7 +57,6 @@ class NoteController {
     logger.info(`TRACKED_PATH: Inside controller`);
     var start = new Date();
     const encodedBody = helper.getEncodedBodyFromHeader(request);
-    console.log("in controller");
     noteServices.retrieveAllNotes(encodedBody.userId, (error, noteResult) => {
       if (error) {
         response.send({
@@ -76,7 +73,7 @@ class NoteController {
           data: noteResult.data,
         });
         logger.info("SUCCESS002:All notes has been retrieved");
-        console.log('Request took:', new Date() - start, 'ms');
+        logger.info('Request took:', new Date() - start, 'ms');
       }
     });
   };
@@ -188,7 +185,6 @@ class NoteController {
       noteId: request.body.noteId,
       labelId: request.body.labelId,
     }
-    console.log("controller", requireDataToaddLabel);
     noteServices.updateNoteByAddingLabel(requireDataToaddLabel, (error, noteResult) => {
       if (error) {
         response.send({
@@ -382,9 +378,7 @@ class NoteController {
     const encodedBody = helper.getEncodedBodyFromHeader(req);
     const userId = encodedBody.userId
     try {
-      console.log("archive input", noteID);
       noteServices.unArchiveNoteData(userId, noteID, (error, data) => {
-        console.log("archive output", data);
         return (
           error ?
             (logger.warn("note not found with id " + noteID),
@@ -422,9 +416,7 @@ class NoteController {
     const encodedBody = helper.getEncodedBodyFromHeader(req);
     const userId = encodedBody.userId
     try {
-      console.log("archive input", noteID);
       noteServices.restoreNoteData(userId, noteID, (error, data) => {
-        console.log("archive output", data);
         return (
           error ?
             (logger.warn("Note not found with id " + noteID),
@@ -472,12 +464,12 @@ class NoteController {
       });
       return;
     }
-    const requireDataToaddLabel = {
+    const requireDataToaddColor = {
       noteId: request.body.noteId,
       color: request.body.color,
     }
-    console.log("controller", requireDataToaddLabel);
-    noteServices.addColorToNote(requireDataToaddLabel, (error, noteResult) => {
+
+    noteServices.addColorToNote(requireDataToaddColor, (error, noteResult) => {
       if (error) {
         response.send({
           success: error.success,
