@@ -40,7 +40,7 @@ class Helper {
  * @description it genrate the token
  */
   genrateTokenForSignUp = (user) => {
-    return jwt.sign(
+    const token = jwt.sign(
       {
         username: user.name,
         email: user.email,
@@ -51,6 +51,9 @@ class Helper {
         expiresIn: "20d",
       }
     );
+
+    client.setex('token', 5000, token);
+    return token;
   };
 
   /**
@@ -143,7 +146,12 @@ class Helper {
     try {
       var token = request.headers.authorization.split("Bearer ")[1];
       var decode = jwt.verify(token, process.env.SECRET_KEY);
-      request.userData = decode;
+      client.get('token', (error, result) => {
+        if (error) throw error;
+        if (token === result) {
+          request.userData = decode
+        }
+      })
       next();
     } catch (error) {
       response.send({
@@ -164,7 +172,7 @@ class Helper {
   }
 
   /**
-   * @description retrive all label data from database
+   * @description set key and data to redis
    */
   setDataToRedis = (KEY, data) => {
     client.setex(KEY, 120, JSON.stringify(data));
