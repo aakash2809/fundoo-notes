@@ -1,9 +1,7 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const dbconnection = require('./config/database.config');
-const userRoute = require('./app/routes/user');
-const noteRoute = require('./app/routes/note');
-const labelRoute = require('./app/routes/label');
+const routes = require('./app/routes');
 const swaggerDocument = require('./app/lib/swagger.json');
 const app = express();
 require("dotenv").config();
@@ -30,7 +28,6 @@ app.listen(config.port, () => {
 new dbconnection(config.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).connect();
 
 //Initialize the route
-userRoute.routeToUserController(app);
-noteRoute.routeToNoteController(app);
-labelRoute.routeToLabelController(app);
+routes.routeToControllers(app);
+
 module.exports = app;
