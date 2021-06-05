@@ -10,7 +10,7 @@
 const logger = require("../../config/logger");
 const labelServices = require(`../services/label`);
 const resposnsCode = require("../../util/staticFile.json");
-const LabelValidator = require("../middlewares/labelValidator");
+const Validator = require("../middlewares/inputValiation");
 const helper = require("../middlewares/helper");
 
 class LabelController {
@@ -25,7 +25,7 @@ class LabelController {
       logger.info(`TRACKED_PATH: Inside controller`);
       const encodedBody = helper.getEncodedBodyFromHeader(request);
 
-      let validatedRequestResult = LabelValidator.validate(request.body);
+      let validatedRequestResult = Validator.validateLabel(request.body);
 
       if (validatedRequestResult.error) {
         logger.error(`SCHEMAERROR: Request did not match with schema`);

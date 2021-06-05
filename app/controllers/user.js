@@ -9,7 +9,7 @@
 
 const logger = require("../../config/logger");
 const userServices = require("../services/user");
-const userValidator = require("../middlewares/userValidator");
+const Validator = require("../middlewares/inputValiation");
 const resposnsCode = require("../../util/staticFile.json");
 
 class UserControllers {
@@ -20,7 +20,7 @@ class UserControllers {
    */
   register = (request, response) => {
     logger.info(`TRACKED_PATH: Inside controller`);
-    let validatedRequestResult = userValidator.validate(request.body);
+    let validatedRequestResult = Validator.validateUser(request.body);
     if (validatedRequestResult.error) {
       logger.error(`SCHEMAERROR: Request did not match with schema`);
       response.send({

@@ -11,7 +11,7 @@ const logger = require("../../config/logger");
 const noteServices = require(`../services/note`);
 const resposnsCode = require("../../util/staticFile.json");
 const helper = require("../middlewares/helper");
-const colorCodeValidator = require("../middlewares/colorCodeValidator");
+const inputValidator = require("../middlewares/inputValiation");
 
 class NoteController {
   /**
@@ -454,7 +454,7 @@ class NoteController {
  * @param {*} response sends response from server
  */
   noteColor = (request, response) => {
-    let validatedRequestResult = colorCodeValidator.validate(request.body);
+    let validatedRequestResult = inputValidator.validateColorCode(request.body);
     if (validatedRequestResult.error) {
       logger.error(`SCHEMAERROR: Request did not match with schema`);
       response.send({
@@ -487,6 +487,27 @@ class NoteController {
       }
     });
   }
+
+  /*  uploadImage = (req, res) => {
+     try {
+       var responseResult = {};
+       noteID = req.body.noteID;
+       let image = req.body.image;
+       noteService.uploadImage(noteID, image, (err, result) => {
+         if (err) {
+           responseResult.success = false;
+           responseResult.error = err;
+           res.status(500).send(responseResult);
+         } else {
+           responseResult.status = true;
+           responseResult.data = result;
+           res.status(200).send(responseResult);
+         }
+       });
+     } catch (error) {
+       res.send(error);
+     }
+   } */
 }
 
 module.exports = new NoteController();
