@@ -1,3 +1,14 @@
+/**
+* @file          server.js
+* @description   This file is an entry point for application
+* @requires      {@link https://www.npmjs.com/package/swagger-ui-express|swaggerUi}
+* @requires      {@link https://expressjs.com/|express }
+* @requires      routes        is a reference to initialize route
+* @requires      config       is a reference to get connection with configuration
+* @requires      logger       is a reference to save logs in log files
+* @author        Aakash Rajak <aakashrajak2809@gmail.com>
+*--------------------------------------------------------------------------------------*/
+
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const dbconnection = require('./config/database.config');

@@ -1,3 +1,9 @@
+/**
+* @file          routes.js
+* @description   This file contains all routes availbe for application
+* @author        Aakash Rajak <aakashrajak2809@gmail.com>
+*--------------------------------------------------------------------------------------*/
+
 const helper = require("./middlewares/helper");
 const labelController = require(`./controllers/label`);
 const noteController = require(`./controllers/note`);
