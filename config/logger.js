@@ -3,7 +3,7 @@
  * @file          logger.js
  * @description   This file contains the defination of winston transports
  * @requires      {@link https://www.npmjs.com/package/winston | winston}
- * @author        Aakash Rajak <aakashrajak2809@gmail.com>        
+ * @author        Aakash Rajak <aakashrajak2809@gmail.com>
 ------------------------------------------------------------------------------------------*/
 
 const winston = require('winston');
@@ -15,12 +15,12 @@ const logger = winston.createLogger({
       filename: './logs/info.log',
       format: winston.format.combine(
         winston.format.timestamp({
-          format: 'YYYY-MM-DD'
+          format: 'YYYY-MM-DD',
         }),
         winston.format.printf(
-          info => `${info.timestamp} ${info.level}: ${info.message}`
-        )
-      )
+          (info) => `${info.timestamp} ${info.level}: ${info.message}`,
+        ),
+      ),
     }),
 
     new winston.transports.File({
@@ -28,14 +28,14 @@ const logger = winston.createLogger({
       filename: './logs/error.log',
       format: winston.format.combine(
         winston.format.timestamp({
-          format: 'YYYY-MM-DD'
+          format: 'YYYY-MM-DD',
         }),
 
         winston.format.printf(
-          error => `${error.timestamp} ${error.level}: ${error.message}`
-        )
-      )
-    })]
+          (error) => `${error.timestamp} ${error.level}: ${error.message}`,
+        ),
+      ),
+    })],
 });
 
 module.exports = logger;

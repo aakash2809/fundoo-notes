@@ -3,14 +3,13 @@
  * @file         noteModel.js
  * @description  This module is used for creating the schema and comunicate with mongodb
  *               through mongoose
- * @requires     {@link http://mongoosejs.com/|mongoose} 
+ * @requires     {@link http://mongoosejs.com/|mongoose}
  * @requires     logger is a reference to save logs in log files
  * @author       Aakash Rajak <aakashrajak2809@gmail.com>
 ------------------------------------------------------------------------------------------*/
 
-const mongoose = require(`mongoose`);
-const logger = require("../../config/logger");
-const Label = require("../models/label");
+const mongoose = require('mongoose');
+const logger = require('../../config/logger');
 
 const noteSchema = new mongoose.Schema(
   {
@@ -24,11 +23,11 @@ const noteSchema = new mongoose.Schema(
     },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     },
     labelId: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Label",
+      ref: 'Label',
     }],
     isArchived: {
       type: Boolean,
@@ -40,25 +39,25 @@ const noteSchema = new mongoose.Schema(
     },
     color: {
       type: String,
-      default: "#FFFFFF"
+      default: '#FFFFFF',
     },
     image: {
-      type: String
+      type: String,
     },
     collaborator: [{
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User",
+      ref: 'User',
     }],
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-noteSchema.set("versionKey", false);
+noteSchema.set('versionKey', false);
 
-logger.info("inside model");
-const Note = mongoose.model(`Note`, noteSchema);
+logger.info('inside model');
+const Note = mongoose.model('Note', noteSchema);
 
 class NoteModel {
   /**
@@ -67,7 +66,7 @@ class NoteModel {
    * @param {*} callback holds a function
    */
   saveNote = (noteData, callback) => {
-    logger.info(`TRACKED_PATH: Inside model`);
+    logger.info('TRACKED_PATH: Inside model');
     const note = new Note(noteData);
     note.save((error, noteResult) => {
       error ? callback(error, null) : callback(null, noteResult);
@@ -76,12 +75,12 @@ class NoteModel {
 
   /**
    * @description retrive all note data from database
-   *@param {*} userId will contain user Object id 
+   *@param {*} userId will contain user Object id
    * @param {*} callback holds a function
    */
   getAllNotes = (userId, callback) => {
-    logger.info(`TRACKED_PATH: Inside model`);
-    Note.find({ userId: userId }, (error, noteData) => {
+    logger.info('TRACKED_PATH: Inside model');
+    Note.find({ userId }, (error, noteData) => {
       error ? callback(error, null) : callback(null, noteData);
     });
   };
@@ -92,7 +91,7 @@ class NoteModel {
    * @param {*} callback holds a function
    */
   getNoteByNoteId = (noteId, callback) => {
-    logger.info(`TRACKED_PATH: Inside model`);
+    logger.info('TRACKED_PATH: Inside model');
     Note.findById(noteId, (error, noteResult) => {
       error ? callback(error, null) : (
         callback(null, noteResult));
@@ -105,7 +104,7 @@ class NoteModel {
    * @param {*} callback holds a function
    */
   deleteNoteByNoteId = (noteData, callback) => {
-    logger.info(`TRACKED_PATH: Inside model`);
+    logger.info('TRACKED_PATH: Inside model');
     Note.findByIdAndDelete(noteData, (error, noteResult) => {
       error ? callback(error, null) : callback(null, noteResult);
     });
@@ -118,79 +117,83 @@ class NoteModel {
    * @param {*} callback holds a function
    */
   updateNoteByNoteId = (noteId, dataToUpdate, callback) => {
-    logger.info(`TRACKED_PATH: Inside model`);
+    logger.info('TRACKED_PATH: Inside model');
     Note.findByIdAndUpdate(
       noteId,
       dataToUpdate,
       { new: true },
       (error, noteResult) => {
         error ? callback(error, null) : callback(null, noteResult);
-      }
+      },
     );
   }
 
   /**
-    * @description update note  data existed in database by adding existing 
+    * @description update note  data existed in database by adding existing
     * label in label collection
     * @param {*}requireDataToaddLabel takes data to be upadated in json formate
     * @param {*} callback holds a function
     */
   addLabel = (requireDataToaddLabel, callback) => {
-    const labelId = requireDataToaddLabel.labelId
-    const noteId = requireDataToaddLabel.noteId;
+    const { labelId } = requireDataToaddLabel;
+    const { noteId } = requireDataToaddLabel;
     Note.findByIdAndUpdate(
       noteId,
-      { $push: { labelId: labelId } },
+      { $push: { labelId } },
       { new: true },
-      callback)
+      callback,
+    );
   }
 
   /**
-  * @description update note  data existed in database by adding existing 
+  * @description update note  data existed in database by adding existing
   * user in user collection
   * @param {*}requireDataToaddUser takes data to be upadated in json formate
   * @param {*} callback holds a function
   */
   addUser = (requireDataToaddUser, callback) => {
-    const userId = requireDataToaddUser.userId
-    const noteId = requireDataToaddUser.noteId;
+    const { userId } = requireDataToaddUser;
+    const { noteId } = requireDataToaddUser;
     Note.findByIdAndUpdate(
       noteId,
       { $push: { collaborator: userId } },
       { new: true },
-      callback)
+      callback,
+    );
   }
 
   /**
-     * @description update note  data existed in database by deleting 
+     * @description update note  data existed in database by deleting
      * label from note asociated with given noteId
      * @param {*}requireDataToaddLabel takes data to be upadated in json formate
      * @param {*} callback holds a function
      */
   removeLabel = (requireDataToaddLabel, callback) => {
-    const labelId = requireDataToaddLabel.labelId
-    const noteId = requireDataToaddLabel.noteId;
+    const { labelId } = requireDataToaddLabel;
+    const { noteId } = requireDataToaddLabel;
     Note.findByIdAndUpdate(
       noteId,
-      { $pull: { labelId: labelId } },
+      { $pull: { labelId } },
       { new: true },
-      callback);
+      callback,
+    );
   }
 
   /**
-   * @description update note  data existed in database by deleting 
+   * @description update note  data existed in database by deleting
    * label from note asociated with given noteId
    * @param {*}requireDataToaddUser takes data to be upadated in json formate
    * @param {*} callback holds a function
    */
   removeUser = (requireDataToaddUser, callback) => {
-    const userId = requireDataToaddUser.userId
-    const noteId = requireDataToaddUser.noteId;
+    const { userId } = requireDataToaddUser;
+    const { noteId } = requireDataToaddUser;
     Note.findByIdAndUpdate(
       noteId,
       { $pull: { collaborator: userId } },
       { new: true },
-      callback);
+      callback,
+    );
   }
 
   /**
@@ -201,7 +204,7 @@ class NoteModel {
   removeNote = (noteID, callback) => {
     Note.findByIdAndUpdate(
       noteID, { isDeleted: true }, { new: true },
-      callback
+      callback,
     );
   };
 
@@ -213,7 +216,7 @@ class NoteModel {
   archiveNote = (noteID, callback) => {
     Note.findByIdAndUpdate(
       noteID, { isArchived: true }, { new: true },
-      callback
+      callback,
     );
   };
 
@@ -225,7 +228,7 @@ class NoteModel {
   unArchiveNote = (noteID, callback) => {
     Note.findByIdAndUpdate(
       noteID, { isArchived: false }, { new: true },
-      callback
+      callback,
     );
   };
 
@@ -237,27 +240,53 @@ class NoteModel {
   restoreNote = (noteID, callback) => {
     Note.findByIdAndUpdate(
       noteID, { isDeleted: false }, { new: true },
-      callback
+      callback,
     );
   };
 
   /**
-  * @description update note data existed in database by updating color 
+  * @description update note data existed in database by updating color
   * field
   * @param {*}requireDataToaddColor takes data to be upadated in json formate
   * @param {*} callback holds a function
   */
   addColor = (requireDataToaddColor, callback) => {
     const noteColor = requireDataToaddColor.color;
-    const noteId = requireDataToaddColor.noteId;
+    const { noteId } = requireDataToaddColor;
 
-    const updateColor = { "color": noteColor };
+    const updateColor = { color: noteColor };
     Note.findByIdAndUpdate(
       noteId,
       updateColor,
       { new: true },
-      callback)
+      callback,
+    );
   }
+
+  /**
+   * @description
+   * @param {*}
+   * @param {*} callback holds a function
+   */
+  updateImage = (noteID, updateNote, callback) => {
+    Note.findOneAndUpdate(
+      {
+        _id: noteID,
+      },
+      {
+        $set: {
+          image: updateNote,
+        },
+      },
+      (err, result) => {
+        if (err) {
+          callback(err);
+        } else {
+          return callback(null, updateNote);
+        }
+      },
+    );
+  };
 }
 
 module.exports = new NoteModel();

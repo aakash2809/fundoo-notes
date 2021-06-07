@@ -2,41 +2,41 @@
  * @module         services
  * @file           note.js
  * @description    This file contain all the service method for notes
- * @requires       noteModel  is refrence to invoke methods of noteModel.js     
- * @author         Aakash Rajak <aakashrajak2809@gmail.com>        
+ * @requires       noteModel  is refrence to invoke methods of noteModel.js
+ * @author         Aakash Rajak <aakashrajak2809@gmail.com>
 ------------------------------------------------------------------------------------------*/
-const noteModel = require("../models/note");
-const logger = require("../../config/logger");
-const helper = require("../middlewares/helper");
-const resposnsCode = require("../../util/staticFile.json");
+const noteModel = require('../models/note');
+const logger = require('../../config/logger');
+const helper = require('../middlewares/helper');
+const resposnsCode = require('../../util/staticFile.json');
 
 class NoteServices {
-
   /**
       * @description update redis
       * @param userId holds a user's Id
       */
   updateRedis = (userId) => {
-    const KEY = `NOTE_${userId}`
+    const KEY = `NOTE_${userId}`;
     noteModel.getAllNotes(userId, (error, noteResult) => {
       error
-        ? logger.info("got error") :
-        helper.setDataToRedis(KEY, noteResult);
+        ? logger.info('got error')
+        : helper.setDataToRedis(KEY, noteResult);
     });
   }
+
   /**
    * @description save request data to database using model methods
    * @param {*} noteData holds data to be saved in json formate
    * @param {*} callback holds a function
    */
   saveNoteData = (noteData, callback) => {
-    logger.info(`TRACKED_PATH: Inside services`);
+    logger.info('TRACKED_PATH: Inside services');
     noteModel.saveNote(noteData, (error, noteResult) => {
       if (error) {
         callback(error, null);
       } else {
         this.updateRedis(noteData.userId);
-        callback(null, noteResult)
+        callback(null, noteResult);
       }
     });
   };
@@ -45,48 +45,48 @@ class NoteServices {
    * @description retrive all note  data from database using model's mothod
    * @param {*} callback holds a function
    * @param {*} callback holds a function
-   * 
+   *
    */
   retrieveAllNotes = (userId, callback) => {
-    logger.info(`TRACKED_PATH: Inside services`);
-    const KEY = `NOTE_${userId}`
+    logger.info('TRACKED_PATH: Inside services');
+    const KEY = `NOTE_${userId}`;
     helper.getResponseFromRedis(KEY, (error, dataFromRedis) => {
       if (error) {
         error = {
           success: false,
           statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
-          message: error
-        }
-        callback(error, null)
+          message: error,
+        };
+        callback(error, null);
       } else if (!dataFromRedis) {
         noteModel.getAllNotes(userId, (error, noteResult) => {
           error
             ? (error = {
               success: false,
               statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
-              message: error
+              message: error,
             }, callback(error, null)) : (
               helper.setDataToRedis(KEY, noteResult),
-              logger.info("comming from mongodb"),
+              logger.info('comming from mongodb'),
               noteResult = {
                 success: true,
                 statusCode: resposnsCode.SUCCESS,
                 message: 'Notes of current account has been retrieved',
-                data: noteResult
+                data: noteResult,
               },
               callback(null, noteResult));
         });
       } else {
-        logger.info("comming from redis");
+        logger.info('comming from redis');
         dataFromRedis = {
           success: true,
           statusCode: resposnsCode.SUCCESS,
           message: 'Notes of current account has been retrieved',
-          data: dataFromRedis
-        }
+          data: dataFromRedis,
+        };
         callback(null, dataFromRedis);
       }
-    })
+    });
   };
 
   /**
@@ -95,7 +95,7 @@ class NoteServices {
    * @param {*} callback holds a function
    */
   retrieveNoteById = (noteID, callback) => {
-    logger.info(`TRACKED_PATH: Inside services`);
+    logger.info('TRACKED_PATH: Inside services');
     noteModel.getNoteByNoteId(noteID, (error, noteResult) => {
       error ? callback(error, null) : callback(null, noteResult);
     });
@@ -108,13 +108,13 @@ class NoteServices {
    * @param {*} callback holds a function
    */
   removeNoteById = (userId, noteId, callback) => {
-    logger.info(`TRACKED_PATH: Inside services`);
+    logger.info('TRACKED_PATH: Inside services');
     noteModel.deleteNoteByNoteId(noteId, (error, noteResult) => {
       if (error) {
         callback(error, null);
       } else {
         this.updateRedis(userId);
-        callback(null, noteResult)
+        callback(null, noteResult);
       }
     });
   };
@@ -126,13 +126,13 @@ class NoteServices {
    * @param {*} callback holds a function
    */
   updateNoteById = (userId, noteId, dataToReplace, callback) => {
-    logger.info(`TRACKED_PATH: Inside services`);
+    logger.info('TRACKED_PATH: Inside services');
     noteModel.updateNoteByNoteId(noteId, dataToReplace, (error, noteResult) => {
       if (error) {
         callback(error, null);
       } else {
         this.updateRedis(userId);
-        callback(null, noteResult)
+        callback(null, noteResult);
       }
     });
   }
@@ -144,32 +144,30 @@ class NoteServices {
     * @param {*} callback holds a function
     */
   updateNoteByAddingLabel = (requireDataToaddLabel, callback) => {
-    const noteId = requireDataToaddLabel.noteId;
+    const { noteId } = requireDataToaddLabel;
     noteModel.addLabel(requireDataToaddLabel, (error, noteResult) => {
       if (error) {
         error = {
           success: false,
           status_code: resposnsCode.NOT_FOUND,
           message: `No note availabe associated with : ${noteId}`,
-        }
+        };
         callback(error, null);
-      }
-      else if (!noteResult) {
+      } else if (!noteResult) {
         error = {
           success: false,
           status_code: resposnsCode.NOT_FOUND,
           message: `No note availabe associated with : ${noteId}`,
-        }
+        };
         callback(error, null);
-      }
-      else {
+      } else {
         noteResult = {
           success: true,
           status_code: resposnsCode.SUCCESS,
-          message: `Label successfully added to Note`,
+          message: 'Label successfully added to Note',
           updated_data: noteResult,
-        }
-        callback(null, noteResult)
+        };
+        callback(null, noteResult);
       }
     });
   }
@@ -181,32 +179,30 @@ class NoteServices {
     * @param {*} callback holds a function
     */
   updateNoteByAddingUser = (requireDataToaddUser, callback) => {
-    const noteId = requireDataToaddUser.noteId;
+    const { noteId } = requireDataToaddUser;
     noteModel.addUser(requireDataToaddUser, (error, noteResult) => {
       if (error) {
         error = {
           success: false,
           status_code: resposnsCode.INTERNAL_SERVER_ERROR,
           message: `No note availabe associated with : ${noteId}`,
-        }
+        };
         callback(error, null);
-      }
-      else if (!noteResult) {
+      } else if (!noteResult) {
         error = {
           success: false,
           status_code: resposnsCode.NOT_FOUND,
           message: `No note availabe associated with : ${noteId}`,
-        }
+        };
         callback(error, null);
-      }
-      else {
+      } else {
         noteResult = {
           success: true,
           status_code: resposnsCode.SUCCESS,
-          message: `User successfully added to Note`,
+          message: 'User successfully added to Note',
           updated_data: noteResult,
-        }
-        callback(null, noteResult)
+        };
+        callback(null, noteResult);
       }
     });
   }
@@ -214,38 +210,36 @@ class NoteServices {
   /**
   * @description update note  data existed in database, using model's mothod
   * by deleting label Object Id from Note
-  * @param {*} requireDataToaddLabeltakes data to be upadated in json formate
+  * @param {*} requireDataToaddLabel takes data to be upadated in json formate
   * @param {*} callback holds a function
   */
   updateNoteByRemovingLabel = (requireDataToaddLabel, callback) => {
-    const noteId = requireDataToaddUser.noteId;
+    const { noteId } = requireDataToaddLabel;
     noteModel.removeLabel(requireDataToaddLabel, (error, noteResult) => {
       if (error) {
         error = {
           success: false,
           status_code: resposnsCode.INTERNAL_SERVER_ERROR,
           message: `No note availabe associated with : ${noteId}`,
-        }
+        };
         callback(error, null);
-      }
-      else if (!noteResult) {
+      } else if (!noteResult) {
         error = {
           success: false,
           status_code: resposnsCode.NOT_FOUND,
           message: `No note availabe associated with : ${noteId}`,
-        }
+        };
         callback(error, null);
-      }
-      else {
+      } else {
         noteResult = {
           success: true,
           status_code: resposnsCode.SUCCESS,
-          message: `Label successfully removed from Note associated with given Id`,
+          message: 'Label successfully removed from Note associated with given Id',
           updated_data: noteResult,
-        }
-        callback(null, noteResult)
+        };
+        callback(null, noteResult);
       }
-    })
+    });
   }
 
   /**
@@ -255,34 +249,32 @@ class NoteServices {
   * @param {*} callback holds a function
   */
   updateNoteByRemovingUser = (requireDataToaddUser, callback) => {
-    const noteId = requireDataToaddUser.noteId;
+    const { noteId } = requireDataToaddUser;
     noteModel.removeUser(requireDataToaddUser, (error, noteResult) => {
       if (error) {
         error = {
           success: false,
           status_code: resposnsCode.INTERNAL_SERVER_ERROR,
           message: `No note availabe associated with : ${noteId}`,
-        }
+        };
         callback(error, null);
-      }
-      else if (!noteResult) {
+      } else if (!noteResult) {
         error = {
           success: false,
           status_code: resposnsCode.NOT_FOUND,
           message: `No note availabe associated with : ${noteId}`,
-        }
+        };
         callback(error, null);
-      }
-      else {
+      } else {
         noteResult = {
           success: true,
           status_code: resposnsCode.SUCCESS,
-          message: `User successfully removed from Note associated with given Id`,
+          message: 'User successfully removed from Note associated with given Id',
           updated_data: noteResult,
-        }
-        callback(null, noteResult)
+        };
+        callback(null, noteResult);
       }
-    })
+    });
   }
 
   /**
@@ -290,64 +282,56 @@ class NoteServices {
    * @method removeNote is used to remove Note by ID
    * @param callback is the callback for controller
    */
-  removeNote = (userId, noteID, callback) => {
-    return noteModel.removeNote(noteID, (error, result) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        this.updateRedis(userId);
-        callback(null, result)
-      }
-    });
-  };
+  removeNote = (userId, noteID, callback) => noteModel.removeNote(noteID, (error, result) => {
+    if (error) {
+      callback(error, null);
+    } else {
+      this.updateRedis(userId);
+      callback(null, result);
+    }
+  });
 
   /**
      * @description archive Note by id and return response to controller
      * @method archiveNote is used to remove Note by ID
      * @param callback is the callback for controller
      */
-  archiveNoteData = (userId, noteID, callback) => {
-    return noteModel.archiveNote(noteID, (error, result) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        this.updateRedis(userId);
-        callback(null, result)
-      }
-    });
-  };
+  archiveNoteData = (userId, noteID, callback) => noteModel.archiveNote(noteID, (error, result) => {
+    if (error) {
+      callback(error, null);
+    } else {
+      this.updateRedis(userId);
+      callback(null, result);
+    }
+  });
 
   /**
      * @description unarchive Note by id and return response to controller
-     * @method UnArchiveNote  
+     * @method UnArchiveNote
      * @param callback is the callback for controller
      */
-  unArchiveNoteData = (userId, noteID, callback) => {
-    return noteModel.unArchiveNote(noteID, (error, result) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        this.updateRedis(userId);
-        callback(null, result)
-      }
-    });
-  };
+  unArchiveNoteData = (userId, noteID, callback) => noteModel.unArchiveNote(noteID, (error, result) => {
+    if (error) {
+      callback(error, null);
+    } else {
+      this.updateRedis(userId);
+      callback(null, result);
+    }
+  });
 
   /**
      * @description unarchive Note by id and return response to controller
-     * @method restoreNoteData restore tempararty deleted data 
+     * @method restoreNoteData restore tempararty deleted data
      * @param callback is the callback for controller
      */
-  restoreNoteData = (userId, noteID, callback) => {
-    return noteModel.restoreNote(noteID, (error, result) => {
-      if (error) {
-        callback(error, null);
-      } else {
-        this.updateRedis(userId);
-        callback(null, result)
-      }
-    });
-  };
+  restoreNoteData = (userId, noteID, callback) => noteModel.restoreNote(noteID, (error, result) => {
+    if (error) {
+      callback(error, null);
+    } else {
+      this.updateRedis(userId);
+      callback(null, result);
+    }
+  });
 
   /**
   * @description update note  data existed in database, using model's mothod
@@ -356,35 +340,44 @@ class NoteServices {
    * @param {*} callback holds a function.
    */
   addColorToNote = (requireDataToaddColor, callback) => {
-    const noteId = requireDataToaddColor.noteId;
+    const { noteId } = requireDataToaddColor;
     noteModel.addColor(requireDataToaddColor, (error, noteResult) => {
       if (error) {
         error = {
           success: false,
           status_code: resposnsCode.NOT_FOUND,
           message: `No note availabe associated with : ${noteId}`,
-        }
+        };
         callback(error, null);
-      }
-      else if (!noteResult) {
+      } else if (!noteResult) {
         error = {
           success: false,
           status_code: resposnsCode.NOT_FOUND,
           message: `No note availabe associated with : ${noteId}`,
-        }
+        };
         callback(error, null);
-      }
-      else {
+      } else {
         noteResult = {
           success: true,
           status_code: resposnsCode.SUCCESS,
-          message: `color successfully added to Note`,
+          message: 'color successfully added to Note',
           updated_data: noteResult,
-        }
-        callback(null, noteResult)
+        };
+        callback(null, noteResult);
       }
     });
   }
+
+  uploadImage = (paramID, image, callback) => {
+    noteModel.saveImage(paramID, image, (err, result) => {
+      logger.info('in services result in note image', result);
+      if (err) {
+        callback(err);
+      } else {
+        callback(null, result);
+      }
+    });
+  };
 }
 
 module.exports = new NoteServices();

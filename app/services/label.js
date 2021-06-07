@@ -2,17 +2,16 @@
  * @module         services
  * @file           label.js
  * @description    This file contain all the service method for label
- * @requires       labelModel is refrence to invoke methods of labelModel.js     
- * @author         Aakash Rajak <aakashrajak2809@gmail.com>        
+ * @requires       labelModel is refrence to invoke methods of labelModel.js
+ * @author         Aakash Rajak <aakashrajak2809@gmail.com>
 ------------------------------------------------------------------------------------------*/
 
-const labelModel = require("../models/label");
-const logger = require("../../config/logger");
-const resposnsCode = require("../../util/staticFile.json");
-const helper = require("../middlewares/helper");
+const labelModel = require('../models/label');
+const logger = require('../../config/logger');
+const resposnsCode = require('../../util/staticFile.json');
+const helper = require('../middlewares/helper');
 
 class LabelServices {
-
   /**
    * @description save request data to database using model methods
    * @param {*}  labelData data to be saved in json formate
@@ -31,46 +30,46 @@ class LabelServices {
    * @param {*} callback holds a callback function
    */
   retrieveAllLabel = (userId, callback) => {
-    logger.info(`TRACKED_PATH: Inside services`);
-    const KEY = `LABEL_${userId}`
+    logger.info('TRACKED_PATH: Inside services');
+    const KEY = `LABEL_${userId}`;
     helper.getResponseFromRedis(KEY, (error, dataFromRedis) => {
       if (error) {
         error = {
           success: false,
           statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
-          message: error
-        }
-        callback(error, null)
+          message: error,
+        };
+        callback(error, null);
       } else if (!dataFromRedis) {
         labelModel.getAllLabels(userId, (error, labelResult) => {
           error
             ? (error = {
               success: false,
               statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
-              message: error
+              message: error,
             },
-              callback(error, null)) : (
+            callback(error, null)) : (
               helper.setDataToRedis(KEY, labelResult),
-              logger.info("comming from mongodb"),
+              logger.info('comming from mongodb'),
               labelResult = {
                 success: true,
                 statusCode: resposnsCode.SUCCESS,
                 message: 'Label of current account has been retrieved',
-                data: labelResult
+                data: labelResult,
               },
               callback(null, labelResult));
         });
       } else {
-        logger.info("comming from redis");
+        logger.info('comming from redis');
         dataFromRedis = {
           success: true,
           statusCode: resposnsCode.SUCCESS,
           message: 'Label of current account has been retrieved',
-          data: dataFromRedis
-        }
+          data: dataFromRedis,
+        };
         callback(null, dataFromRedis);
       }
-    })
+    });
   };
 
   /**
@@ -79,26 +78,25 @@ class LabelServices {
    *  @param {*}  userId holds user Object id
    */
   removeLabelByLabelId = async (labelId, userId) => {
-    logger.info(`TRACKED_PATH: Inside services`);
+    logger.info('TRACKED_PATH: Inside services');
     try {
       const result = await labelModel.deleteLabelByLabelId(labelId);
-      let responseResult = "";
+      let responseResult = '';
       if (result == null) {
         responseResult = {
           success: false,
           statusCode: resposnsCode.NOT_FOUND,
-          message: `Label not found with ${labelId}`
-        }
-        return responseResult;
-      } else {
-        responseResult = {
-          success: true,
-          statusCode: resposnsCode.SUCCESS,
-          message: 'Label deleted successfully!'
-        }
-        this.retrieveAllLabel(userId);
+          message: `Label not found with ${labelId}`,
+        };
         return responseResult;
       }
+      responseResult = {
+        success: true,
+        statusCode: resposnsCode.SUCCESS,
+        message: 'Label deleted successfully!',
+      };
+      this.retrieveAllLabel(userId);
+      return responseResult;
     } catch (error) {
       return error;
     }
@@ -110,28 +108,27 @@ class LabelServices {
    * @param {*} dataToReplace takes data to be upadated in json formate
    */
   updateLabelByLabelId = async (labelId, dataToReplace, userId) => {
-    logger.info(`TRACKED_PATH: Inside services`);
+    logger.info('TRACKED_PATH: Inside services');
     try {
       const result = await labelModel.updateLabelByLabelId(labelId, dataToReplace);
 
-      let responseResult = "";
+      let responseResult = '';
       if (result == null) {
         responseResult = {
           success: false,
           statusCode: resposnsCode.NOT_FOUND,
-          message: `Label not found with ${labelId}`
-        }
+          message: `Label not found with ${labelId}`,
+        };
 
         return responseResult;
-      } else {
-        responseResult = {
-          success: true,
-          statusCode: resposnsCode.SUCCESS,
-          message: 'Label updated successfully!'
-        }
-        this.retrieveAllLabel(userId);
-        return responseResult;
       }
+      responseResult = {
+        success: true,
+        statusCode: resposnsCode.SUCCESS,
+        message: 'Label updated successfully!',
+      };
+      this.retrieveAllLabel(userId);
+      return responseResult;
     } catch (error) {
       return error;
     }

@@ -3,7 +3,8 @@
         "browser": true,
         "commonjs": true,
         "es2021": true,
-        "node": true
+        "node": true,
+        "mocha": true
     },
     "extends": [
         "airbnb-base"
@@ -11,11 +12,29 @@
     "parserOptions": {
         "ecmaVersion": 12
     },
+    "parser": "babel-eslint",
     "rules": {
-        "eslint no-multiple-empty-lines": ["error", { "max": 2, "maxEOF": 1 }],
-        "eslint import/newline-after-import": "off",
-        "linebreak-style": 0 ,
-        "eslint no-console": "allow",
-        "parser": "babel-eslint"  
+        "max-len": "off",
+        "no-unused-vars": [
+            "error",
+            {
+                "vars": "all",
+                "args": "none"
+            }
+        ],
+        "no-console": "error",
+        "no-unused-expressions": "off",
+        "no-param-reassign": "off",
+        "linebreak-style": 0,
+        "consistent-return": "off",
+        "no-sequences": "off",
+        "no-underscore-dangle": "off",
+        "no-return-assign": "off",
+        "no-plusplus": "off",
+        "indent": "off",
+        "global-require": "off",
+        "no-shadow": "off",
+        "func-names": "off",
+        "eqeqeq": "off"
     }
 }

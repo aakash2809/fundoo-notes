@@ -1,25 +1,25 @@
 /**
  * @module       middlewares
  * @file         JwtAuth.js
- * @description  This file contain Helper class which having methods related to auhorization token *                creation and sending the mails to users            
+ * @description  This file contain Helper class which having methods related to auhorization token *                creation and sending the mails to users
  * @requires     nodemailer module for sending the mail to user
  * @requires     logger is a reference to save logs in log files
  * @requires     jsonwebtoken to create json web token
  * @author       Aakash Rajak <aakashrajak2809@gmail.com>
 ------------------------------------------------------------------------------------------*/
 
-const jwt = require("jsonwebtoken");
-var nodemailer = require("nodemailer");
-const logger = require("../../config/logger");
-var ejs = require("ejs");
-const resposnsCode = require("../../util/staticFile.json");
-const redis = require("redis");
+const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const ejs = require('ejs');
+const redis = require('redis');
+require('dotenv').config();
+const atob = require('atob');
+const resposnsCode = require('../../util/staticFile.json');
+const logger = require('../../config/logger');
+
 const client = redis.createClient();
-require("dotenv").config();
-const atob = require("atob");
 
 class Helper {
-
   /**
    * @description it genrate the token
    */
@@ -31,8 +31,8 @@ class Helper {
       },
       process.env.SECRET_KEY,
       {
-        expiresIn: "24h",
-      }
+        expiresIn: '24h',
+      },
     );
     client.setex('token', 5000, token);
     return token;
@@ -46,12 +46,12 @@ class Helper {
       {
         username: user.name,
         email: user.email,
-        password: user.password
+        password: user.password,
       },
       process.env.SECRET_KEY,
       {
-        expiresIn: "20d",
-      }
+        expiresIn: '20d',
+      },
     );
 
     client.setex('token', 5000, token);
@@ -59,11 +59,11 @@ class Helper {
   };
 
   /**
-   * @description this function sending mail for reset password 
+   * @description this function sending mail for reset password
    */
   sendMailToResetPassword = async (user, token, callback) => {
-    var transporter = nodemailer.createTransport({
-      service: "gmail",
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
       port: process.env.PORT,
       secure: true,
       auth: {
@@ -72,18 +72,19 @@ class Helper {
       },
     });
     await ejs.renderFile(
-      "app/views/forgotPassword.ejs",
+      'app/views/forgotPassword.ejs',
       {
         name: user.name,
         resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}`,
       },
       (err, data) => {
         if (err) {
+          logger.info('got error during render ejs');
         } else {
-          var mainOptions = {
+          const mainOptions = {
             from: process.env.EMAIL_USER,
             to: user.email,
-            subject: "Activate account",
+            subject: 'Activate account',
             html: data,
           };
           transporter.sendMail(mainOptions, (error, mailInfo) => {
@@ -95,81 +96,78 @@ class Helper {
             }
           });
         }
-      }
+      },
     );
   };
 
   /**
   * @description this function sending mail to activate the Account
   */
-  sendMailToActivateAccount = (user, token) => {
-    return new Promise((resolve, reject) => {
-      let transporter = nodemailer.createTransport({
-        service: "gmail",
-        port: process.env.PORT,
-        secure: true,
-        auth: {
-          user: process.env.EMAIL_USER,
-          pass: process.env.EMAIL_PASS
-        }
+  sendMailToActivateAccount = (user, token) => new Promise((resolve, reject) => {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      port: process.env.PORT,
+      secure: true,
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
 
-      });
-      ejs.renderFile("app/views/activateEmail.ejs", {
-        name: user.name,
-        accountActivationLink: `${process.env.CLIENT_URL}/ActivateAccount/${token}`,
-      }, function (err, data) {
-        if (err) {
-
-        } else {
-          var mailOptions = {
-            from: process.env.EMAIL_USER,
-            to: user.email,
-            subject: "Activate account",
-            html: data
-          };
-          transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-              reject(error);
-            }
-            else {
-              info = `${process.env.CLIENT_URL}/ActivateAccount/${token}`
-              resolve(info);
-            }
-          })
-        }
-      });
-    })
-  }
+    });
+    ejs.renderFile('app/views/activateEmail.ejs', {
+      name: user.name,
+      accountActivationLink: `${process.env.CLIENT_URL}/ActivateAccount/${token}`,
+    }, (err, data) => {
+      if (err) {
+        logger.info('got error during sending error');
+      } else {
+        const mailOptions = {
+          from: process.env.EMAIL_USER,
+          to: user.email,
+          subject: 'Activate account',
+          html: data,
+        };
+        transporter.sendMail(mailOptions, (error, info) => {
+          if (error) {
+            reject(error);
+          } else {
+            info = `${process.env.CLIENT_URL}/ActivateAccount/${token}`;
+            resolve(info);
+          }
+        });
+      }
+    });
+  })
 
   /**
-   * @description this function verify the token 
+   * @description this function verify the token
    */
   verifyToken = (request, response, next) => {
     try {
-      var token = request.headers.authorization.split("Bearer ")[1];
-      var decode = jwt.verify(token, process.env.SECRET_KEY);
+      const token = request.headers.authorization.split('Bearer ')[1];
+      const decode = jwt.verify(token, process.env.SECRET_KEY);
       client.get('token', (error, result) => {
         if (error) throw error;
         if (token === result) {
-          request.userData = decode
+          request.userData = decode;
         }
-      })
+      });
       next();
     } catch (error) {
       response.send({
         success: false,
         status_code: resposnsCode.BAD_REQUEST,
-        message: "Authentication failed",
+        message: 'Authentication failed',
       });
     }
   };
 
   /**
-   * @description this function return encodedbody from given token 
+   * @description this function return encodedbody from given token
    */
   getEncodedBodyFromHeader = (request) => {
-    var token = request.headers.authorization.split("Bearer ")[1];
-    var encodedBody = JSON.parse(atob(token.split(".")[1]));
+    const token = request.headers.authorization.split('Bearer ')[1];
+    const encodedBody = JSON.parse(atob(token.split('.')[1]));
     return encodedBody;
   }
 
@@ -182,12 +180,10 @@ class Helper {
 
   getResponseFromRedis = (KEY, callback) => {
     client.get(KEY, (error, redisData) => {
-      (error)
-        ? (logger.info("error in retriving data from redis", error),
-          callback(error, null)) :
-        (logger.info("Does not got error but data can be null"),
-          callback(null, JSON.parse(redisData)));
-    })
+      (error) ? (logger.info('error in retriving data from redis', error), callback(error, null))
+        : (logger.info('Does not got error but data can be null'),
+        callback(null, JSON.parse(redisData)));
+    });
   }
 }
 

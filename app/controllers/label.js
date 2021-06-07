@@ -7,14 +7,14 @@
  * @author       Aakash Rajak <aakashrajak2809@gmail.com>
 -----------------------------------------------------------------------------------------------*/
 
-const logger = require("../../config/logger");
-const labelServices = require(`../services/label`);
-const resposnsCode = require("../../util/staticFile.json");
-const Validator = require("../middlewares/inputValiation");
-const helper = require("../middlewares/helper");
+const logger = require('../../config/logger');
+
+const labelServices = require('../services/label');
+const resposnsCode = require('../../util/staticFile.json');
+const Validator = require('../middlewares/inputValiation');
+const helper = require('../middlewares/helper');
 
 class LabelController {
-
   /**
    * @description add label to database
    * @param {*} request takes label in json formate
@@ -22,13 +22,13 @@ class LabelController {
    */
   addlabel = async (request, response) => {
     try {
-      logger.info(`TRACKED_PATH: Inside controller`);
+      logger.info('TRACKED_PATH: Inside controller');
       const encodedBody = helper.getEncodedBodyFromHeader(request);
 
-      let validatedRequestResult = Validator.validateLabel(request.body);
+      const validatedRequestResult = Validator.validateLabel(request.body);
 
       if (validatedRequestResult.error) {
-        logger.error(`SCHEMAERROR: Request did not match with schema`);
+        logger.error('SCHEMAERROR: Request did not match with schema');
         response.send({
           success: false,
           status_code: resposnsCode.BAD_REQUEST,
@@ -42,22 +42,22 @@ class LabelController {
         userId: encodedBody.userId,
       };
 
-      logger.info(`INVOKING: save method of services`);
+      logger.info('INVOKING: save method of services');
       const result = await labelServices.savelabelData(labelDetails);
       response.send({
         success: true,
         status_code: resposnsCode.SUCCESS,
-        message: "Label inserted successfully",
+        message: 'Label inserted successfully',
         data: result,
       });
-      logger.info("SUCCESS001: Label inserted successfully");
+      logger.info('SUCCESS001: Label inserted successfully');
     } catch (e) {
       response.send({
         success: false,
         status_code: resposnsCode.BAD_REQUEST,
-        message: "error",
+        message: 'error',
       });
-      logger.error(`ERR001: Label data did not match `);
+      logger.error('ERR001: Label data did not match ');
     }
   }
 
@@ -67,8 +67,8 @@ class LabelController {
    * @param {*} response sends response from server
    */
   findAllLabels = (request, response) => {
-    logger.info(`TRACKED_PATH: Inside controller`);
-    var start = new Date();
+    logger.info('TRACKED_PATH: Inside controller');
+    const start = new Date();
     const encodedBody = helper.getEncodedBodyFromHeader(request);
 
     labelServices.retrieveAllLabel(encodedBody.userId, (error, labelResult) => {
@@ -76,9 +76,9 @@ class LabelController {
         response.send({
           success: error.success,
           status_code: error.statusCode,
-          message: error.message
+          message: error.message,
         });
-        logger.error(`ERR002: Some error occurred while retrieving label.`);
+        logger.error('ERR002: Some error occurred while retrieving label.');
       } else {
         response.send({
           success: labelResult.success,
@@ -86,12 +86,11 @@ class LabelController {
           message: labelResult.message,
           data: labelResult.data,
         });
-        logger.info("SUCCESS002:All data has been retrieved");
+        logger.info('SUCCESS002:All data has been retrieved');
         logger.info('Request took:', new Date() - start, 'ms');
       }
     });
   };
-
 
   /**
    * @description update label by _id
@@ -99,7 +98,7 @@ class LabelController {
    * @param {*} response sends response from server
    */
   updateLabelByLabelId = async (request, response) => {
-    logger.info(`TRACKED_PATH: Inside controller`);
+    logger.info('TRACKED_PATH: Inside controller');
     try {
       const encodedBody = helper.getEncodedBodyFromHeader(request);
       const result = await labelServices.updateLabelByLabelId(request.params.labelId, { label: request.body.label }, encodedBody.userId);
@@ -113,7 +112,7 @@ class LabelController {
       response.send({
         success: false,
         status_code: resposnsCode.INTERNAL_SERVER_ERROR,
-        message: `Internal server error`,
+        message: 'Internal server error',
       });
     }
   };
@@ -124,7 +123,7 @@ class LabelController {
    * @param {*} response sends response from server
    */
   deleteLabelByLabelId = async (request, response) => {
-    logger.info(`TRACKED_PATH: Inside controller`);
+    logger.info('TRACKED_PATH: Inside controller');
     try {
       const encodedBody = helper.getEncodedBodyFromHeader(request);
       const result = await labelServices.removeLabelByLabelId(request.params.labelId, encodedBody.userId);
@@ -137,7 +136,7 @@ class LabelController {
       response.send({
         success: false,
         status_code: resposnsCode.INTERNAL_SERVER_ERROR,
-        message: `Internal server error`,
+        message: 'Internal server error',
       });
       logger.error(`ERR005: Label not found with id ${request.params.labelId}`);
     }

@@ -11,22 +11,24 @@
 
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
-const dbconnection = require('./config/database.config');
-const swaggerDocument = require('./app/lib/swagger.json');
-const app = express();
-require("dotenv").config();
-require("./config/index").set(process.env.NODE_ENV, app);
-const config = require("./config/index").get();
 const cors = require('cors');
-const logger = require("./config/logger");
+const Dbconnection = require('./config/database.config');
+const swaggerDocument = require('./app/lib/swagger.json');
+
+const app = express();
+require('dotenv').config();
+require('./config/index').set(process.env.NODE_ENV, app);
+const config = require('./config/index').get();
+
+const logger = require('./config/logger');
 const route = require('./app/route');
 
 app.use(cors());
 
-// parse requests 
+// parse requests
 app.use(express.urlencoded({ extended: true }));
 
-// parse requests of content-type - application/json 
+// parse requests of content-type - application/json
 app.use(express.json());
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
@@ -36,9 +38,9 @@ app.listen(config.port, () => {
   logger.info(`CONNECT_SERVER: Connected, server started listening on port : ${config.port}`);
 });
 
-new dbconnection(config.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).connect();
+new Dbconnection(config.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).connect();
 
-//Initialize the route
+// Initialize the route
 route.routeToControllers(app);
 
 module.exports = app;

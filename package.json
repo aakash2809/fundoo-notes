@@ -7,7 +7,8 @@
     "start": "nodemon server.js",
     "test": "mocha test/note/test.js",
     "coverage": "nyc npm run test",
-    "lint": "eslint ./"
+    "lint": "eslint ./",
+    "lint:fix": "eslint --fix --ext .js,.jsx ."
   },
   "keywords": [],
   "author": "Aakash Rajak",
@@ -16,19 +17,22 @@
     "babel-eslint": "^10.1.0",
     "chai": "^4.3.0",
     "chai-http": "^4.3.0",
-    "eslint": "^7.20.0",
+    "eslint": "^7.24.0",
     "eslint-config-airbnb-base": "^14.2.1",
     "eslint-plugin-import": "^2.22.1",
     "mocha": "^8.2.1",
     "nodemon": "^2.0.7",
-    "nyc": "^15.1.0",
-    "winston": "^3.3.3"
+    "nyc": "^15.1.0"
   },
   "dependencies": {
     "amqplib": "^0.7.0",
     "atob": "^2.1.2",
+    "aws-sdk": "^2.922.0",
     "bcryptjs": "^2.4.3",
+    "bluebird": "^3.7.2",
+    "busboy": "^0.2.14",
     "cors": "^2.8.5",
+    "debug": "^4.3.1",
     "dotenv": "^8.2.0",
     "ejs": "^3.1.5",
     "event-emitter": "^0.3.5",
@@ -36,8 +40,10 @@
     "joi": "^17.3.0",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.11.13",
+    "multer": "^1.4.2",
     "nodemailer": "^6.4.17",
     "redis": "^3.0.2",
-    "swagger-ui-express": "^4.1.6"
+    "swagger-ui-express": "^4.1.6",
+    "winston": "^3.3.3"
   }
 }

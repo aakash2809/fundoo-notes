@@ -2,15 +2,15 @@
  * @module       controllers
  * @description  controllers is reponsible to accept request and send the response
  *               Controller resolve the error using the service layer by invoking its services
- * @requires    
+ * @requires
  * @author       Aakash Rajak <aakashrajak2809@gmail.com>
- * @since       
+ * @since
 -----------------------------------------------------------------------------------------------*/
 
-const logger = require("../../config/logger");
-const userServices = require("../services/user");
-const Validator = require("../middlewares/inputValiation");
-const resposnsCode = require("../../util/staticFile.json");
+const logger = require('../../config/logger');
+const userServices = require('../services/user');
+const Validator = require('../middlewares/inputValiation');
+const resposnsCode = require('../../util/staticFile.json');
 
 class UserControllers {
   /**
@@ -19,10 +19,10 @@ class UserControllers {
    * @param {*} response sends response from server
    */
   register = (request, response) => {
-    logger.info(`TRACKED_PATH: Inside controller`);
-    let validatedRequestResult = Validator.validateUser(request.body);
+    logger.info('TRACKED_PATH: Inside controller');
+    const validatedRequestResult = Validator.validateUser(request.body);
     if (validatedRequestResult.error) {
-      logger.error(`SCHEMAERROR: Request did not match with schema`);
+      logger.error('SCHEMAERROR: Request did not match with schema');
       response.send({
         success: false,
         status_code: resposnsCode.BAD_REQUEST,
@@ -43,12 +43,12 @@ class UserControllers {
       response.send({
         success: false,
         status_code: resposnsCode.BAD_REQUEST,
-        message: "password does not match with confirm password",
+        message: 'password does not match with confirm password',
       });
       return;
     }
 
-    logger.info(`INVOKING: registerUser method of services`);
+    logger.info('INVOKING: registerUser method of services');
     userServices.registerUser(
       registrationDetails,
       (error, registrationResult) => {
@@ -64,8 +64,8 @@ class UserControllers {
             message: registrationResult.message,
             data: registrationResult.data,
           });
-        logger.info("SUCCESS001: User registered successfully");
-      }
+        logger.info('SUCCESS001: User registered successfully');
+      },
     );
   };
 
@@ -75,14 +75,14 @@ class UserControllers {
    * @param {*} response
    */
   login = (request, response) => {
-    logger.info(`TRACKED_PATH: Inside controller`);
-    var start = new Date();
+    logger.info('TRACKED_PATH: Inside controller');
+    const start = new Date();
     const loginDetails = {
       email: request.body.email,
       password: request.body.password,
     };
     logger.info(
-      `INVOKING: getLoginCredentialAndCallForValidation method of login services`
+      'INVOKING: getLoginCredentialAndCallForValidation method of login services',
     );
     userServices.validateAndLogin(
       loginDetails,
@@ -98,9 +98,9 @@ class UserControllers {
             statusCode: loginResult.statusCode,
             message: loginResult.message,
             token: loginResult.data,
-            user: loginResult.user
+            user: loginResult.user,
           });
-      }
+      },
     );
     logger.info('Request took:', new Date() - start, 'ms');
   };
@@ -112,28 +112,25 @@ class UserControllers {
    */
   forgotPassword = (request, response) => {
     const { email } = request.body;
-    logger.info(`INVOKING: getEmail method of login services`);
+    logger.info('INVOKING: getEmail method of login services');
     userServices.getEmail({ email }, (error, result) => {
       try {
         if (error) {
           return response.send({
             success: false,
             statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
-            message: "internal server error",
-          })
-
-        } else {
-          return response.send({
-            success: true,
-            statusCode: result.status,
-            message: result.message,
-            data: result.data,
-          })
+            message: 'internal server error',
+          });
         }
+        return response.send({
+          success: true,
+          statusCode: result.status,
+          message: result.message,
+          data: result.data,
+        });
       } catch (error) {
         return error;
       }
-
     });
   };
 
@@ -142,22 +139,19 @@ class UserControllers {
    * @param {*} request will contain new password to be updated
    * @param {*} response give response after updating password
    */
-  restPassword = (request, response) => {
-    return userServices.resetPass(request.body, (error, result) => {
-      error
-        ? response.send({
-          success: false,
-          statusCode: resposnsCode.BAD_REQUEST,
-          message: error,
-        })
-        : response.send({
-          success: true,
-          status_code: resposnsCode.SUCCESS,
-          message: result,
-        });
-    });
-  };
-
+  restPassword = (request, response) => userServices.resetPass(request.body, (error, result) => {
+    error
+      ? response.send({
+        success: false,
+        statusCode: resposnsCode.BAD_REQUEST,
+        message: error,
+      })
+      : response.send({
+        success: true,
+        status_code: resposnsCode.SUCCESS,
+        message: result,
+      });
+  });
 
   /**
     * @description activate email account
@@ -165,7 +159,7 @@ class UserControllers {
     * @param {*} response
     */
   activateAccount = (request, response) => {
-    logger.info(`INVOKING: getEmail method of login services`);
+    logger.info('INVOKING: getEmail method of login services');
     userServices.verifyAndAtivateAccount(request, (error, result) => {
       error
         ? response.send({
@@ -177,16 +171,10 @@ class UserControllers {
           success: result.success,
           statusCode: result.statusCode,
           message: result.message,
-          data: result.data
+          data: result.data,
         });
     });
   };
-
-
-
-
-
-
 }
 
 module.exports = new UserControllers();
