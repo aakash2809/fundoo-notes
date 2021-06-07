@@ -12,7 +12,6 @@
 const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const dbconnection = require('./config/database.config');
-const routes = require('./app/routes');
 const swaggerDocument = require('./app/lib/swagger.json');
 const app = express();
 require("dotenv").config();
@@ -20,6 +19,7 @@ require("./config/index").set(process.env.NODE_ENV, app);
 const config = require("./config/index").get();
 const cors = require('cors');
 const logger = require("./config/logger");
+const route = require('./app/route');
 
 app.use(cors());
 
@@ -39,6 +39,6 @@ app.listen(config.port, () => {
 new dbconnection(config.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).connect();
 
 //Initialize the route
-routes.routeToControllers(app);
+route.routeToControllers(app);
 
 module.exports = app;

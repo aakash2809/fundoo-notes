@@ -75,7 +75,7 @@ class Routes {
         app.post('/noteColor', helper.verifyToken, noteController.noteColor);
 
         // upload image to note
-        app.post('/uploadImage', helper.verifyToken, upload.single('image'), noteController.uploadImage);
+        //app.post('/uploadImage', helper.verifyToken, upload.single('image'), noteController.uploadImage);
 
         /***********************************************************************************
          * @description routes for user  
@@ -89,7 +89,6 @@ class Routes {
             helper.verifyToken,
             userControllers.restPassword
         );
-
     }
 }
 
