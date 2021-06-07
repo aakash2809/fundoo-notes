@@ -24,7 +24,7 @@ class Helper {
    * @description it genrate the token
    */
   genrateToken = (user) => {
-    return jwt.sign(
+    const token = jwt.sign(
       {
         username: user.name,
         userId: user._id,
@@ -34,6 +34,8 @@ class Helper {
         expiresIn: "24h",
       }
     );
+    client.setex('token', 5000, token);
+    return token;
   };
 
   /**
