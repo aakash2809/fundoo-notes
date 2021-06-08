@@ -1,77 +1,49 @@
 /**
 * @file          publisher.js
 * @description   This file is publish the message
-* @requires      ejs          is a reference to render a template 
-* @requires      logger       is a reference to save logs in log files
+* @requires      ejs is a reference to render a template
+* @requires      logger is a reference to save logs in log files
 * @author        Aakash Rajak <aakashrajak2809@gmail.com>
 *--------------------------------------------------------------------------------------*/
-
 require('dotenv').config();
 const ejs = require('ejs');
-const amqplib = require('amqplib/callback_api');
+const amqplib = require('amqplib');
 const logger = require('../../config/logger');
 
 class Publish {
-
-  // Create connection to AMQP server
-  createAmqpConnection = () => {
-    return new Promise((resolve, reject) => {
-      amqplib.connect(process.env.AMQP_CONNECTION).then((connection) => {
-        resolve(connection);
-      }).catch((err) => {
-        reject(err);
-      });
+  /**
+   * @description this function will send message(content) to queue
+   * @param QUEUE contains the queue
+   * @param channel is a channel to transmit the content
+   * @param content contain content to be send
+   * */
+  sender = (QUEUE, channel, content, next) => {
+    const sent = channel.sendToQueue(QUEUE, Buffer.from(JSON.stringify(content)), {
+      persistent: true,
+      contentType: 'application/json',
     });
-  }
-  // Create channel
-  createChannel = (connection) => {
-    return new Promise((resolve, reject) => {
-      connection.createChannel().then((channel) => {
-        resolve(channel);
-      }).catch((err) => {
-        reject(err);
-      });
-    });
-  }
-
-  getMessage = async (userInfo, token) => {
-    const connection = "";
-    const channel = "";
-
-    try {
-      connection = await this.amqpConnection();
-      channel = await this.createChannel(connection);
-
-    } catch (error) {
-      logger.error(error);
-      return process.exit(1);
+    if (sent) {
+      return next();
     }
+    channel.once('drain', () => next());
+  };
 
-    // Ensure queue for messages
-    channel.assertQueue('EmailInQueues1', {
-      // Ensure that the queue is not deleted when server restarts
-      durable: true,
-    }, (err) => {
-      if (err) {
-        return process.exit(1);
-      }
-
-      // Create a function to send objects to the queue
-      // Javascript object is converted to JSON and then into a Buffer
-      const sender = (content, next) => {
-        const sent = channel.sendToQueue('EmailInQueues1', Buffer.from(JSON.stringify(content)), {
-          // Store queued elements on disk
-          persistent: true,
-          contentType: 'application/json',
-        });
-        if (sent) {
-          return next();
-        }
-        channel.once('drain', () => next());
-      };
-
+  /**
+    * @description this function will send to consumer
+    * @param userInfo contains user detail
+    * @param token contains the token
+    * */
+  getMessage = async (userInfo, token) => {
+    let connection = '';
+    let channel = '';
+    let sent = 0;
+    const QUEUE = 'EmailInQueues1';
+    try {
+      connection = await amqplib.connect(process.env.AMQP_CONNECTION);
+      channel = await connection.createChannel(connection);
+      // Ensure queue for messages
+      await channel.assertQueue(QUEUE);
       // push messages to queue
-      let sent = 0;
       const sendNext = async () => {
         const dataToSend = await ejs.renderFile(
           'app/views/forgotPassword.ejs',
@@ -88,16 +60,19 @@ class Publish {
           return channel.close(() => connection.close());
         }
         sent++;
-        sender({
+        this.sender(QUEUE, channel, {
           to: userInfo.email,
           subject: `Reset Password${sent}`,
           html: dataToSend,
           link: `${process.env.CLIENT_URL}/resetPassword/${token}`,
         }, sendNext);
-      }
+      };
       sendNext();
-    });
-  });
+    } catch (error) {
+      logger.error(error);
+      return process.exit(1);
+    }
+  }
 }
-}
+
 module.exports = new Publish();
