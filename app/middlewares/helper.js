@@ -53,8 +53,6 @@ class Helper {
         expiresIn: '20d',
       },
     );
-
-    client.setex('token', 5000, token);
     return token;
   };
 
@@ -182,7 +180,7 @@ class Helper {
     client.get(KEY, (error, redisData) => {
       (error) ? (logger.info('error in retriving data from redis', error), callback(error, null))
         : (logger.info('Does not got error but data can be null'),
-        callback(null, JSON.parse(redisData)));
+          callback(null, JSON.parse(redisData)));
     });
   }
 }
