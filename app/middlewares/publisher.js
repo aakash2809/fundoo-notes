@@ -5,10 +5,10 @@
 * @requires      logger is a reference to save logs in log files
 * @author        Aakash Rajak <aakashrajak2809@gmail.com>
 *--------------------------------------------------------------------------------------*/
-require('dotenv').config();
 const ejs = require('ejs');
 const amqplib = require('amqplib');
 const logger = require('../../config/logger');
+const config = require('../../config/index').get();
 
 class Publish {
   /**
@@ -39,7 +39,7 @@ class Publish {
     let sent = 0;
     const QUEUE = 'EmailInQueues1';
     try {
-      connection = await amqplib.connect(process.env.AMQP_CONNECTION);
+      connection = await amqplib.connect(config.AMQP_CONNECTION);
       channel = await connection.createChannel(connection);
       // Ensure queue for messages
       await channel.assertQueue(QUEUE);
@@ -49,7 +49,7 @@ class Publish {
           'app/views/forgotPassword.ejs',
           {
             name: userInfo.name,
-            resetLink: `${process.env.CLIENT_URL}/resetPassword/${token}`,
+            resetLink: `${config.CLIENT_URL}/resetPassword/${token}`,
           },
         );
         if (sent >= 1) {
@@ -64,7 +64,7 @@ class Publish {
           to: userInfo.email,
           subject: `Reset Password${sent}`,
           html: dataToSend,
-          link: `${process.env.CLIENT_URL}/resetPassword/${token}`,
+          link: `${config.CLIENT_URL}/resetPassword/${token}`,
         }, sendNext);
       };
       sendNext();
