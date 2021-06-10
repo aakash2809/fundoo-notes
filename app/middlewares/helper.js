@@ -14,8 +14,10 @@ const ejs = require('ejs');
 const redis = require('redis');
 require('dotenv').config();
 const atob = require('atob');
+const amqplib = require('amqplib');
 const resposnsCode = require('../../util/staticFile.json');
 const logger = require('../../config/logger');
+const config = require('../../config/index').get();
 
 const client = redis.createClient();
 
@@ -56,47 +58,32 @@ class Helper {
     return token;
   };
 
-  /**
-   * @description this function sending mail for reset password
-   */
-  sendMailToResetPassword = async (user, token, callback) => {
-    const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      port: process.env.PORT,
-      secure: true,
-      auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
-      },
-    });
-    await ejs.renderFile(
-      'app/views/forgotPassword.ejs',
+  // Setup Nodemailer transport
+  getTransport = () => {
+    const transport = nodemailer.createTransport(
       {
-        name: user.name,
-        resetLink: `${process.env.CLIENT_URL}/resetpassword/${token}`,
-      },
-      (err, data) => {
-        if (err) {
-          logger.info('got error during render ejs');
-        } else {
-          const mainOptions = {
-            from: process.env.EMAIL_USER,
-            to: user.email,
-            subject: 'Activate account',
-            html: data,
-          };
-          transporter.sendMail(mainOptions, (error, mailInfo) => {
-            if (error) {
-              callback(error, null);
-            } else {
-              mailInfo = `${process.env.CLIENT_URL}/resetpassword/${token}`;
-              callback(null, mailInfo);
-            }
-          });
-        }
+        service: 'gmail',
+        secure: true,
       },
     );
-  };
+    return transport;
+  }
+
+  /**
+   * @descriptioncreate create AMQP connection and return it.
+   */
+  getAmqpConnection = async () => {
+    const connection = await amqplib.connect(config.AMQP_CONNECTION);
+    return connection;
+  }
+
+  /**
+   * @description create channel for AMQP and return it.
+   */
+  getAmqpChannel = async (connection) => {
+    const channel = await connection.createChannel(connection);
+    return channel;
+  }
 
   /**
   * @description this function sending mail to activate the Account
