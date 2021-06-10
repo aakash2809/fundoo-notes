@@ -6,9 +6,9 @@
 * @author        Aakash Rajak <aakashrajak2809@gmail.com>
 *--------------------------------------------------------------------------------------*/
 const ejs = require('ejs');
-const amqplib = require('amqplib');
 const logger = require('../../config/logger');
 const config = require('../../config/index').get();
+const helper = require('./helper');
 
 class Publish {
   /**
@@ -39,8 +39,8 @@ class Publish {
     let sent = 0;
     const QUEUE = 'EmailInQueues1';
     try {
-      connection = await amqplib.connect(config.AMQP_CONNECTION);
-      channel = await connection.createChannel(connection);
+      connection = await helper.getAmqpConnection();
+      channel = await helper.getAmqpChannel(connection);
       // Ensure queue for messages
       await channel.assertQueue(QUEUE);
       // push messages to queue
