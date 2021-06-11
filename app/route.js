@@ -8,6 +8,7 @@ const helper = require('./middlewares/helper');
 const labelController = require('./controllers/label');
 const noteController = require('./controllers/note');
 const userControllers = require('./controllers/user');
+const upload = require('../config/s3config');
 
 class Routes {
   routeToControllers = (app) => {
@@ -72,7 +73,7 @@ class Routes {
     app.post('/noteColor', helper.verifyToken, noteController.noteColor);
 
     // upload image to note
-    // app.post('/uploadImage', helper.verifyToken, upload.single('image'), noteController.uploadImage);
+    app.post('/uploadImage', helper.verifyToken, upload.single('image'), noteController.uploadImage);
 
     /** *********************************************************************************
       * @description routes for user

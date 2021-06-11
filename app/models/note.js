@@ -268,7 +268,7 @@ class NoteModel {
    * @param {*}
    * @param {*} callback holds a function
    */
-  updateImage = (noteID, updateNote, callback) => {
+  /* saveImage = (noteID, updateNote, callback) => {
     Note.findOneAndUpdate(
       {
         _id: noteID,
@@ -286,7 +286,26 @@ class NoteModel {
         }
       },
     );
-  };
+  }; */
+
+  saveImage = async (imageDetail) => {
+    try {
+      // const result = await Note.findOne({ _id: imageDetail._id });
+      const result = await Note.findOneAndUpdate(
+        {
+          _id: imageDetail._id,
+        },
+        {
+          $set: {
+            image: imageDetail.image,
+          },
+        });
+
+      return result;
+    } catch (err) {
+      logger.info('Something went wrong', err);
+    }
+  }
 }
 
 module.exports = new NoteModel();

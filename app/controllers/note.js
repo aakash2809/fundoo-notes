@@ -308,10 +308,10 @@ class NoteController {
       noteServices.removeNote(userId, noteID, (error, data) => (
         error
           ? (logger.warn(`note not found with id ${noteID}`),
-          res.send({
-            status_code: resposnsCode.NOT_FOUND,
-            message: `note not found with id ${noteID}`,
-          }))
+            res.send({
+              status_code: resposnsCode.NOT_FOUND,
+              message: `note not found with id ${noteID}`,
+            }))
           : logger.info('note deleted successfully!'),
         res.send({
           status_code: resposnsCode.SUCCESS,
@@ -322,10 +322,10 @@ class NoteController {
       return (
         error.kind === 'ObjectId' || error.title === 'NotFound'
           ? (logger.error(`could not found note with id${noteID}`),
-          res.send({
-            status_code: resposnsCode.NOT_FOUND,
-            message: `note not found with id ${noteID}`,
-          }))
+            res.send({
+              status_code: resposnsCode.NOT_FOUND,
+              message: `note not found with id ${noteID}`,
+            }))
           : logger.error(`Could not delete note with id ${noteID}`),
         res.send({
           status_code: resposnsCode.INTERNAL_SERVER_ERROR,
@@ -343,10 +343,10 @@ class NoteController {
       noteServices.archiveNoteData(userId, noteID, (error, data) => (
         error
           ? (logger.warn(`note not found with id ${noteID}`),
-          res.send({
-            status_code: resposnsCode.NOT_FOUND,
-            message: `note not found with id ${noteID}`,
-          }))
+            res.send({
+              status_code: resposnsCode.NOT_FOUND,
+              message: `note not found with id ${noteID}`,
+            }))
           : logger.info('note archived successfully!'),
         res.send({
           status_code: resposnsCode.SUCCESS,
@@ -357,10 +357,10 @@ class NoteController {
       return (
         error.kind === 'ObjectId' || error.title === 'NotFound'
           ? (logger.error(`could not found note with id${noteID}`),
-          res.send({
-            status_code: resposnsCode.NOT_FOUND,
-            message: `note not found with id ${noteID}`,
-          }))
+            res.send({
+              status_code: resposnsCode.NOT_FOUND,
+              message: `note not found with id ${noteID}`,
+            }))
           : logger.error(`Could not delete note with id ${noteID}`),
         res.send({
           status_code: resposnsCode.INTERNAL_SERVER_ERROR,
@@ -378,10 +378,10 @@ class NoteController {
       noteServices.unArchiveNoteData(userId, noteID, (error, data) => (
         error
           ? (logger.warn(`note not found with id ${noteID}`),
-          res.send({
-            status_code: resposnsCode.NOT_FOUND,
-            message: `note not found with id ${noteID}`,
-          }))
+            res.send({
+              status_code: resposnsCode.NOT_FOUND,
+              message: `note not found with id ${noteID}`,
+            }))
           : logger.info('note UnArchived successfully!'),
         res.send({
           status_code: resposnsCode.SUCCESS,
@@ -392,10 +392,10 @@ class NoteController {
       return (
         error.kind === 'ObjectId' || error.title === 'NotFound'
           ? (logger.error(`could not found note with id${noteID}`),
-          res.send({
-            status_code: resposnsCode.NOT_FOUND,
-            message: `note not found with id ${noteID}`,
-          }))
+            res.send({
+              status_code: resposnsCode.NOT_FOUND,
+              message: `note not found with id ${noteID}`,
+            }))
           : logger.error(`Could not delete note with id ${noteID}`),
         res.send({
           status_code: resposnsCode.INTERNAL_SERVER_ERROR,
@@ -413,10 +413,10 @@ class NoteController {
       noteServices.restoreNoteData(userId, noteID, (error, data) => (
         error
           ? (logger.warn(`Note not found with id ${noteID}`),
-          res.send({
-            status_code: resposnsCode.NOT_FOUND,
-            message: `Note not found with id ${noteID}`,
-          }))
+            res.send({
+              status_code: resposnsCode.NOT_FOUND,
+              message: `Note not found with id ${noteID}`,
+            }))
           : logger.info('Note restored successfully!'),
         res.send({
           status_code: resposnsCode.SUCCESS,
@@ -427,10 +427,10 @@ class NoteController {
       return (
         error.kind === 'ObjectId' || error.title === 'NotFound'
           ? (logger.error(`could not found note with id${noteID}`),
-          res.send({
-            status_code: resposnsCode.NOT_FOUND,
-            message: `Note not found with id ${noteID}`,
-          }))
+            res.send({
+              status_code: resposnsCode.NOT_FOUND,
+              message: `Note not found with id ${noteID}`,
+            }))
           : logger.error(`Could not delete note with id ${noteID}`),
         res.send({
           status_code: resposnsCode.INTERNAL_SERVER_ERROR,
@@ -480,26 +480,24 @@ class NoteController {
     });
   }
 
-  /*  uploadImage = (req, res) => {
-     try {
-       var responseResult = {};
-       noteID = req.body.noteID;
-       let image = req.body.image;
-       noteService.uploadImage(noteID, image, (err, result) => {
-         if (err) {
-           responseResult.success = false;
-           responseResult.error = err;
-           res.status(500).send(responseResult);
-         } else {
-           responseResult.status = true;
-           responseResult.data = result;
-           res.status(200).send(responseResult);
-         }
-       });
-     } catch (error) {
-       res.send(error);
-     }
-   } */
+  uploadImage = async (req, res) => {
+    const response = {};
+    try {
+      const imageDetail = {
+        noteID: req.body.noteId,
+        image: req.body.image,
+      };
+      const result = await noteServices.uploadImage(imageDetail);
+      response.status = true;
+      response.message = 'file uploaded Successfully...!';
+      response.data = result;
+      return res.status(200).send(response);
+    } catch (error) {
+      response.status = false;
+      response.message = 'there is some error to upload...!';
+      return res.status(500).send(response);
+    }
+  }
 }
 
 module.exports = new NoteController();

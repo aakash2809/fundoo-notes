@@ -368,16 +368,19 @@ class NoteServices {
     });
   }
 
-  uploadImage = (paramID, image, callback) => {
-    noteModel.saveImage(paramID, image, (err, result) => {
-      logger.info('in services result in note image', result);
-      if (err) {
-        callback(err);
-      } else {
-        callback(null, result);
-      }
+  /**
+     * @description call the method of note model and serve response to controller
+     * @param contains note id and image
+     */
+  uploadImage = (imageDetail) => {
+    return new Promise((resolve, reject) => {
+      noteModel.saveImage(imageDetail).then((data) => {
+        resolve({ data });
+      }).catch((err) => {
+        reject(err);
+      });
     });
-  };
+  }
 }
 
 module.exports = new NoteServices();
