@@ -1,22 +1,30 @@
-import aws from 'aws-sdk';
-import fs from 'fs';
+const aws = require('aws-sdk');
+const multer = require('multer');
+const multerS3 = require('multer-s3');
 
-require('dotenv').config();
+const s3 = new aws.S3({
+  accessKeyId: process.env.ACCESSKEYID,
+  secretAccessKey: process.env.SECRETACCESSKEY,
+  region: process.env.REGION,
+});
 
-export default {
-  signup(req, res) {
-    aws.config.setPromisesDependency();
-    aws.config.update({
-      accessKeyId: process.env.ACCESSKEYID,
-      secretAccessKey: process.env.SECRETACCESSKEY,
-      region: process.env.REGION,
-    });
-    const s3 = new aws.S3();
-    const params = {
-      ACL: 'public-read',
-      Bucket: process.env.BUCKET_NAME,
-      Body: fs.createReadStream(req.file.path),
-      Key: `userAvatar/${req.file.originalname}`,
-    };
-  },
+const fileFilter = (req, file, callback) => {
+  if (file.mimetype === 'image/jpeg' || file.mimetype === 'image/png') {
+    callback(null, true);
+  } else {
+    callback(new Error('Invalid Mime Type, only JPEG and PNG'), false);
+  }
 };
+const upload = multer({
+  fileFilter,
+  storage: multerS3({
+    s3,
+    bucket: process.env.BUCKET_NAME,
+    acl: 'public-read',
+    key: (req, file, callback) => {
+      callback(null, Date.now().toString());
+    },
+  }),
+});
+
+module.exports = upload;
