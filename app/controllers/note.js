@@ -484,8 +484,8 @@ class NoteController {
     const response = {};
     try {
       const imageDetail = {
-        noteID: req.body.noteId,
-        image: req.body.image,
+        noteId: req.body.noteId,
+        image: req.file.location,
       };
       const result = await noteServices.uploadImage(imageDetail);
       response.status = true;

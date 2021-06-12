@@ -290,20 +290,20 @@ class NoteModel {
 
   saveImage = async (imageDetail) => {
     try {
-      // const result = await Note.findOne({ _id: imageDetail._id });
       const result = await Note.findOneAndUpdate(
         {
-          _id: imageDetail._id,
+          _id: imageDetail.noteId,
         },
         {
           $set: {
             image: imageDetail.image,
           },
-        });
-
+        },
+      );
       return result;
     } catch (err) {
       logger.info('Something went wrong', err);
+      return err;
     }
   }
 }
