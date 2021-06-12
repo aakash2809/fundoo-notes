@@ -35,6 +35,7 @@
         "global-require": "off",
         "no-shadow": "off",
         "func-names": "off",
-        "eqeqeq": "off"
+        "eqeqeq": "off",
+        "eslintno-else-return": "off"
     }
 }
