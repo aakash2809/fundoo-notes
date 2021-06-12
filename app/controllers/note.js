@@ -441,10 +441,10 @@ class NoteController {
   }
 
   /**
- * @description add color to note by noteId and color
- * @param {*} request having noteId and color in its body
- * @param {*} response sends response from server
- */
+   * @description add color to note by noteId and color
+   * @param {*} request having noteId and color in its body
+   * @param {*} response sends response from server
+   */
   noteColor = (request, response) => {
     const validatedRequestResult = inputValidator.validateColorCode(request.body);
     if (validatedRequestResult.error) {
@@ -480,6 +480,11 @@ class NoteController {
     });
   }
 
+  /**
+   * @description save the image to db
+   * @param {*} req having noteId and file detail
+   * @param {*} res sends response from server
+   */
   uploadImage = async (req, res) => {
     const response = {};
     try {

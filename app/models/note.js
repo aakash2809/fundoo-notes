@@ -245,11 +245,11 @@ class NoteModel {
   };
 
   /**
-  * @description update note data existed in database by updating color
-  * field
-  * @param {*}requireDataToaddColor takes data to be upadated in json formate
-  * @param {*} callback holds a function
-  */
+    * @description update note data existed in database by updating color
+    * field
+    * @param {*}requireDataToaddColor takes data to be upadated in json formate
+    * @param {*} callback holds a function
+    */
   addColor = (requireDataToaddColor, callback) => {
     const noteColor = requireDataToaddColor.color;
     const { noteId } = requireDataToaddColor;
@@ -264,30 +264,9 @@ class NoteModel {
   }
 
   /**
-   * @description
-   * @param {*}
-   * @param {*} callback holds a function
-   */
-  /* saveImage = (noteID, updateNote, callback) => {
-    Note.findOneAndUpdate(
-      {
-        _id: noteID,
-      },
-      {
-        $set: {
-          image: updateNote,
-        },
-      },
-      (err, result) => {
-        if (err) {
-          callback(err);
-        } else {
-          return callback(null, updateNote);
-        }
-      },
-    );
-  }; */
-
+    * @description save the image by noteId
+    * @param imageDetail contains image noteId and image location
+    */
   saveImage = async (imageDetail) => {
     try {
       const result = await Note.findOneAndUpdate(

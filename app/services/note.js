@@ -369,9 +369,9 @@ class NoteServices {
   }
 
   /**
-     * @description call the method of note model and serve response to controller
-     * @param imageDetail contains note id and image
-     */
+    * @description call the method of note model and serve response to controller
+    * @param imageDetail contains note id and image
+    */
   uploadImage = (imageDetail) => {
     return new Promise((resolve, reject) => {
       noteModel.saveImage(imageDetail).then((data) => {
