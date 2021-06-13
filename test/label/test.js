@@ -10,7 +10,7 @@
 const chai = require('chai');
 const chaiHttp = require('chai-http');
 const server = require('../../server');
-const testSamples = require('./sampleTest.json');
+const testSamples = require('./testSamples.json');
 const responseCode = require('../../util/staticFile.json');
 
 chai.should();
