@@ -576,6 +576,47 @@
         "deprecated": false
       }
     },
+    "/uploadImage": {
+      "post": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "Uploads a file.",
+        "consumes": [
+          "multipart/form-data"
+        ],
+        "parameters": [
+          {
+            "in": "formData",
+            "name": "image",
+            "type": "file",
+            "description": "The file to upload.",
+            "required": true
+          },
+          {
+            "in": "formData",
+            "name": "noteId",
+            "type": "string",
+            "required": true,
+            "description": "enter noteId."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note not found with input id"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
+      }
+    },
     "/labels": {
       "get": {
         "tags": [
