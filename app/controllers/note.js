@@ -473,7 +473,6 @@ class NoteController {
           success: noteResult.success,
           status_code: noteResult.status_code,
           message: noteResult.message,
-          updated_data: noteResult.updated_data,
         });
         logger.info('SUCCESS004: Note has been updated');
       }
@@ -492,10 +491,9 @@ class NoteController {
         noteId: req.body.noteId,
         image: req.file.location,
       };
-      const result = await noteServices.uploadImage(imageDetail);
+      await noteServices.uploadImage(imageDetail);
       response.status = true;
       response.message = 'file uploaded Successfully...!';
-      response.data = result;
       return res.status(200).send(response);
     } catch (error) {
       response.status = false;
