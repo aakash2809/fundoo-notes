@@ -30,5 +30,21 @@
     "collaboratorSampleWithWrongNoteId": {
         "noteId": "602a27879ecf9a1f5cf89a",
         "userId": "602d8872855276127462b2e2"
+    },
+    "validUser": {
+        "email": "NiteshTiwari@gmail.com",
+        "password": "System123#"
+    },
+    "validColor": {
+        "noteId": "60292400142c72030009599c",
+        "color": "#85C1E8"
+    },
+    "InValidColor": {
+        "noteId": "60292400142c72030009599c",
+        "color": "sdfsafsafffs"
+    },
+    "validColorWithInvalidNoteId": {
+        "noteId": "60292400142c72030009898c",
+        "color": "#85C1E8"
     }
 }
