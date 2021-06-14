@@ -537,6 +537,45 @@
         "deprecated": false
       }
     },
+    "/noteColor": {
+      "post": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "update existing note",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Note",
+            "description": "noteId and colorcode that needs to be updated",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/setColor"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note not found with input id"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
+      }
+    },
     "/labels": {
       "get": {
         "tags": [
@@ -832,6 +871,23 @@
         "label": {
           "type": "string",
           "example": "Aakash"
+        }
+      }
+    },
+    "setColor": {
+      "type": "object",
+      "required": [
+        "noteId",
+        "color"
+      ],
+      "properties": {
+        "noteId": {
+          "type": "string",
+          "example": "60292400142c72030009599c"
+        },
+        "color": {
+          "type": "string",
+          "example": "#85C1E9"
         }
       }
     }
