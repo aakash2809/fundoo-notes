@@ -15,7 +15,7 @@ const responseCode = require('../../util/staticFile.json');
 
 chai.should();
 chai.use(chaiHttp);
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pdGVzaCIsInVzZXJJZCI6IjYwYjk1YmM4MDIyOGY4MWZkOGViMjg0ZSIsImlhdCI6MTYyMjc2MTQ2NywiZXhwIjoxNjIyODQ3ODY3fQ.xuPopRsZ6xdZoc5Jqb5XsqpCR2e6iup66xd4cNXlUTg';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pdGVzaCIsInVzZXJJZCI6IjYwYjk1YmM4MDIyOGY4MWZkOGViMjg0ZSIsImlhdCI6MTYyMzYzMDMwMywiZXhwIjoxNjIzNzE2NzAzfQ.ymBcpS_2yuHHStWTJanw26wEuIRnhdaL8IawBhzGQ2s';
 const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZS.khuiyghjkh';
 
 describe('Test Note API', () => {
@@ -306,6 +306,45 @@ describe('Test Note API', () => {
                 .set('Authorization', `Bearer ${invalidToken}`)
                 .end((error, response) => {
                     response.body.message.should.have.equal('Authentication failed');
+                });
+            done();
+        });
+    });
+
+    /**
+    * @description note test for /noteColor
+    */
+    describe.only('/noteColor', () => {
+        it('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessMessageAfterSettingColor', (done) => {
+            chai.request(server)
+                .post('/noteColor')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.validColor)
+                .end((error, response) => {
+                    response.body.status_code.should.have.equal(responseCode.SUCCESS);
+                    response.body.message.should.have.equal('color successfully added to Note');
+                });
+            done();
+        });
+
+        it('WhenInvalidColorCodePass_shouldReturn_ErrorMessageForColorCode', (done) => {
+            chai.request(server)
+                .post('/noteColor')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.InValidColor)
+                .end((error, response) => {
+                    response.body.status_code.should.have.equal(responseCode.BAD_REQUEST);
+                });
+            done();
+        });
+
+        it('WhenInvalidNoteIdPass_shouldReturn_ErrorNotFoundForInvalidNoteId', (done) => {
+            chai.request(server)
+                .post('/noteColor')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.validColorWithInvalidNoteId)
+                .end((error, response) => {
+                    response.body.status_code.should.have.equal(responseCode.NOT_FOUND);
                 });
             done();
         });
