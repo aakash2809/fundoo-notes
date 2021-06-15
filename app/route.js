@@ -75,6 +75,12 @@ class Routes {
     // upload image to note
     app.post('/uploadImage', helper.verifyToken, upload.single('image'), noteController.uploadImage);
 
+    // add collaborator
+    app.post('/addCollaborator', helper.verifyToken, noteController.addCollaborator);
+
+    // remove collaborator
+    app.delete('/removeCollaborator', helper.verifyToken, noteController.removeCollaborator);
+
     /** *********************************************************************************
       * @description routes for user
       ********************************************************************************** */

@@ -334,6 +334,34 @@ class NoteServices {
   });
 
   /**
+   * @description : addCollaborator will add the collaborator by taking data from controller
+  * @param {*} data contins detail for collabrtion
+  * @param {*} callback
+  */
+  addCollaborator = (data, callback) => {
+    noteModel.addCollaborator(data, (err, result) => {
+      if (result) {
+        (err) ? callback(err, null) : callback(null, helper.collabNotification(data));
+      }
+      else {
+        callback('Please check your email id again.');
+      }
+    });
+  };
+
+  /**
+   * @description : removeCollaborator is used to remove the Collaborator from the existing note,
+   * @param data require to remove collaborator
+   */
+  removeCollaborator = (data) => {
+    return new Promise((resolve, reject) => {
+      const result = noteModel.removeCollaborator(data);
+      result.then((data) => resolve({ data }))
+        .catch((err) => reject({ err }));
+    });
+  }
+
+  /**
   * @description update note  data existed in database, using model's mothod
    * by adding new color Object Id to Note
    * @param {*} requireDataToaddColor takes data to be upadated in json formate
@@ -372,15 +400,13 @@ class NoteServices {
     * @description call the method of note model and serve response to controller
     * @param imageDetail contains note id and image
     */
-  uploadImage = (imageDetail) => {
-    return new Promise((resolve, reject) => {
-      noteModel.saveImage(imageDetail).then((data) => {
-        resolve({ data });
-      }).catch((err) => {
-        reject(err);
-      });
+  uploadImage = (imageDetail) => new Promise((resolve, reject) => {
+    noteModel.saveImage(imageDetail).then((data) => {
+      resolve({ data });
+    }).catch((err) => {
+      reject(err);
     });
-  }
+  })
 }
 
 module.exports = new NoteServices();

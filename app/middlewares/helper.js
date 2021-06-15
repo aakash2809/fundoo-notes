@@ -125,6 +125,35 @@ class Helper {
   })
 
   /**
+    * @description this function sending mail to for collabration
+    */
+  collabNotification = () => {
+    const transporter = nodemailer.createTransport({
+      service: 'gmail',
+      auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+      },
+    });
+
+    ejs.renderFile('app/views/collaborator.ejs', (error, info) => {
+      if (error) {
+        logger.info('error', error);
+      } else {
+        const mailOption = {
+          from: process.env.EMAIL_USER,
+          to: 'aakashrajak2809@gmail.com',
+          subject: 'Collabration Notification',
+          html: `${info}`,
+        };
+        transporter.sendMail(mailOption, (error, info) => {
+          (error) ? logger.info('error to send mail', error) : logger.info('collaboration successfully, please check your email.', info.response);
+        });
+      }
+    });
+  }
+
+  /**
    * @description this function verify the token
    */
   verifyToken = (request, response, next) => {

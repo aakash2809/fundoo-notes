@@ -245,6 +245,36 @@ class NoteModel {
   };
 
   /**
+   * @param {*} data
+   * @param {*} callback
+   * @description : addCollaborator will add the collaborator into note
+   */
+  addCollaborator = async (data, callback) => {
+    const result = await Note.findByIdAndUpdate(data.noteId, {
+      $addToSet: {
+        collaborator: data.userToCollabrate,
+      },
+    });
+    callback(null, result);
+  };
+
+  /**
+    * @description : this function remove the collaborator from the note.
+    * @param {*} data require to remove collaborator
+    */
+  removeCollaborator = (data) => {
+    return new Promise((resolve, reject) => {
+      Note.findByIdAndUpdate(data.noteId,
+        { $pull: { collaborator: data.collaboratorId } }
+      )
+        .then((user) =>
+          resolve(user))
+        .catch((err) =>
+          reject(err));
+    });
+  }
+
+  /**
     * @description update note data existed in database by updating color
     * field
     * @param {*}requireDataToaddColor takes data to be upadated in json formate

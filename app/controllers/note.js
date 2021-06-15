@@ -441,6 +441,40 @@ class NoteController {
   }
 
   /**
+    * @description : addCollaborator will add the Collaborator in the note
+    */
+  addCollaborator = (req, res) => {
+    try {
+      const encodedBody = helper.getEncodedBodyFromHeader(req);
+      const data = {
+        userToCollabrate: req.body.userToCollabrate,
+        noteId: req.body.noteId,
+        userId: encodedBody.userId,
+      }
+      noteServices.addCollaborator(data, (err, data) => {
+        if (err) {
+          return res.status(400).send({
+            success: false,
+            message: 'Unable To Collaborate note',
+            err,
+          });
+        } else {
+          return res.status(200).send({
+            success: true,
+            message: 'Collaboratation successfully.',
+            data,
+          });
+        }
+      });
+    } catch (err) {
+      res.status(500).send({
+        success: false,
+        message: 'There is some internal error from server',
+      });
+    }
+  };
+
+  /**
    * @description add color to note by noteId and color
    * @param {*} request having noteId and color in its body
    * @param {*} response sends response from server
@@ -477,6 +511,38 @@ class NoteController {
         logger.info('SUCCESS004: Note has been updated');
       }
     });
+  }
+
+  /**
+   * @description : removeCollaborator is used to remove Collaborator from
+    * @param {*} response sends response from server
+   */
+  removeCollaborator = (req, res) => {
+    try {
+      const encodedBody = helper.getEncodedBodyFromHeader(req);
+      const data = {
+        collaboratorId: req.body.collaboratorId,
+        noteId: req.body.noteId,
+        userId: encodedBody.userId,
+      };
+      noteServices.removeCollaborator(data).then(() => {
+        res.status(200).send({
+          success: true,
+          message: 'collaborator removed from note succesfully',
+        });
+      }).catch((err) => {
+        res.status(400).send({
+          success: false,
+          message: 'Failed to remove collaborator',
+          err,
+        });
+      });
+    } catch (err) {
+      res.status(500).send({
+        success: false,
+        message: 'There is some internal error from server',
+      });
+    }
   }
 
   /**
