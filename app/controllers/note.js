@@ -486,10 +486,24 @@ class NoteController {
    */
   uploadImage = async (req, res) => {
     const response = {};
+    let imageDetail = {
+      noteId: req.body.noteId,
+      image: req.file,
+    };
+    const validatedRequestResult = inputValidator.validateImageUploadData(imageDetail);
+    if (validatedRequestResult.error) {
+      logger.error('SCHEMAERROR: Request did not match with schema');
+      res.send({
+        success: false,
+        status_code: resposnsCode.BAD_REQUEST,
+        message: validatedRequestResult.error.details[0].message,
+      });
+      return;
+    }
     try {
-      const imageDetail = {
+      imageDetail = {
         noteId: req.body.noteId,
-        image: req.file.location,
+        image: req.file.locaton,
       };
       await noteServices.uploadImage(imageDetail);
       response.status = true;
