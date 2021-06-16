@@ -98,7 +98,6 @@ class UserControllers {
             statusCode: loginResult.statusCode,
             message: loginResult.message,
             token: loginResult.data,
-            user: loginResult.user,
           });
       },
     );
