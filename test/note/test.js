@@ -16,8 +16,18 @@ const logger = require('../../config/logger');
 
 chai.should();
 chai.use(chaiHttp);
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pdGVzaCIsInVzZXJJZCI6IjYwYjk1YmM4MDIyOGY4MWZkOGViMjg0ZSIsImlhdCI6MTYyMzcyOTI3NCwiZXhwIjoxNjIzODE1Njc0fQ.rIAHKS9VN3s-glPJpKgYRlySFfedWBXGuX3nXQ7wf5k';
+let token = '';
 const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZS.khuiyghjkh';
+
+before((done) => {
+    chai.request(server)
+        .post('/login')
+        .send(testSamples.validUser)
+        .end((err, response) => {
+            token = response.body.token;
+            done();
+        });
+});
 
 describe('Test Note API', () => {
     /**
@@ -25,11 +35,13 @@ describe('Test Note API', () => {
      */
     describe('POST /addNote', () => {
         it('WhenGivenProperEndPointsAndCorrectInput_shouldReturn_SuccessMessageForNoteInsertion', (done) => {
+            logger.info(`Bearer ${token}`);
             chai.request(server)
                 .post('/addNote')
                 .set('Authorization', `Bearer ${token}`)
                 .send(testSamples.validNote)
                 .end((error, response) => {
+                    logger.info('token inside it', token);
                     response.should.have.status(responseCode.SUCCESS);
                     response.body.should.be.a('object');
                     response.body.message.should.have.equal('Note inserted successfully');
@@ -153,7 +165,7 @@ describe('Test Note API', () => {
                 .set('Authorization', `Bearer ${token}`)
                 .send(testSamples.sampleWithWrongNoteId)
                 .end((error, response) => {
-                    response.body.message.should.have.equal('No note availabe associated with : 602a27879ecf9a1f5cf89a');
+                    response.body.message.should.have.equal(`No note availabe associated with : ${testSamples.sampleWithWrongNoteId.noteId}`);
                 });
             done();
         });
@@ -289,7 +301,7 @@ describe('Test Note API', () => {
     /**
      * @description note test for /updateNote/:noteId /
      */
-    describe('DELETE /note/:noteId', () => {
+    describe.skip('DELETE /note/:noteId', () => {
         it('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessMessageAfterDeleteingNote', (done) => {
             chai.request(server)
                 .delete('/note/602922b3142c72030009599a')
@@ -354,8 +366,8 @@ describe('Test Note API', () => {
     /**
     * @description note test for /uploadImage
     */
-    describe.only('/uploadImage', () => {
-        it('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessStatus', (done) => {
+    describe('/uploadImage', () => {
+        it.skip('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessStatus', (done) => {
             chai.request(server)
                 .post('/uploadImage')
                 .set('Authorization', `Bearer ${token}`)
@@ -368,26 +380,24 @@ describe('Test Note API', () => {
             done();
         });
 
-        it.only('WhenfileAttachmenNoGiven_shouldReturn_Error', (done) => {
+        it('WhenfileAttachmenNoGiven_shouldReturn_Error', (done) => {
             chai.request(server)
                 .post('/uploadImage')
                 .set('Authorization', `Bearer ${token}`)
                 .field('noteId', '60292400142c72030009599c')
                 .end((error, response) => {
-                    console.log(response.body);
                     response.body.status_code.should.have.equal(responseCode.BAD_REQUEST);
                 });
             done();
         });
 
-        it('WhenNoteId_shouldReturn_ErrorNotFoundForInvalidNoteId', (done) => {
+        it.skip('WhenNoteId_shouldReturn_ErrorNotFoundForInvalidNoteId', (done) => {
             chai.request(server)
                 .post('/uploadImage')
                 .set('Authorization', `Bearer ${token}`)
                 .field('noteId', '60292400142c72030009599c')
                 .attach('image', './images/story.jpg')
                 .end((error, response) => {
-                    console.log(response.body);
                     response.body.status_code.should.have.equal(responseCode.NOT_FOUND);
                 });
             done();
