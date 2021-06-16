@@ -4,7 +4,6 @@
  *               Controller resolve the error using the service layer by invoking its services
  * @requires
  * @author       Aakash Rajak <aakashrajak2809@gmail.com>
- * @since
 -----------------------------------------------------------------------------------------------*/
 
 const logger = require('../../config/logger');
@@ -64,7 +63,6 @@ class UserControllers {
             message: registrationResult.message,
             data: registrationResult.data,
           }));
-
       },
     );
   };
@@ -93,7 +91,7 @@ class UserControllers {
             statusCode: error.statusCode,
             message: error.message,
           }))
-          : ((logger.info(loginResult.message), response.send({
+          : (logger.info(loginResult.message), response.send({
             success: loginResult.success,
             statusCode: loginResult.statusCode,
             message: loginResult.message,
