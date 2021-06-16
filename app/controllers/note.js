@@ -31,13 +31,14 @@ class NoteController {
     logger.info('INVOKING: saveData method of services');
     noteServices.saveNoteData(noteDetails, (error, noteResult) => {
       if (error) {
+        logger.error(`ERR001: getting Error to save ${error.message}`);
         response.send({
           success: false,
           status_code: resposnsCode.BAD_REQUEST,
           message: error.message,
         });
-        logger.error('ERR001: Note data did not match ');
       } else {
+        logger.info('Note inserted successfully');
         response.send({
           success: true,
           status_code: resposnsCode.SUCCESS,
@@ -60,20 +61,20 @@ class NoteController {
     const encodedBody = helper.getEncodedBodyFromHeader(request);
     noteServices.retrieveAllNotes(encodedBody.userId, (error, noteResult) => {
       if (error) {
+        logger.error(`Some error occurred while retrieving notes ${error.message}`);
         response.send({
           success: error.success,
           status_code: error.statusCode,
           message: error.message,
         });
-        logger.error('ERR002: Some error occurred while retrieving notes.');
       } else {
+        logger.info('SUCCESS002:All notes has been retrieved');
         response.send({
           success: noteResult.success,
           status_code: noteResult.statusCode,
           message: noteResult.message,
           data: noteResult.data,
         });
-        logger.info('SUCCESS002:All notes has been retrieved');
         logger.info('Request took:', new Date() - start, 'ms');
       }
     });
@@ -188,19 +189,20 @@ class NoteController {
     };
     noteServices.updateNoteByAddingLabel(requireDataToaddLabel, (error, noteResult) => {
       if (error) {
+        logger.error(`getting error ${error.message}`);
         response.send({
           success: error.success,
           status_code: error.status_code,
           message: error.message,
         });
       } else {
+        logger.info('SUCCESS004: Note has been updated');
         response.send({
           success: noteResult.success,
           status_code: noteResult.status_code,
           message: noteResult.message,
           updated_data: noteResult.updated_data,
         });
-        logger.info('SUCCESS004: Note has been updated');
       }
     });
   }
@@ -218,19 +220,20 @@ class NoteController {
 
     noteServices.updateNoteByAddingUser(requireDataToaddUser, (error, noteResult) => {
       if (error) {
+        logger.error(`getting error ${error.message}`);
         response.send({
           success: error.success,
           status_code: error.status_code,
           message: error.message,
         });
       } else {
+        logger.info('SUCCESS004: Note has been updated');
         response.send({
           success: noteResult.success,
           status_code: noteResult.status_code,
           message: noteResult.message,
           updated_data: noteResult.updated_data,
         });
-        logger.info('SUCCESS004: Note has been updated');
       }
     });
   }
@@ -248,6 +251,7 @@ class NoteController {
 
     noteServices.updateNoteByRemovingLabel(requireDataToDeleteLabel, (error, noteResult) => {
       if (error) {
+        logger.error(`getting error ${error.message}`);
         response.send({
           success: error.success,
           status_code: error.status_code,
@@ -278,6 +282,7 @@ class NoteController {
 
     noteServices.updateNoteByRemovingUser(requireDataToDeleteUser, (error, noteResult) => {
       if (error) {
+        logger.error(`getting error ${error.message}`);
         response.send({
           success: error.success,
           status_code: error.status_code,
@@ -307,7 +312,7 @@ class NoteController {
     try {
       noteServices.removeNote(userId, noteID, (error, data) => (
         error
-          ? (logger.warn(`note not found with id ${noteID}`),
+          ? (logger.error(`note not found with id ${noteID}`),
             res.send({
               status_code: resposnsCode.NOT_FOUND,
               message: `note not found with id ${noteID}`,
@@ -450,18 +455,20 @@ class NoteController {
         userToCollabrate: req.body.userToCollabrate,
         noteId: req.body.noteId,
         userId: encodedBody.userId,
-      }
+      };
       noteServices.addCollaborator(data, (err, data) => {
         if (err) {
+          logger.error(`getting error ${err}`);
           return res.status(400).send({
             success: false,
             message: 'Unable To Collaborate note',
             err,
           });
         } else {
+          logger.info('Collaboratation successfull');
           return res.status(200).send({
             success: true,
-            message: 'Collaboratation successfully.',
+            message: 'Collaboratation successfull.',
             data,
           });
         }
@@ -497,18 +504,19 @@ class NoteController {
 
     noteServices.addColorToNote(requireDataToaddColor, (error, noteResult) => {
       if (error) {
+        logger.error(`getting error ${error}`);
         response.send({
           success: error.success,
           status_code: error.status_code,
           message: error.message,
         });
       } else {
+        logger.info(`SUCCESS004: Note has been updated ${noteResult.message}`);
         response.send({
           success: noteResult.success,
           status_code: noteResult.status_code,
           message: noteResult.message,
         });
-        logger.info('SUCCESS004: Note has been updated');
       }
     });
   }
@@ -526,18 +534,21 @@ class NoteController {
         userId: encodedBody.userId,
       };
       noteServices.removeCollaborator(data).then(() => {
+        logger.info('collaborator removed from note succesfully');
         res.status(200).send({
           success: true,
           message: 'collaborator removed from note succesfully',
         });
       }).catch((err) => {
-        res.status(400).send({
+        logger.error('Failed to remove collaborator', err);
+        res.status(500).send({
           success: false,
           message: 'Failed to remove collaborator',
           err,
         });
       });
     } catch (err) {
+      logger.error('Failed to remove collaborator', err);
       res.status(500).send({
         success: false,
         message: 'There is some internal error from server',
@@ -572,10 +583,12 @@ class NoteController {
         image: req.file.locaton,
       };
       await noteServices.uploadImage(imageDetail);
+      logger.info('file uploaded Successfully...');
       response.status = true;
       response.message = 'file uploaded Successfully...!';
       return res.status(200).send(response);
     } catch (error) {
+      logger.error('there is some error to upload...', error);
       response.status = false;
       response.message = 'there is some error to upload...!';
       return res.status(500).send(response);

@@ -44,20 +44,20 @@ class LabelController {
 
       logger.info('INVOKING: save method of services');
       const result = await labelServices.savelabelData(labelDetails);
+      logger.info('SUCCESS001: Label inserted successfully');
       response.send({
         success: true,
         status_code: resposnsCode.SUCCESS,
         message: 'Label inserted successfully',
         data: result,
       });
-      logger.info('SUCCESS001: Label inserted successfully');
-    } catch (e) {
+    } catch (error) {
+      logger.error(`ERR001: ${error}`);
       response.send({
         success: false,
         status_code: resposnsCode.BAD_REQUEST,
-        message: 'error',
+        message: `error in insert note ${error}`,
       });
-      logger.error('ERR001: Label data did not match ');
     }
   }
 
@@ -73,20 +73,20 @@ class LabelController {
 
     labelServices.retrieveAllLabel(encodedBody.userId, (error, labelResult) => {
       if (error) {
+        logger.error(`ERR002: Some error occurred while retrieving label ${error}`);
         response.send({
           success: error.success,
           status_code: error.statusCode,
           message: error.message,
         });
-        logger.error('ERR002: Some error occurred while retrieving label.');
       } else {
+        logger.info('SUCCESS002:All data has been retrieved');
         response.send({
           success: labelResult.success,
           status_code: labelResult.statusCode,
           message: labelResult.message,
           data: labelResult.data,
         });
-        logger.info('SUCCESS002:All data has been retrieved');
         logger.info('Request took:', new Date() - start, 'ms');
       }
     });
@@ -102,13 +102,14 @@ class LabelController {
     try {
       const encodedBody = helper.getEncodedBodyFromHeader(request);
       const result = await labelServices.updateLabelByLabelId(request.params.labelId, { label: request.body.label }, encodedBody.userId);
+      logger.info('lable updated successfully');
       response.send({
         success: result.success,
         status_code: result.statusCode,
         message: result.message,
       });
     } catch (error) {
-      logger.error(`ERR004: Label  not found with id ${request.params.labelId}`);
+      logger.error(`ERR004: Internal server error ${request.params.labelId}`);
       response.send({
         success: false,
         status_code: resposnsCode.INTERNAL_SERVER_ERROR,
@@ -133,12 +134,12 @@ class LabelController {
         message: result.message,
       });
     } catch (error) {
+      logger.error(`ERR005: Label not found with id ${request.params.labelId}`);
       response.send({
         success: false,
         status_code: resposnsCode.INTERNAL_SERVER_ERROR,
         message: 'Internal server error',
       });
-      logger.error(`ERR005: Label not found with id ${request.params.labelId}`);
     }
   };
 }

@@ -53,18 +53,18 @@ class UserControllers {
       registrationDetails,
       (error, registrationResult) => {
         error
-          ? response.send({
+          ? (logger.error(error), response.send({
             success: false,
             status_code: resposnsCode.BAD_REQUEST,
             message: error,
-          })
-          : response.send({
+          }))
+          : (logger.info('SUCCESS001: User registered successfully'), response.send({
             success: registrationResult.success,
             status_code: registrationResult.statusCode,
             message: registrationResult.message,
             data: registrationResult.data,
-          });
-        logger.info('SUCCESS001: User registered successfully');
+          }));
+
       },
     );
   };
@@ -88,17 +88,17 @@ class UserControllers {
       loginDetails,
       (error, loginResult) => {
         error
-          ? response.send({
+          ? (logger.error('getting error in login', error.message), response.send({
             success: error.success,
             statusCode: error.statusCode,
             message: error.message,
-          })
-          : response.send({
+          }))
+          : ((logger.info(loginResult.message), response.send({
             success: loginResult.success,
             statusCode: loginResult.statusCode,
             message: loginResult.message,
             token: loginResult.data,
-          });
+          }));
       },
     );
     logger.info('Request took:', new Date() - start, 'ms');
@@ -115,12 +115,14 @@ class UserControllers {
     userServices.getEmail({ email }, (error, result) => {
       try {
         if (error) {
+          logger.error(`getting error ${error}`);
           return response.send({
             success: false,
             statusCode: resposnsCode.INTERNAL_SERVER_ERROR,
             message: 'internal server error',
           });
         }
+        logger.info(result.message);
         return response.send({
           success: true,
           statusCode: result.status,
@@ -128,6 +130,7 @@ class UserControllers {
           data: result.data,
         });
       } catch (error) {
+        logger.error(`getting error ${error}`);
         return error;
       }
     });
@@ -140,16 +143,16 @@ class UserControllers {
    */
   restPassword = (request, response) => userServices.resetPass(request.body, (error, result) => {
     error
-      ? response.send({
+      ? (logger.error(error), response.send({
         success: false,
         statusCode: resposnsCode.BAD_REQUEST,
         message: error,
-      })
-      : response.send({
+      }))
+      : (logger.info(result.message), response.send({
         success: true,
         status_code: resposnsCode.SUCCESS,
         message: result,
-      });
+      }));
   });
 
   /**
@@ -161,17 +164,17 @@ class UserControllers {
     logger.info('INVOKING: getEmail method of login services');
     userServices.verifyAndAtivateAccount(request, (error, result) => {
       error
-        ? response.send({
+        ? (logger.error('error in activation mail', error.message), response.send({
           success: error.success,
           status_code: error.statusCode,
           message: error.message,
-        })
-        : response.send({
+        }))
+        : (logger.info(result.message), response.send({
           success: result.success,
           statusCode: result.statusCode,
           message: result.message,
           data: result.data,
-        });
+        }))
     });
   };
 }

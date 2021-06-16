@@ -137,6 +137,7 @@ class UserServices {
             };
             callback(error, null);
           } else {
+            logger.info('verified successfully');
             registrationResult = {
               success: true,
               statusCode: resposnsCode.SUCCESS,
@@ -194,6 +195,7 @@ class UserServices {
                 callback(error, null);
               } else if (result) {
                 const token = jwtAuth.genrateToken(loginFilteredResult);
+                logger.info(` token genrated: ${token}`);
                 loginFilteredResult = {
                   success: true,
                   statusCode: resposnsCode.SUCCESS,
@@ -201,7 +203,7 @@ class UserServices {
                   data: token,
                   user: loginResult,
                 };
-                logger.info(` token genrated: ${token}`);
+
                 helper.setDataToRedis(KEY, loginFilteredResult),
                   logger.info('response comming from mongodb');
                 callback(null, loginFilteredResult);
