@@ -537,6 +537,84 @@
         "deprecated": false
       }
     },
+    "/addCollaborator": {
+      "post": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "update existing note",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Note",
+            "description": "noteId and collaborator that needs to be collaborate",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/collaborator"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note not found with input id"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
+      }
+    },
+    "/removeCollaborator": {
+      "delete": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "update existing note",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Note",
+            "description": "noteId and collaboratorId that needs to remove",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/collaborator"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note not found with input id"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
+      }
+    },
     "/noteColor": {
       "post": {
         "tags": [
@@ -929,6 +1007,23 @@
         "color": {
           "type": "string",
           "example": "#85C1E9"
+        }
+      }
+    },
+    "collaborator": {
+      "type": "object",
+      "required": [
+        "noteId",
+        "userToCollabrate"
+      ],
+      "properties": {
+        "noteId": {
+          "type": "string",
+          "example": "60292400142c72030009599c"
+        },
+        "userToCollabrate": {
+          "type": "string",
+          "example": "604eb36e4711870344436aa9"
         }
       }
     }
