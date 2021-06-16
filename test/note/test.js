@@ -12,10 +12,11 @@ const chaiHttp = require('chai-http');
 const server = require('../../server');
 const testSamples = require('./testSamples.json');
 const responseCode = require('../../util/staticFile.json');
+const logger = require('../../config/logger');
 
 chai.should();
 chai.use(chaiHttp);
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pdGVzaCIsInVzZXJJZCI6IjYwYjk1YmM4MDIyOGY4MWZkOGViMjg0ZSIsImlhdCI6MTYyMzYzMDMwMywiZXhwIjoxNjIzNzE2NzAzfQ.ymBcpS_2yuHHStWTJanw26wEuIRnhdaL8IawBhzGQ2s';
+const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6Ik5pdGVzaCIsInVzZXJJZCI6IjYwYjk1YmM4MDIyOGY4MWZkOGViMjg0ZSIsImlhdCI6MTYyMzcyOTI3NCwiZXhwIjoxNjIzODE1Njc0fQ.rIAHKS9VN3s-glPJpKgYRlySFfedWBXGuX3nXQ7wf5k';
 const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZS.khuiyghjkh';
 
 describe('Test Note API', () => {
@@ -314,7 +315,7 @@ describe('Test Note API', () => {
     /**
     * @description note test for /noteColor
     */
-    describe.only('/noteColor', () => {
+    describe('/noteColor', () => {
         it('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessMessageAfterSettingColor', (done) => {
             chai.request(server)
                 .post('/noteColor')
@@ -344,6 +345,49 @@ describe('Test Note API', () => {
                 .set('Authorization', `Bearer ${token}`)
                 .send(testSamples.validColorWithInvalidNoteId)
                 .end((error, response) => {
+                    response.body.status_code.should.have.equal(responseCode.NOT_FOUND);
+                });
+            done();
+        });
+    });
+
+    /**
+    * @description note test for /uploadImage
+    */
+    describe.only('/uploadImage', () => {
+        it('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessStatus', (done) => {
+            chai.request(server)
+                .post('/uploadImage')
+                .set('Authorization', `Bearer ${token}`)
+                .field('noteId', '60292400142c72030009599c')
+                .attach('image', './images/story.jpg')
+                .end((error, response) => {
+                    logger.info('response', response.body);
+                    // response.body.status_code.should.have.equal(responseCode.SUCCESS);
+                });
+            done();
+        });
+
+        it.only('WhenfileAttachmenNoGiven_shouldReturn_Error', (done) => {
+            chai.request(server)
+                .post('/uploadImage')
+                .set('Authorization', `Bearer ${token}`)
+                .field('noteId', '60292400142c72030009599c')
+                .end((error, response) => {
+                    console.log(response.body);
+                    response.body.status_code.should.have.equal(responseCode.BAD_REQUEST);
+                });
+            done();
+        });
+
+        it('WhenNoteId_shouldReturn_ErrorNotFoundForInvalidNoteId', (done) => {
+            chai.request(server)
+                .post('/uploadImage')
+                .set('Authorization', `Bearer ${token}`)
+                .field('noteId', '60292400142c72030009599c')
+                .attach('image', './images/story.jpg')
+                .end((error, response) => {
+                    console.log(response.body);
                     response.body.status_code.should.have.equal(responseCode.NOT_FOUND);
                 });
             done();
