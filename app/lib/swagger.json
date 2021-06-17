@@ -695,6 +695,48 @@
         "deprecated": false
       }
     },
+    "/searchNote": {
+      "post": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "search Note by title",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "Note",
+            "description": "search Note by title",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/search"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note not found with input id"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
+      }
+    },
     "/labels": {
       "get": {
         "tags": [
@@ -1024,6 +1066,18 @@
         "userToCollabrate": {
           "type": "string",
           "example": "604eb36e4711870344436aa9"
+        }
+      }
+    },
+    "search": {
+      "type": "object",
+      "required": [
+        "title"
+      ],
+      "properties": {
+        "title": {
+          "type": "string",
+          "example": "Training"
         }
       }
     }
