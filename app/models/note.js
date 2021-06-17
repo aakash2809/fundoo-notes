@@ -315,6 +315,20 @@ class NoteModel {
       return err;
     }
   }
+
+  /**
+  * @description retrive all note data from database
+  *@param {*} userId will contain user Object id
+  */
+  getNotes = async (userId) => {
+    try {
+      logger.info('TRACKED_PATH: Inside model');
+      const result = await Note.find({ userId });
+      return result;
+    } catch (error) {
+      return error;
+    }
+  };
 }
 
 module.exports = new NoteModel();

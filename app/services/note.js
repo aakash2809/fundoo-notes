@@ -407,6 +407,22 @@ class NoteServices {
       reject(err);
     });
   })
+
+  /**
+  * @description call the method of note model and serve response to controller
+  * @param imageDetail contains note id and image
+  */
+  serachNote = (searchDetail) => new Promise((resolve, reject) => {
+    noteModel.getNotes(searchDetail.userId).then((result) => {
+      let allNotes = [];
+      let searchNote = '';
+      allNotes = result;
+      searchNote = allNotes.filter((Notes) => Notes.title == searchDetail.title);
+      resolve({ searchNote });
+    }).catch((err) => {
+      reject(err);
+    });
+  })
 }
 
 module.exports = new NoteServices();

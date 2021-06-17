@@ -594,6 +594,47 @@ class NoteController {
       return res.status(500).send(response);
     }
   }
+
+  /**
+  * @description search note by title
+  * @param {*} req contains the title by which searching has to be done
+  * @param {*} res sends response from server
+  */
+  searchNote = async (req, res) => {
+    const response = {};
+    const encodedBody = helper.getEncodedBodyFromHeader(req);
+    let searchDetail = {
+      title: req.body.title,
+      userId: encodedBody.userId,
+    };
+    const validatedRequestResult = inputValidator.validateImageUploadData(searchDetail);
+    if (validatedRequestResult.error) {
+      logger.error('SCHEMAERROR: Request did not match with schema');
+      res.send({
+        success: false,
+        status_code: resposnsCode.BAD_REQUEST,
+        message: validatedRequestResult.error.details[0].message,
+      });
+      return;
+    }
+    try {
+      searchDetail = {
+        title: req.body.title,
+        userId: encodedBody.userId,
+      };
+      let result = await noteServices.serachNote(searchDetail);
+      logger.info('Note found');
+      response.status = true;
+      response.message = 'note Found';
+      response.searchResult = result;
+      return res.status(200).send(response);
+    } catch (error) {
+      logger.error('there is some error to search Note...', error);
+      response.status = false;
+      response.message = 'there is some error to search Note...', error;
+      return res.status(500).send(response);
+    }
+  }
 }
 
 module.exports = new NoteController();
