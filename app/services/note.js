@@ -426,9 +426,6 @@ class NoteServices {
     */
   paginatenNotes = async (paginationInput) => {
     try {
-      let { limit, pag, userId } = paginationInput;
-
-      console.log("service pagination input", pag);
       const paginationResult = await noteModel.getPaginatedNotes(paginationInput);
       return paginationResult;
     } catch (err) {
