@@ -69,6 +69,18 @@ class Validator {
     });
     return searchRules.validate(searchDetail);
   }
+
+  /**
+    * @description validate note Detail for search note by title joi rules
+    * @param paginationInput  having all search detail which is to be validated
+    */
+  validatePaginationInput = (paginationInput) => {
+    const paginationInputRules = joi.object({
+      page: joi.number().required(),
+      limit: joi.number().required(),
+    });
+    return paginationInputRules.validate(paginationInput);
+  }
 }
 
 module.exports = new Validator();

@@ -596,10 +596,10 @@ class NoteController {
   }
 
   /**
-  * @description search note by title
-  * @param {*} req contains the title by which searching has to be done
-  * @param {*} res sends response from server
-  */
+    * @description search note by title
+    * @param {*} req contains the title by which searching has to be done
+    * @param {*} res sends response from server
+    */
   searchNote = async (req, res) => {
     const response = {};
     const encodedBody = helper.getEncodedBodyFromHeader(req);
@@ -645,17 +645,33 @@ class NoteController {
     }
   }
 
+  /**
+    * @description paginate the notes object as per note
+    * @param {*} req contains the page and limit by which retirve notes has to be done
+    * @param {*} res sends response from server
+    */
   paginatenNotes = async (req, res) => {
     const encodedBody = helper.getEncodedBodyFromHeader(req);
-    const paginationInput = {
-      page: Number(req.query.page),
-      limit: Number(req.query.limit),
-      userId: encodedBody.userId,
-    };
+    const validatedRequestResult = inputValidator.validatePaginationInput(req.query);
+    if (validatedRequestResult.error) {
+      logger.error('SCHEMAERROR: Request did not match with schema');
+      res.send({
+        success: false,
+        status_code: resposnsCode.BAD_REQUEST,
+        message: validatedRequestResult.error.details[0].message,
+      });
+      return;
+    }
     try {
+      const paginationInput = {
+        page: Number(req.query.page),
+        limit: Number(req.query.limit),
+        userId: encodedBody.userId,
+      };
+
       const paginationResult = await noteServices.paginatenNotes(paginationInput);
       if (paginationResult.length < 1) {
-        logger.error('No note availabe in assiociate with user');
+        logger.error('No note available, assiociate with user');
         res.status(404).send({
           success: false,
           message: 'No note availabe in assiociate with user',
@@ -663,7 +679,7 @@ class NoteController {
       } else {
         logger.error('Notes retrived successfully');
         res.status(200).send({
-          success: false,
+          success: true,
           message: 'Notes retrived successfully',
           data: paginationResult,
         });
