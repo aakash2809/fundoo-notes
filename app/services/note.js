@@ -413,12 +413,8 @@ class NoteServices {
   * @param imageDetail contains note id and image
   */
   serachNote = (searchDetail) => new Promise((resolve, reject) => {
-    noteModel.getNotes(searchDetail.userId).then((result) => {
-      let allNotes = [];
-      let searchNote = '';
-      allNotes = result;
-      searchNote = allNotes.filter((Notes) => Notes.title == searchDetail.title);
-      resolve({ searchNote });
+    noteModel.getNotes(searchDetail).then((result) => {
+      resolve(result);
     }).catch((err) => {
       reject(err);
     });
