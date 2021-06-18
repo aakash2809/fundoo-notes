@@ -46,5 +46,17 @@
     "validColorWithInvalidNoteId": {
         "noteId": "60292400142c72030009898c",
         "color": "#85C1E8"
+    },
+    "properTitleForSearch": {
+        "title": "Bill"
+    },
+    "properTitleInLowerCaseForSearch": {
+        "title": "bill"
+    },
+    "titleStartWithLetterForSearch": {
+        "title": "b"
+    },
+    "titleNotPresentInDb": {
+        "title": "Insurance"
     }
 }
