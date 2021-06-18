@@ -19,17 +19,17 @@ chai.use(chaiHttp);
 let token = '';
 const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZS.khuiyghjkh';
 
-before((done) => {
-    chai.request(server)
-        .post('/login')
-        .send(testSamples.validUser)
-        .end((err, response) => {
-            token = response.body.token;
-            done();
-        });
-});
-
 describe('Test Note API', () => {
+    before((done) => {
+        chai.request(server)
+            .post('/login')
+            .send(testSamples.validUser)
+            .end((err, response) => {
+                token = response.body.token;
+                done();
+            });
+    });
+
     /**
      * @description note test for /addNote
      */
@@ -259,6 +259,7 @@ describe('Test Note API', () => {
             done();
         });
     });
+
     /**
      * @description note test for /updateNote/:noteId /
      */
@@ -399,6 +400,59 @@ describe('Test Note API', () => {
                 .attach('image', './images/story.jpg')
                 .end((error, response) => {
                     response.body.status_code.should.have.equal(responseCode.NOT_FOUND);
+                });
+            done();
+        });
+    });
+
+    /**
+       * @description note test for /searchNote
+       */
+    describe.only('/searchNote', () => {
+        it('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessStatus', (done) => {
+            chai.request(server)
+                .post('/searchNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.properTitleForSearch)
+                .end((error, response) => {
+                    response.body.success.should.have.equal(true);
+                    response.body.message.should.have.equal('note found with given title');
+                });
+            done();
+        });
+
+        it('WhenProperEndPointsWithCorrectHeaderAndInverseCaseThanActualPass_shouldReturn_SuccessStatus', (done) => {
+            chai.request(server)
+                .post('/searchNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.properTitleInLowerCaseForSearch)
+                .end((error, response) => {
+                    response.body.success.should.have.equal(true);
+                    response.body.message.should.have.equal('note found with given title');
+                });
+            done();
+        });
+
+        it('WhenStartingLetterOfPresentNoteTitlePass_shouldReturn_SuccessStatus', (done) => {
+            chai.request(server)
+                .post('/searchNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.titleStartWithLetterForSearch)
+                .end((error, response) => {
+                    response.body.success.should.have.equal(true);
+                    response.body.message.should.have.equal('note found with given title');
+                });
+            done();
+        });
+
+        it('WhenTitleOfNotPresentPass_shouldReturn_failedStatus', (done) => {
+            chai.request(server)
+                .post('/searchNote')
+                .set('Authorization', `Bearer ${token}`)
+                .send(testSamples.titleNotPresentInDb)
+                .end((error, response) => {
+                    response.body.success.should.have.equal(false);
+                    response.body.message.should.have.equal('you do not have any note having with this title');
                 });
             done();
         });
