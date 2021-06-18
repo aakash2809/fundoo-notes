@@ -622,12 +622,21 @@ class NoteController {
         title: req.body.title,
         userId: encodedBody.userId,
       };
-      let result = await noteServices.serachNote(searchDetail);
-      logger.info('Note found');
-      response.status = true;
-      response.message = 'note Found';
-      response.searchResult = result;
-      return res.status(200).send(response);
+      let searchResult = await noteServices.serachNote(searchDetail);
+      if ((searchResult.length) < 1) {
+        logger.error('you do not have any note having with this title');
+        return res.status(404).send({
+          success: false,
+          message: 'you do not have any note having with this title',
+        });
+      } else {
+        logger.info('you do not have any note having with this title');
+        return res.status(200).send({
+          success: true,
+          message: 'note found with given title',
+          data: searchResult,
+        });
+      }
     } catch (error) {
       logger.error('there is some error to search Note...', error);
       response.status = false;
