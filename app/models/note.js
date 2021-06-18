@@ -331,6 +331,22 @@ class NoteModel {
       return error;
     }
   };
+
+  /**
+   * @description retrive all note data from database
+   *@param {*} paginationInput will contain user Object id and search title
+   */
+  getPaginatedNotes = async (paginationInput) => {
+    try {
+      let { limit, page, userId } = paginationInput;
+      let skip = (page - 1) * limit;
+      logger.info('TRACKED_PATH: Inside model');
+      const result = await Note.find({ userId: { $eq: userId } }).limit(limit).skip(skip);
+      return result;
+    } catch (error) {
+      return error;
+    }
+  };
 }
 
 module.exports = new NoteModel();

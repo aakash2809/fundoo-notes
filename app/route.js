@@ -81,8 +81,11 @@ class Routes {
     // remove collaborator
     app.delete('/removeCollaborator', helper.verifyToken, noteController.removeCollaborator);
 
-    // Search a note from note db
+    // Search a note from db
     app.post('/searchNote', helper.verifyToken, noteController.searchNote);
+
+    // get paginated notes from db
+    app.get('/NotesPagination', helper.verifyToken, noteController.paginatenNotes);
 
     /** *********************************************************************************
       * @description routes for user

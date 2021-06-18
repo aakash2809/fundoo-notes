@@ -418,7 +418,23 @@ class NoteServices {
     }).catch((err) => {
       reject(err);
     });
-  })
+  });
+
+  /**
+    * @description call the method of note model and serve response to controller
+    * @param paginationInput contains note page and limit
+    */
+  paginatenNotes = async (paginationInput) => {
+    try {
+      let { limit, pag, userId } = paginationInput;
+
+      console.log("service pagination input", pag);
+      const paginationResult = await noteModel.getPaginatedNotes(paginationInput);
+      return paginationResult;
+    } catch (err) {
+      return err;
+    }
+  }
 }
 
 module.exports = new NoteServices();

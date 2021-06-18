@@ -644,6 +644,38 @@ class NoteController {
       return res.status(500).send(response);
     }
   }
+
+  paginatenNotes = async (req, res) => {
+    const encodedBody = helper.getEncodedBodyFromHeader(req);
+    const paginationInput = {
+      page: Number(req.query.page),
+      limit: Number(req.query.limit),
+      userId: encodedBody.userId,
+    };
+    try {
+      const paginationResult = await noteServices.paginatenNotes(paginationInput);
+      if (paginationResult.length < 1) {
+        logger.error('No note availabe in assiociate with user');
+        res.status(404).send({
+          success: false,
+          message: 'No note availabe in assiociate with user',
+        });
+      } else {
+        logger.error('Notes retrived successfully');
+        res.status(200).send({
+          success: false,
+          message: 'Notes retrived successfully',
+          data: paginationResult,
+        });
+      }
+    } catch (err) {
+      logger.error('internal server error');
+      res.status(500).send({
+        success: false,
+        message: 'internal server error',
+      });
+    }
+  }
 }
 
 module.exports = new NoteController();
