@@ -318,12 +318,14 @@ class NoteModel {
 
   /**
   * @description retrive all note data from database
-  *@param {*} userId will contain user Object id
+  *@param {*} searchDetail will contain user Object id and search title
   */
-  getNotes = async (userId) => {
+  getNotes = async (searchDetail) => {
     try {
+      let user = searchDetail.userId;
+      let field = searchDetail.title;
       logger.info('TRACKED_PATH: Inside model');
-      const result = await Note.find({ userId });
+      const result = await Note.find({ userId: { $eq: user }, title: { $regex: field, $options: '$i' } });
       return result;
     } catch (error) {
       return error;
