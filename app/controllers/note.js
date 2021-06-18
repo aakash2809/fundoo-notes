@@ -567,7 +567,7 @@ class NoteController {
       noteId: req.body.noteId,
       image: req.file,
     };
-    const validatedRequestResult = inputValidator.validateImageUploadData(imageDetail);
+    const validatedRequestResult = inputValidator.validateSearchTitle(imageDetail);
     if (validatedRequestResult.error) {
       logger.error('SCHEMAERROR: Request did not match with schema');
       res.send({
@@ -607,7 +607,7 @@ class NoteController {
       title: req.body.title,
       userId: encodedBody.userId,
     };
-    const validatedRequestResult = inputValidator.validateImageUploadData(searchDetail);
+    const validatedRequestResult = inputValidator.validateSearchTitle(searchDetail);
     if (validatedRequestResult.error) {
       logger.error('SCHEMAERROR: Request did not match with schema');
       res.send({

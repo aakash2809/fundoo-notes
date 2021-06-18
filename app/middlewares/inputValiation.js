@@ -50,7 +50,7 @@ class Validator {
   * @description validate note Detail for uploading image by described joi rules
   * @param noteData having all note detail which is to be validated
   */
-  validateImageUploadData = (noteData) => {
+  validateSearchTitle = (noteData) => {
     const imageUploadRules = joi.object({
       noteId: joi.string().required(),
       image: joi.required(),
@@ -62,7 +62,7 @@ class Validator {
     * @description validate note Detail for search note by title joi rules
     * @param searchDetail  having all search detail which is to be validated
     */
-  validateImageUploadData = (searchDetail) => {
+  validateSearchTitle = (searchDetail) => {
     const searchRules = joi.object({
       title: joi.string().required(),
       userId: joi.string().required(),
