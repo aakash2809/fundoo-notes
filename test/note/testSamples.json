@@ -58,5 +58,23 @@
     },
     "titleNotPresentInDb": {
         "title": "Insurance"
+    },
+    "queryWithLimitTwo": {
+        "page": 1,
+        "limit": 2
+    },
+    "queryWithLimitThree": {
+        "page": 1,
+        "limit": 3
+    },
+    "queryWithPageValueTwo": {
+        "page": 2,
+        "limit": 2
+    },
+    "queryWithoutLimit": {
+        "page": 1
+    },
+    "queryWithoutPageValue": {
+        "limit": 2
     }
 }

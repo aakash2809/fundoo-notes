@@ -408,7 +408,7 @@ describe('Test Note API', () => {
     /**
        * @description note test for /searchNote
        */
-    describe.only('/searchNote', () => {
+    describe('/searchNote', () => {
         it('WhenGivenProperEndPointsPassWithCorrectHeader_shouldReturn_SuccessStatus', (done) => {
             chai.request(server)
                 .post('/searchNote')
@@ -453,6 +453,71 @@ describe('Test Note API', () => {
                 .end((error, response) => {
                     response.body.success.should.have.equal(false);
                     response.body.message.should.have.equal('you do not have any note having with this title');
+                });
+            done();
+        });
+    });
+
+    /**
+       * @description note test for /NotesPagination
+       */
+    describe.only('/NotesPagination', () => {
+        it('WhenQuerywithLimitTwoAlongWithPageValuePass_shouldReturn_SuccessStatus', (done) => {
+            chai.request(server)
+                .get('/NotesPagination')
+                .set('Authorization', `Bearer ${token}`)
+                .query(testSamples.queryWithLimitTwo)
+                .end((error, response) => {
+                    response.body.success.should.have.equal(true);
+                    response.body.message.should.have.equal('Notes retrived successfully');
+                });
+            done();
+        });
+
+        it('WhenQueryWithLimitThreeAlongWithPageValuePass_shouldReturn_SuccessStatus', (done) => {
+            chai.request(server)
+                .get('/NotesPagination')
+                .set('Authorization', `Bearer ${token}`)
+                .query(testSamples.queryWithLimitThree)
+                .end((error, response) => {
+                    response.body.success.should.have.equal(true);
+                    response.body.message.should.have.equal('Notes retrived successfully');
+                });
+            done();
+        });
+
+        it('WhenQueryWithPageValueTwoAlongWithLimitPass_shouldReturn_SuccessStatus', (done) => {
+            chai.request(server)
+                .get('/NotesPagination')
+                .set('Authorization', `Bearer ${token}`)
+                .query(testSamples.queryWithPageValueTwo)
+                .end((error, response) => {
+                    response.body.success.should.have.equal(true);
+                    response.body.message.should.have.equal('Notes retrived successfully');
+                });
+            done();
+        });
+
+        it('WhenQueryPassWithoutPageValue_shouldReturn_failedStatus', (done) => {
+            chai.request(server)
+                .get('/NotesPagination')
+                .set('Authorization', `Bearer ${token}`)
+                .query(testSamples.queryWithoutPageValue)
+                .end((error, response) => {
+                    response.body.success.should.have.equal(false);
+                    response.body.message.should.have.equal('"page" is required');
+                });
+            done();
+        });
+
+        it('WhenQueryPassWithoutLimit_shouldReturn_failedStatus', (done) => {
+            chai.request(server)
+                .get('/NotesPagination')
+                .set('Authorization', `Bearer ${token}`)
+                .query(testSamples.queryWithoutLimit)
+                .end((error, response) => {
+                    response.body.success.should.have.equal(false);
+                    response.body.message.should.have.equal('"limit" is required');
                 });
             done();
         });
