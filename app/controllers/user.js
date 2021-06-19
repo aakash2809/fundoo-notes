@@ -172,7 +172,7 @@ class UserControllers {
           statusCode: result.statusCode,
           message: result.message,
           data: result.data,
-        }))
+        }));
     });
   };
 }
