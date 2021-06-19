@@ -737,6 +737,59 @@
         "deprecated": false
       }
     },
+    "/NotesPagination": {
+      "get": {
+        "tags": [
+          "Note"
+        ],
+        "summary": "search Note by title",
+        "consumes": [
+          "application/json"
+        ],
+        "produces": [
+          "application/json"
+        ],
+        "parameters": [
+          {
+            "in": "query",
+            "name": "page",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": true,
+            "description": "The number of items to skip before starting to collect the result set."
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "schema": {
+              "type": "integer",
+              "minimum": 1
+            },
+            "required": true,
+            "description": "The number of items to return."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "note updated with input id"
+          },
+          "404": {
+            "description": "note not found with input id"
+          },
+          "500": {
+            "description": "internal server error"
+          }
+        },
+        "security": [
+          {
+            "JWT": []
+          }
+        ],
+        "deprecated": false
+      }
+    },
     "/labels": {
       "get": {
         "tags": [
