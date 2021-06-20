@@ -17,7 +17,7 @@ const logger = require('../../config/logger');
 chai.should();
 chai.use(chaiHttp);
 let token = '';
-const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZS.khuiyghjkh';
+const invalidToken = testSamples.inValidToken.token;
 
 describe('Test Note API', () => {
     before((done) => {
@@ -461,7 +461,7 @@ describe('Test Note API', () => {
     /**
        * @description note test for /NotesPagination
        */
-    describe.only('/NotesPagination', () => {
+    describe('/NotesPagination', () => {
         it('WhenQuerywithLimitTwoAlongWithPageValuePass_shouldReturn_SuccessStatus', (done) => {
             chai.request(server)
                 .get('/NotesPagination')
