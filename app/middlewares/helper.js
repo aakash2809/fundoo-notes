@@ -58,6 +58,15 @@ class Helper {
     return token;
   };
 
+  /**
+ * @description this function return encodedbody from given token
+ */
+  getEncodedBodyFromHeader = (request) => {
+    const token = request.headers.authorization.split('Bearer ')[1];
+    const encodedBody = JSON.parse(atob(token.split('.')[1]));
+    return encodedBody;
+  }
+
   // Setup Nodemailer transport
   getTransport = () => {
     const transport = nodemailer.createTransport(
@@ -177,12 +186,21 @@ class Helper {
   };
 
   /**
-   * @description this function return encodedbody from given token
-   */
-  getEncodedBodyFromHeader = (request) => {
-    const token = request.headers.authorization.split('Bearer ')[1];
-    const encodedBody = JSON.parse(atob(token.split('.')[1]));
-    return encodedBody;
+    * @description this function works as a middleware
+    */
+  setUserIdFromToken = (req, res, next) => {
+    try {
+      const token = req.headers.authorization.split('Bearer ')[1];
+      const encodedBody = JSON.parse(atob(token.split('.')[1]));
+      req.body.userId = encodedBody.userId;
+      next();
+    } catch (err) {
+      logger.error(`getting error in encoding token ${err}`);
+      res.status(500).send({
+        success: false,
+        message: `getting error in encoding token ${err}`,
+      });
+    }
   }
 
   /**
@@ -192,6 +210,9 @@ class Helper {
     client.setex(KEY, 120, JSON.stringify(data));
   }
 
+  /**
+   * @description get data from redis
+   */
   getResponseFromRedis = (KEY, callback) => {
     client.get(KEY, (error, redisData) => {
       (error) ? (logger.info('error in retriving data from redis', error), callback(error, null))
