@@ -1,11 +1,18 @@
 {
-    "validLabel":{
+    "validLabel": {
         "label": "Gouri"
-    } ,
+    },
     "emptyLabel": {
         "label": ""
     },
     "updateLabel": {
         "label": "Parag"
+    },
+    "validUser": {
+        "email": "NiteshTiwari@gmail.com",
+        "password": "System123#"
+    },
+    "inValidToken": {
+        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZS.khuiyghjkh"
     }
 }

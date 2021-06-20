@@ -15,10 +15,20 @@ const responseCode = require('../../util/staticFile.json');
 
 chai.should();
 chai.use(chaiHttp);
-const token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6IkFobWFkIEFsaSIsInVzZXJJZCI6IjYwMjhjNjQ1ODhlMTkyMWNkNDQ2YTMxYSIsImlhdCI6MTYxMzUzNDA0NCwiZXhwIjoxNjEzNjIwNDQ0fQ.Mn1gK9gi2ix-IMS7YDygcpN8GQOqafGapQ2pkePFxa8';
-const invalidToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZS.khuiyghjkh';
+let token = '';
+const invalidToken = testSamples.inValidToken.token;
 
 describe('Test Label API', () => {
+    before((done) => {
+        chai.request(server)
+            .post('/login')
+            .send(testSamples.validUser)
+            .end((err, response) => {
+                token = response.body.token;
+                done();
+            });
+    });
+
     /**
      * @description test for /addLabel
      */
