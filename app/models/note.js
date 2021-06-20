@@ -265,12 +265,12 @@ class NoteModel {
   removeCollaborator = (data) => {
     return new Promise((resolve, reject) => {
       Note.findByIdAndUpdate(data.noteId,
-        { $pull: { collaborator: data.collaboratorId } }
-      )
-        .then((user) =>
-          resolve(user))
-        .catch((err) =>
-          reject(err));
+        { $pull: { collaborator: data.collaboratorId } })
+        .then((user) => {
+          resolve(user);
+        }).catch((err) => {
+          reject(err);
+        });
     });
   }
 

@@ -342,8 +342,7 @@ class NoteServices {
     noteModel.addCollaborator(data, (err, result) => {
       if (result) {
         (err) ? callback(err, null) : callback(null, helper.collabNotification(data));
-      }
-      else {
+      } else {
         callback('Please check your email id again.');
       }
     });
@@ -357,7 +356,9 @@ class NoteServices {
     return new Promise((resolve, reject) => {
       const result = noteModel.removeCollaborator(data);
       result.then((data) => resolve({ data }))
-        .catch((err) => reject({ err }));
+        .catch((err) => {
+          reject(err);
+        });
     });
   }
 
