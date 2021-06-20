@@ -1109,14 +1109,14 @@
       "type": "object",
       "required": [
         "noteId",
-        "userToCollabrate"
+        "collaboratorId"
       ],
       "properties": {
         "noteId": {
           "type": "string",
           "example": "60292400142c72030009599c"
         },
-        "userToCollabrate": {
+        "collaboratorId": {
           "type": "string",
           "example": "604eb36e4711870344436aa9"
         }
