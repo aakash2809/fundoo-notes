@@ -401,10 +401,10 @@ class NoteController {
               status_code: resposnsCode.NOT_FOUND,
               message: `note not found with id ${noteID}`,
             }))
-          : logger.error(`Could not delete note with id ${noteID}`),
+          : logger.error(`note not found with id ${noteID}`),
         res.send({
           status_code: resposnsCode.INTERNAL_SERVER_ERROR,
-          message: `Could not delete note with id ${noteID}`,
+          message: `note not found with id ${noteID}`,
         })
       );
     }
@@ -450,11 +450,10 @@ class NoteController {
     */
   addCollaborator = (req, res) => {
     try {
-      const encodedBody = helper.getEncodedBodyFromHeader(req);
       const data = {
-        userToCollabrate: req.body.userToCollabrate,
+        collaboratorId: req.body.collaboratorId,
         noteId: req.body.noteId,
-        userId: encodedBody.userId,
+        userId: req.body.userId,
       };
       noteServices.addCollaborator(data, (err, data) => {
         if (err) {
@@ -527,11 +526,10 @@ class NoteController {
    */
   removeCollaborator = (req, res) => {
     try {
-      const encodedBody = helper.getEncodedBodyFromHeader(req);
       const data = {
         collaboratorId: req.body.collaboratorId,
         noteId: req.body.noteId,
-        userId: encodedBody.userId,
+        userId: req.body.userId,
       };
       noteServices.removeCollaborator(data).then(() => {
         logger.info('collaborator removed from note succesfully');
@@ -602,10 +600,9 @@ class NoteController {
     */
   searchNote = async (req, res) => {
     const response = {};
-    const encodedBody = helper.getEncodedBodyFromHeader(req);
     let searchDetail = {
       title: req.body.title,
-      userId: encodedBody.userId,
+      userId: req.body.userId,
     };
     const validatedRequestResult = inputValidator.validateSearchTitle(searchDetail);
     if (validatedRequestResult.error) {
@@ -618,10 +615,6 @@ class NoteController {
       return;
     }
     try {
-      searchDetail = {
-        title: req.body.title,
-        userId: encodedBody.userId,
-      };
       let searchResult = await noteServices.serachNote(searchDetail);
       if ((searchResult.length) < 1) {
         logger.error('you do not have any note having with this title');
@@ -651,7 +644,6 @@ class NoteController {
     * @param {*} res sends response from server
     */
   paginatenNotes = async (req, res) => {
-    const encodedBody = helper.getEncodedBodyFromHeader(req);
     const validatedRequestResult = inputValidator.validatePaginationInput(req.query);
     if (validatedRequestResult.error) {
       logger.error('SCHEMAERROR: Request did not match with schema');
@@ -666,7 +658,7 @@ class NoteController {
       const paginationInput = {
         page: Number(req.query.page),
         limit: Number(req.query.limit),
-        userId: encodedBody.userId,
+        userId: req.body.userId,
       };
 
       const paginationResult = await noteServices.paginatenNotes(paginationInput);
