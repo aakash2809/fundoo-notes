@@ -172,10 +172,10 @@ class Helper {
       client.get('token', (error, result) => {
         if (error) throw error;
         if (token === result) {
-          request.userData = decode;
+          request.body = decode;
+          next();
         }
       });
-      next();
     } catch (error) {
       response.send({
         success: false,
@@ -184,24 +184,6 @@ class Helper {
       });
     }
   };
-
-  /**
-    * @description this function works as a middleware
-    */
-  setUserIdFromToken = (req, res, next) => {
-    try {
-      const token = req.headers.authorization.split('Bearer ')[1];
-      const encodedBody = JSON.parse(atob(token.split('.')[1]));
-      req.body.userId = encodedBody.userId;
-      next();
-    } catch (err) {
-      logger.error(`getting error in encoding token ${err}`);
-      res.status(500).send({
-        success: false,
-        message: `getting error in encoding token ${err}`,
-      });
-    }
-  }
 
   /**
    * @description set key and data to redis

@@ -660,7 +660,6 @@ class NoteController {
         limit: Number(req.query.limit),
         userId: req.body.userId,
       };
-
       const paginationResult = await noteServices.paginatenNotes(paginationInput);
       if (paginationResult.length < 1) {
         logger.error('No note available, assiociate with user');

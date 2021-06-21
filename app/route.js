@@ -76,16 +76,16 @@ class Routes {
     app.post('/uploadImage', helper.verifyToken, upload.single('image'), noteController.uploadImage);
 
     // add collaborator
-    app.post('/addCollaborator', helper.verifyToken, helper.setUserIdFromToken, noteController.addCollaborator);
+    app.post('/addCollaborator', helper.verifyToken, noteController.addCollaborator);
 
     // remove collaborator
-    app.delete('/removeCollaborator', helper.verifyToken, helper.setUserIdFromToken, noteController.removeCollaborator);
+    app.delete('/removeCollaborator', helper.verifyToken, noteController.removeCollaborator);
 
     // Search a note from db
-    app.post('/searchNote', helper.verifyToken, helper.setUserIdFromToken, noteController.searchNote);
+    app.post('/searchNote', helper.verifyToken, noteController.searchNote);
 
     // get paginated notes from db
-    app.get('/NotesPagination', helper.verifyToken, helper.setUserIdFromToken, noteController.paginatenNotes);
+    app.get('/NotesPagination', helper.verifyToken, noteController.paginatenNotes);
 
     /** *********************************************************************************
       * @description routes for user
