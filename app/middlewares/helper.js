@@ -172,7 +172,7 @@ class Helper {
       client.get('token', (error, result) => {
         if (error) throw error;
         if (token === result) {
-          request.body = decode;
+          request.userData = decode;
           next();
         }
       });

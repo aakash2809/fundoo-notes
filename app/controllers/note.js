@@ -453,7 +453,7 @@ class NoteController {
       const data = {
         collaboratorId: req.body.collaboratorId,
         noteId: req.body.noteId,
-        userId: req.body.userId,
+        userId: req.userData.userId,
       };
       noteServices.addCollaborator(data, (err, data) => {
         if (err) {
@@ -529,7 +529,7 @@ class NoteController {
       const data = {
         collaboratorId: req.body.collaboratorId,
         noteId: req.body.noteId,
-        userId: req.body.userId,
+        userId: req.userData.userId,
       };
       noteServices.removeCollaborator(data).then(() => {
         logger.info('collaborator removed from note succesfully');
@@ -560,25 +560,25 @@ class NoteController {
    * @param {*} res sends response from server
    */
   uploadImage = async (req, res) => {
-    const response = {};
-    let imageDetail = {
-      noteId: req.body.noteId,
-      image: req.file,
-    };
-    const validatedRequestResult = inputValidator.validateSearchTitle(imageDetail);
-    if (validatedRequestResult.error) {
-      logger.error('SCHEMAERROR: Request did not match with schema');
-      res.send({
-        success: false,
-        status_code: resposnsCode.BAD_REQUEST,
-        message: validatedRequestResult.error.details[0].message,
-      });
-      return;
-    }
     try {
+      let response = {};
+      let imageDetail = {
+        noteId: req.body.noteId,
+        image: req.file,
+      };
+      const validatedRequestResult = inputValidator.validateImageDetail(imageDetail);
+      if (validatedRequestResult.error) {
+        logger.error('SCHEMAERROR: Request did not match with schema');
+        res.send({
+          success: false,
+          status_code: resposnsCode.BAD_REQUEST,
+          message: validatedRequestResult.error.details[0].message,
+        });
+        return;
+      }
       imageDetail = {
         noteId: req.body.noteId,
-        image: req.file.locaton,
+        image: req.file.location,
       };
       await noteServices.uploadImage(imageDetail);
       logger.info('file uploaded Successfully...');
@@ -586,6 +586,7 @@ class NoteController {
       response.message = 'file uploaded Successfully...!';
       return res.status(200).send(response);
     } catch (error) {
+      let response = {};
       logger.error('there is some error to upload...', error);
       response.status = false;
       response.message = 'there is some error to upload...!';
@@ -599,22 +600,21 @@ class NoteController {
     * @param {*} res sends response from server
     */
   searchNote = async (req, res) => {
-    const response = {};
-    let searchDetail = {
-      title: req.body.title,
-      userId: req.body.userId,
-    };
-    const validatedRequestResult = inputValidator.validateSearchTitle(searchDetail);
-    if (validatedRequestResult.error) {
-      logger.error('SCHEMAERROR: Request did not match with schema');
-      res.send({
-        success: false,
-        status_code: resposnsCode.BAD_REQUEST,
-        message: validatedRequestResult.error.details[0].message,
-      });
-      return;
-    }
     try {
+      let searchDetail = {
+        title: req.body.title,
+        userId: req.userData.userId,
+      };
+      const validatedRequestResult = inputValidator.validateSearchTitle(searchDetail);
+      if (validatedRequestResult.error) {
+        logger.error('SCHEMAERROR: Request did not match with schema');
+        res.send({
+          success: false,
+          status_code: resposnsCode.BAD_REQUEST,
+          message: validatedRequestResult.error.details[0].message,
+        });
+        return;
+      }
       let searchResult = await noteServices.serachNote(searchDetail);
       if ((searchResult.length) < 1) {
         logger.error('you do not have any note having with this title');
@@ -632,9 +632,11 @@ class NoteController {
       }
     } catch (error) {
       logger.error('there is some error to search Note...', error);
-      response.status = false;
-      response.message = 'there is some error to search Note...', error;
-      return res.status(500).send(response);
+      return res.status(500).send({
+        status: false,
+        message: 'there is some error to search Note...',
+        error,
+      });
     }
   }
 
@@ -644,21 +646,21 @@ class NoteController {
     * @param {*} res sends response from server
     */
   paginatenNotes = async (req, res) => {
-    const validatedRequestResult = inputValidator.validatePaginationInput(req.query);
-    if (validatedRequestResult.error) {
-      logger.error('SCHEMAERROR: Request did not match with schema');
-      res.send({
-        success: false,
-        status_code: resposnsCode.BAD_REQUEST,
-        message: validatedRequestResult.error.details[0].message,
-      });
-      return;
-    }
     try {
+      const validatedRequestResult = inputValidator.validatePaginationInput(req.query);
+      if (validatedRequestResult.error) {
+        logger.error('SCHEMAERROR: Request did not match with schema');
+        res.send({
+          success: false,
+          status_code: resposnsCode.BAD_REQUEST,
+          message: validatedRequestResult.error.details[0].message,
+        });
+        return;
+      }
       const paginationInput = {
         page: Number(req.query.page),
         limit: Number(req.query.limit),
-        userId: req.body.userId,
+        userId: req.userData.userId,
       };
       const paginationResult = await noteServices.paginatenNotes(paginationInput);
       if (paginationResult.length < 1) {
