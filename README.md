@@ -9,7 +9,7 @@ need to install node.js, along with acces to NPM. TO check,open the terminal and
 node -v
 npm -v
 
-Database used is MONGOdb and also install mongodb 3t for UI
+Database used is MONGODB and also install mongodb 3t for UI
 
 Usage
 git clone https://github.com/aakash2809/fundoo-notes.git
