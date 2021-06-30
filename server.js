@@ -35,7 +35,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // listen for request
 app.listen(config.port, () => {
-  console.log(`CONNECT_SERVER: Connected, server started listening on port : ${config.port}`);
+  logger.info(`CONNECT_SERVER: Connected, server started listening on port : ${config.port}`);
 });
 
 new Dbconnection(config.MONGODB_URL, { useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false }).connect();
