@@ -5,7 +5,7 @@ uset jwt token based  authorization for login.
 after login  user can create, read update, delete, notes and labels,
 
 Prerequisites
-need to install node.js, along with acces to NPM. TO check,open the terminal and type.
+need to install node.js, along with acces to NPM. TO check, open the terminal and type.
 node -v
 npm -v
 
